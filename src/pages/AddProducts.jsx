@@ -580,7 +580,7 @@ y
 
                     {/* Category */}
                     <div>
-      <div>
+         <div>
         <label className="block text-sm font-medium text-gray-700">
           Select Category
         </label>
@@ -631,24 +631,24 @@ y
 
                    <div>
                    <div>
-  <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-gray-700">
     Select Brand
-  </label>
-  <select
-    className="mt-1 block w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"
-    value={selectedBrand}
+                    </label>
+                    <select
+                     className="mt-1 block w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"
+                     value={selectedBrand}
 
-    onChange={(e) => setSelectedBrand(e.target.value)}
-  >
-    {console.log(selectedBrand)}
-    <option value="">Select Brand</option>
-    {Brand.map((item) => (
-      <option key={item.Id} value={item.Brandname}>
-        {item.BrandName}
-      </option>
-    ))}
-  </select>
-</div>
+                      onChange={(e) => setSelectedBrand(e.target.value)}
+                        >
+                       {console.log(selectedBrand)}
+                       <option value="">Select Brand</option>
+                        {Brand.map((item) => (
+                        <option key={item.Id} value={item.Brandname}>
+                       {item.BrandName}
+                       </option>
+                      ))}
+                      </select>
+                     </div>
 
 
 
