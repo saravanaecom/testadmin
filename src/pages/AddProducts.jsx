@@ -411,7 +411,7 @@ console.log(SubItemsList)
             IsStock:inStock? 1 : 0,
             OfferProduct: offerProduct? 1 : 0,
             FeatureProduct: featureProduct? 1 : 0,
-            FreshProduct: 0,
+            FreshProduct: featureProduct? 1 : 0,
             NewProduct: newProduct? 1 : 0,
             MultiplePriceEnbled: multiplePrice ? 1 : 0,
             ProductWeightType:[],
@@ -453,6 +453,7 @@ console.log(SubItemsList)
     const file = e.target.files[0];
     if (file) {
       formData.append("MyImages", file);
+      console.log(formData);
       setLoading(true);
       try {
         const response = await fetch(`${ServerURL.PRODUCTION_HOST_URL}/api/ItemMasterEcomApp/UploadFile`, {
