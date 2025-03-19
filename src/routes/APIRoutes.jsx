@@ -10,6 +10,9 @@ export const APIRoutes = {
     APP_SELECTCOMPANYADMIN:`${ServerURL.PRODUCTION_HOST_URL}/api/BranchApp/SelectCompanyAdmin`,
     APP_INSERTCOMPANYADMIN:`${ServerURL.PRODUCTION_HOST_URL}/api/BranchApp/InsertBranchMaster`,
     APP_SELECTAREA:`${ServerURL.PRODUCTION_HOST_URL}/api/AreaEcomApp/SelectAreaMaster`,
+    APP_SELECTDELIVERYCHARGE:`${ServerURL.PRODUCTION_HOST_URL}/api/DeliveryChargesApp/SelectDeliveryCharges`,
+    APP_INSERTDELIVERYCHARGE:`${ServerURL.PRODUCTION_HOST_URL}api/DeliveryChargesApp/InsertDeliveryCharges`,
+    APP_DELETEDELIVERYCHARGE:`${ServerURL.PRODUCTION_HOST_URL}/api/DeliveryChargesApp/DelelteDeliveryCharges`,
     APP_DELETEAREA:`${ServerURL.PRODUCTION_HOST_URL}/api/AreaEcomApp/DeleteAreaMaster`,
     APP_INSERTAREA:`${ServerURL.PRODUCTION_HOST_URL}api/AreaEcomApp/InsertAreaMaster`,
     APP_SELECTDELIVERYTIME:`${ServerURL.PRODUCTION_HOST_URL}/api/DeliveryChargesApp/SelectDeliveryTime`, 
@@ -52,6 +55,10 @@ export const APIRoutes = {
     APP_DELETEBRAND:`${ServerURL.PRODUCTION_HOST_URL}/api/WebMobileApp/DeleteBrand`,
     APP_UPDATECUSTOMER:`${ServerURL.PRODUCTION_HOST_URL}/api/WebMobileApp/UpdateCustomerProfile`,
     GET_SELECTSETTINGS: `${ServerURL.PRODUCTION_HOST_URL}/api/WebMobileApp//SelectSettingsNew1`,
+    APP_INSERTDRIVER:`${ServerURL.PRODUCTION_HOST_URL}/api/WebMobileApp/Insertdrivermaster`,
+    APP_SELECTDRIVER:`${ServerURL.PRODUCTION_HOST_URL}/api/WebMobileApp/SelectDriver`, 
+    APP_DELETEDRIVER:`${ServerURL.PRODUCTION_HOST_URL}/api/WebMobileApp/DeleteDriver`,
+    APP_UPDATESUBCATEGORYORDER:`${ServerURL.PRODUCTION_HOST_URL}/api/SubCategoryApp/UpdateSubCategorySorting`,
 };
 
 export default APIRoutes;
