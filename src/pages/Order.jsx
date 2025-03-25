@@ -6,9 +6,10 @@ import { GrEdit } from "react-icons/gr";
 
 const Orders = () => {
   const today = new Date().toISOString().split("T")[0];
-  const [fromDate, setFromDate] = useState(today);
-  const [toDate, setToDate] = useState(today);
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const [status, setStatus] = useState("All");
+  const [Paymenttype, setPaymenttype] = useState("All");
   const [branchId, setBranchId] = useState("");
   const [branches, setBranches] = useState([]); 
   const [orders, setOrders] = useState([]);
@@ -17,10 +18,13 @@ const Orders = () => {
   const rowsPerPage = 10; 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  
+  const [totalamount,setTotalamount] =useState(0);
+  const [totalcash,setTotalcash]=useState(2);
+  const [ toatalonline,setTotalOnline]=useState(3);
   const navigate = useNavigate();
 
   const Status1 = ["All", "Pending", "Cancel", "Accepted", "Delivered"];
+  const Payment =["All","COD","Online"];
 
   useEffect(() => {
     const adminuserid = localStorage.getItem("adminuserid");
@@ -29,34 +33,62 @@ const Orders = () => {
     } else {
       console.error("Company ID not found in localStorage");
     }
-
-   
-    setBranches([
-      { id: 1, name: "Tamil Supermarket" },
-     
-    ]);
+  
+    setBranches([{ id: 1, name: "" }]);
   }, []);
+  
+  useEffect(() => {
+    if (Comid) {
+      fetchOrders();
+    }
+  }, [Comid ,Paymenttype]); // Fetch orders when Comid is set
+  
 
   const fetchOrders = async () => {
     const objlist = [
       {
         Id: 0,
         Comid: Comid,
-        fromdate: fromDate,
-        todate: toDate,
-        Type: status,
+        fromdate: fromDate || "2020-01-01",
+        todate: toDate || today,
+        Type: status || "All",
       },
     ];
-
+  
     setLoading(true);
     setError(null);
-
+  
     try {
       const data = await fetchSaleOrderview(objlist);
       if (data && Array.isArray(data)) {
-        localStorage.setItem("ordereditdetails",JSON.stringify(data));
-        setOrders(data);
-        console.log(data)
+        localStorage.setItem("ordereditdetails", JSON.stringify(data));
+  
+        
+        let filteredData = data;
+        if (Paymenttype !== "All") {
+          filteredData = data.filter(order => order.OrderType === Paymenttype);
+        }
+  
+        setOrders(filteredData);
+  
+        // Calculate total amounts
+        const totalNetAmount = filteredData.reduce((sum, order) => sum + (order.NetAmt || 0), 0);
+        setTotalamount(totalNetAmount);
+  
+        const totalCashAmount = filteredData
+          .filter(order => order.OrderType === "COD")
+          .reduce((sum, order) => sum + (order.NetAmt || 0), 0);
+        setTotalcash(totalCashAmount);
+  
+        const totalOnlineAmount = filteredData
+          .filter(order => order.OrderType === "Online")
+          .reduce((sum, order) => sum + (order.NetAmt || 0), 0);
+        setTotalOnline(totalOnlineAmount);
+  
+        console.log("Filtered Orders:", filteredData);
+        console.log("Total Net Amount:", totalNetAmount);
+        console.log("Total Cash Amount:", totalCashAmount);
+        console.log("Total Online Payment:", totalOnlineAmount);
       } else {
         throw new Error("Unexpected API response");
       }
@@ -66,6 +98,9 @@ const Orders = () => {
       setLoading(false);
     }
   };
+  
+  
+  
 
   const handleNavigate = (id) => {
   
@@ -133,6 +168,20 @@ const Orders = () => {
                 ))}
               </select>
             </div>
+            <div>
+              <label className="block text-sm font-medium">PayMentType</label>
+              <select
+                value={Paymenttype}
+                onChange={(e) => setPaymenttype(e.target.value)}
+                className="mt-1 block w-full p-2 border rounded"
+              >
+                {Payment.map((option, idx) => (
+                  <option key={idx} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </div>
             {/* <div>
               <label className="block text-sm font-medium">Branch</label>
               <select
@@ -149,13 +198,33 @@ const Orders = () => {
               </select>
             </div> */}
           </div>
+          <div className="flex  justify-between ">
+  <button
+    onClick={handleApplyClick}
+    className="px-5 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition"
+  >
+    Apply Filters
+  </button>
 
-          <button
-            onClick={handleApplyClick}
-            className="px-4 py-2 bg-[var(--primary-button-bg)] text-white rounded hover:bg-blue-600"
-          >
-            Apply Filters
-          </button>
+  <div className="flex space-x-40 text-gray-700 font-medium">
+    <div className="flex items-center space-x-2">
+      <h4 className="text-lg font-semibold">Total Amount:</h4>
+      <p className="text-lg">{totalamount}</p>
+    </div>
+    <div className="flex items-center space-x-2">
+      <h4 className="text-lg font-semibold">Total Cash:</h4>
+      <p className="text-lg">{totalcash}</p>
+    </div>
+    <div className="flex items-center space-x-2">
+      <h4 className="text-lg font-semibold">Total Online Payment:</h4>
+      <p className="text-lg">{toatalonline}</p>
+    </div>
+  </div>
+</div>
+
+
+
+
 
          
           <div className="overflow-x-auto px-6 py-4">
@@ -178,7 +247,7 @@ const Orders = () => {
         </tr>
       </thead>
       <tbody className="bg-white">
-        {paginatedOrders.map((order, idx) => (
+        {orders.map((order, idx) => (
           <React.Fragment key={order.Id}>
             <tr className="hover:bg-gray-50 transition duration-300 ease-in-out">
               <td className="px-6 py-4 text-sm font-medium text-gray-700">{order.OrderNo}</td>
