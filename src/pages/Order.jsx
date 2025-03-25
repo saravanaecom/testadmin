@@ -3,6 +3,8 @@ import Slider from "../components/sidebar";
 import { fetchSaleOrderview } from "../services/Order";
 import { useNavigate } from "react-router-dom";
 import { GrEdit } from "react-icons/gr";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 const Orders = () => {
   const today = new Date().toISOString().split("T")[0];
@@ -25,6 +27,34 @@ const Orders = () => {
 
   const Status1 = ["All", "Pending", "Cancel", "Accepted", "Delivered"];
   const Payment =["All","COD","Online"];
+   
+  const downloadExcel = () => {
+    if (orders.length === 0) {
+      alert("No data available to download!");
+      return;
+    }
+    const worksheet = XLSX.utils.json_to_sheet(
+      orders.map((order) => ({
+        "Order No": order.OrderNo,
+        "Order Date": new Date(order.OrderDate).toLocaleDateString("en-GB"),
+        "Customer Name": order.CustomerName,
+        "Payment Type": order.OrderType,
+        Amount: order.NetAmt,
+        "Delivery Date": new Date(order.DeliveryDate).toLocaleDateString("en-GB"),
+        Status: order.orderstatus,
+      }))
+    );
+  
+   
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Orders");
+  
+
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(data, "Orders.xlsx");
+  };
+
 
   useEffect(() => {
     const adminuserid = localStorage.getItem("adminuserid");
@@ -205,6 +235,14 @@ const Orders = () => {
   >
     Apply Filters
   </button>
+
+  <button
+  onClick={downloadExcel}
+  className="mt-4 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300"
+>
+  Download Excel
+</button>
+
 
   <div className="flex space-x-40 text-gray-700 font-medium">
     <div className="flex items-center space-x-2">
