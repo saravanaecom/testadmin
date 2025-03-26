@@ -40,16 +40,18 @@ const AddCoupon = () => {
         ? new Date(Coupon.expiresAt).toISOString().split("T")[0]
         : '';
         const MobileNo =Coupon.MobileNo;
-        
+        const ismobilenumonly = Coupon.isMobileNumOffer === 1 ? true : false;
+        const ismultiple = Coupon.isMultipleTimesOffer === 1 ? true : false;
         const isActive = Coupon.isActive === 1 ? true : false;
+        const customerId =Coupon.CustomerRefId 
         setCustomerName(AccountName);
         setCode(Code);
         setMobileNo(MobileNo);
         setIsActive(isActive);
         setExpiresAt(formattedDate);
-
-
-
+        setMultipleChecked(ismultiple);
+        setChecked(ismobilenumonly);
+        setCustomerRefId(customerId);
         if (Coupon.coupondiscount !== null) {
           setDiscountValue(Coupon.coupondiscount);
         } else if (Coupon.discountValue) {
