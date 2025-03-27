@@ -75,6 +75,7 @@ const Setting = () => {
           whitecolorCode: data.whitecolorCode || "",
           Firebasetext: data.FireBaseId || "",
           WhatsAppUrl: data.WhatsAppUrl || "",
+          COD:data.COD || "",
         });
         localStorage.setItem("AdminSetting", JSON.stringify(data)); 
       } else {
