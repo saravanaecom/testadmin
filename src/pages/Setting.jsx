@@ -19,6 +19,7 @@ const Setting = () => {
     btnLocation: true,
     btnSubscription: true,
     btnRazorpay: true,
+    COD: true,
     btnWallet: true,
     btnCoupon: true,
     txtPaymentId: "",
@@ -100,6 +101,7 @@ const Setting = () => {
       Id: formData.Id,
       CompanyRefId: adminId,
       SubCategoryStatus: formData.btnSubCategory ? 1 : 0,
+      COD:formData.COD ? 1 : 0,
       DeliveryStatus: formData.btnDelivery ? 1 : 0,
       LocationStatus: formData.btnLocation ? 1 : 0,
       PaymentId: formData.txtPaymentId,
@@ -187,7 +189,30 @@ const Setting = () => {
                 </div>
               </div>
 
-             
+              
+
+              <div className="flex justify-between items-center">
+                <label className="text-lg font-medium">
+                  COD (<b>{formData.COD ? "ON" : "OFF"}</b>)
+                </label>
+                <div className="relative">
+                  <input
+                    className="appearance-none w-14 h-6 rounded-full bg-gray-300 checked:bg-blue-600 transition duration-300 ease-in-out cursor-pointer"
+                    type="checkbox"
+                    id="COD"
+                    checked={formData.COD}
+                    onChange={handleInputChange}
+                  />
+                  <span
+                    className={`absolute left-0 top-0 w-6 h-5 bg-white rounded-full transition-transform duration-300 ease-in-out ${
+                      formData.COD ? "transform translate-x-6" : ""
+                    }`}
+                    style={{ pointerEvents: "none" }}
+                  />
+                </div>
+              </div>
+
+
               <div>
                 <label
                   htmlFor="txtPaymentId"
