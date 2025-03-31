@@ -76,6 +76,8 @@ const Setting = () => {
           Firebasetext: data.FireBaseId || "",
           WhatsAppUrl: data.WhatsAppUrl || "",
           COD:data.COD || "",
+          OwnerMobileNo:data.OwnerMobileNo,
+
         });
         localStorage.setItem("AdminSetting", JSON.stringify(data)); 
       } else {
