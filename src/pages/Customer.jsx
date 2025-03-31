@@ -61,7 +61,7 @@ const Customer = () => {
   };
 
   const handleUpdate = async (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to Update this coupon?");
+    const confirmDelete = window.confirm("Are you sure you want to Update this Customer Details?");
     if (!confirmDelete) return;
 
     try {
@@ -69,12 +69,12 @@ const Customer = () => {
 
       if (isDeleted) {
         
-        alert("Aera deleted successfully.");
+        alert("Aera Updated  successfully.");
       } else {
-        alert("Failed to delete the coupon. Please try again.");
+        alert("Failed to   update  the  customer. Please try again.");
       }
     } catch (error) {
-      alert("Error deleting the coupon: " + error.message);
+      alert("Error update the  customer: " + error.message);
     }
   };
 
