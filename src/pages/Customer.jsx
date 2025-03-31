@@ -20,6 +20,7 @@ const Customer = () => {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [searchTerm, setSearchTerm] = useState(""); 
   const [checkedCustomers, setCheckedCustomers] = useState({});
+  const [isB2BChecked, setIsB2BChecked] = useState(false);
    
   const statuses = ["All", "Pending", "Cancel", "Accepted", "Delivered"];
 
@@ -53,11 +54,8 @@ const Customer = () => {
   };
   
 
-  const handleCheckboxChange = (customerId) => {
-    setCheckedCustomers(prev => ({
-      ...prev,
-      [customerId]: !prev[customerId]
-    }));
+  const handleCheckboxChange = () => {
+    setIsChecked(!isChecked);
   };
 
   const handleUpdate = async (id) => {
@@ -65,11 +63,13 @@ const Customer = () => {
     if (!confirmDelete) return;
 
     try {
-      const isDeleted = await UpdateCustomer(id);
+
+       const B2Bstatus =isB2BChecked ? 1:0 ; 
+      const isDeleted = await UpdateCustomer(id,B2Bstatus);
 
       if (isDeleted) {
         
-        alert("Aera Updated  successfully.");
+        alert("customer Updated  successfully.");
       } else {
         alert("Failed to   update  the  customer. Please try again.");
       }
@@ -77,14 +77,6 @@ const Customer = () => {
       alert("Error update the  customer: " + error.message);
     }
   };
-
-
-   
-
-
-
-
-
 
   // const handleCheckboxChange = () => {
   //   setIsChecked(!isChecked);
@@ -97,6 +89,7 @@ const Customer = () => {
 
   const openModal = (customer) => {
     setCurrentCustomer(customer);
+    setIsB2BChecked(customer.GSTNo === '1');
     setIsModalOpen(true);
   };
 
@@ -284,13 +277,13 @@ const Customer = () => {
 
   {/* Checkbox Section */}
   <div className="mt-6 flex items-center">
-                  <input
-                    type="checkbox"
-                    id={`checkbox-${currentCustomer.Id}`}
-                    checked={checkedCustomers[currentCustomer.Id] || false}
-                    onChange={() => handleCheckboxChange(currentCustomer.Id)}
-                    className="mr-2 w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                  />
+     <input
+    type="checkbox"
+    id={`checkbox-${currentCustomer.Id}`}
+    checked={isB2BChecked} // Controlled component
+    onChange={() => setIsB2BChecked(!isB2BChecked)} // Toggle state
+    className="mr-2 w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+  />
                   <label
                     htmlFor={`checkbox-${currentCustomer.Id}`}
                     className="text-sm font-medium text-gray-700"
