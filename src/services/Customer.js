@@ -27,9 +27,10 @@ export const fetchSelectCoustomer = async (adminId) => {
 };
 
 
-export const UpdateCustomer = async (Id) => {
+export const UpdateCustomer = async (Id,B2Bstatus) => {
     try {
-      let objlist = { Id: Id
+      let objlist = { Id: Id,
+        GSTNo:B2Bstatus
       
        };
       const response = await fetch(`${APIRoutes.APP_UPDATECUSTOMER}`, {
