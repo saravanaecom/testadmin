@@ -37,7 +37,7 @@ const Adddeliverycharge = () => {
         if (DeliverychagreData) {
           setStartKM(DeliverychagreData.StartKM);
           setEndKM(DeliverychagreData.EndKM);
-          setDeliverycharge(DeliverychagreData.DeliveryCharges || "");
+          setDeliverycharge(DeliverychagreData.DeliveryCharges);
           setIsActive(DeliverychagreData.Active === 1);
         }
       }
@@ -62,11 +62,11 @@ const Adddeliverycharge = () => {
     e.preventDefault();
 
     // Validate that all fields are filled in correctly
-    if (!startkm || !endkm || !deliverycharge) {
-      setErrorMessage("All fields are required!");
-      setIsErrorModalOpen(true);
-      return;
-    }
+    // if (!startkm || !endkm || !deliverycharge) {
+    //   setErrorMessage("All fields are required!");
+    //   setIsErrorModalOpen(true);
+    //   return;
+    // }
 
     const objlist = {
       Id: id ? parseInt(id) : "",
