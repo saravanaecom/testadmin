@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/authContext';
 import { loginUser } from '../services/AdminCommanFuncation';
 import AdminLogo from '../assets/logoadmin.png';
+import Imageside from '../assets/imagedesign.png';
 import UserLogo from '../assets/user.png';
 import PasswordLogo from '../assets/password.png';
 import ErrorModal from "../components/error";
@@ -89,67 +90,78 @@ const Login = () => {
   };
 
   return (
-    <div className="bg-gradient-to-b from-cyan-500 to-blue-500 min-h-screen flex items-center justify-center">
-      <div className="bg-white bg-opacity-30 backdrop-blur-lg rounded-lg p-8 mx-auto max-w-md w-full shadow-lg">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-700 mt-4">Admin Login</h2>
-        </div>
-
-        <div className="header mb-6">
-          <div className="logo mb-4">
-            <img src={AdminLogo} alt="Admin Logo" className="w-56 mx-auto" />
-          </div>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Username field */}
-          <div className="relative flex items-center border-b border-gray-300 pb-2">
-            <div className="absolute left-4 top-3">
-              <img src={UserLogo} alt="Username Icon" className="w-5" />
-            </div>
-            <input
-              type="text"
-              name="Username"
-              value={loginData.Username}
-              onChange={handleChange}
-              placeholder="Username"
-              className="w-full pl-12 focus:outline-none text-gray-700 py-2 rounded-lg"
+    <div className="min-h-screen flex items-center justify-center bg-slate-100 px-4 py-12">
+      <div className="bg-white shadow-2xl rounded-3xl overflow-hidden w-full max-w-6xl h-[90vh] flex">
+        
+      
+        <div className="w-1/2  bg-gradient-to-br from-[#0166ff] via-[#0166ff] to-white text-white p-10 flex flex-col justify-center relative">
+          <div>
+            <h2 className="text-3xl font-bold mb-4">Simplify management With Our dashboard.</h2>
+            <p className="text-sm mb-6">
+              Simplify your e-commerce management with our user-friendly admin dashboard.
+            </p>
+            <img
+              src={Imageside}
+              alt="Illustration"
+              className="w-full h-72 object-contain"
             />
           </div>
-          {errors.Username && <div className="text-red-500 text-sm mt-1">{errors.Username}</div>}
+        </div>
 
-          {/* Password field */}
-          <div className="relative flex items-center border-b border-gray-300 pb-2 mt-4">
-            <div className="absolute left-4 top-3">
-              <img src={PasswordLogo} alt="Password Icon" className="w-5" />
-            </div>
-            <input
-              type={showPassword ? 'text' : 'password'}
-              name="Password"
-              value={loginData.Password}
-              onChange={handleChange}
-              placeholder="Password"
-              className="w-full pl-12 focus:outline-none text-gray-700 py-2 rounded-lg"
-            />
-            <button type="button" onClick={handleClickShowPassword} className="ml-2 text-gray-500">
-              {showPassword ? 'Hide' : 'Show'}
-            </button>
+        {/* Right Side - Login Form */}
+        <div className="w-1/2 p-10 flex flex-col justify-center">
+          <div className="text-center mb-6">
+            <img src={AdminLogo} alt="Admin Logo" className="w-14 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-gray-800">Welcome Back</h2>
+            <p className="text-gray-500 text-sm">Please login to your account</p>
           </div>
-          {errors.Password && <div className="text-red-500 text-sm mt-1">{errors.Password}</div>}
 
-          {/* Submit button */}
-          <div className="mt-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="relative">
+              <img src={UserLogo} alt="Username Icon" className="absolute w-5 left-3 top-3.5" />
+              <input
+                type="text"
+                name="Username"
+                value={loginData.Username}
+                onChange={handleChange}
+                placeholder="Email address"
+                className="w-full pl-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-600"
+              />
+              {errors.Username && <p className="text-sm text-red-500 mt-1">{errors.Username}</p>}
+            </div>
+
+            <div className="relative">
+              <img src={PasswordLogo} alt="Password Icon" className="absolute w-5 left-3 top-3.5" />
+              <input
+                type={showPassword ? 'text' : 'password'}
+                name="Password"
+                value={loginData.Password}
+                onChange={handleChange}
+                placeholder="Password"
+                className="w-full pl-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-600"
+              />
+              <button
+                type="button"
+                onClick={handleClickShowPassword}
+                className="absolute right-3 top-3 text-sm text-gray-500"
+              >
+                {showPassword ? 'Hide' : 'Show'}
+              </button>
+              {errors.Password && <p className="text-sm text-red-500 mt-1">{errors.Password}</p>}
+            </div>
+
+          
             <button
               type="submit"
-              className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 focus:outline-none"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition duration-200"
             >
               Login
             </button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
+
       {/* Modals */}
-      
       {isErrorModalOpen && <ErrorModal message={modalMessage} onClose={closeModal} />}
       {isSuccessModalOpen && <SuccessModal message={modalMessage} onClose={closeModal} />}
     </div>
