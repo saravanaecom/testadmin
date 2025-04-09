@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import AdminLogo from '../assets/logo.png';
 import { IoMdMenu } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
-import '../index.css'
+
 
 const Sidebar = () => {
 const [isProductsOpen, setIsProductsOpen] = useState(false);
