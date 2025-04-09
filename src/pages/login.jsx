@@ -90,11 +90,10 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-100 px-4 py-12">
-      <div className="bg-white shadow-2xl rounded-3xl overflow-hidden w-full max-w-6xl h-[90vh] flex">
-        
-      
-        <div className="w-1/2  bg-gradient-to-br from-[#0166ff] via-[#0166ff] to-white text-white p-10 flex flex-col justify-center relative">
+    <div className="min-h-screen flex items-center justify-center bg-gray-200 px-4 py-12">
+      <div className="bg-gray-200 shadow-neumorphism rounded-3xl overflow-hidden w-full max-w-6xl h-[90vh] flex">
+        {/* Left Side - Illustration */}
+        <div className="w-1/2 bg-gradient-to-br from-[#0166ff] via-[#0166ff] to-white text-white p-10 flex flex-col justify-center relative">
           <div>
             <h2 className="text-3xl font-bold mb-4">Simplify management With Our dashboard.</h2>
             <p className="text-sm mb-6">
@@ -109,7 +108,7 @@ const Login = () => {
         </div>
 
         {/* Right Side - Login Form */}
-        <div className="w-1/2 p-10 flex flex-col justify-center">
+        <div className="w-1/2 p-10 flex flex-col justify-center bg-gray-200 rounded-3xl shadow-neumorphism">
           <div className="text-center mb-6">
             <img src={AdminLogo} alt="Admin Logo" className="w-14 mx-auto mb-4" />
             <h2 className="text-2xl font-bold text-gray-800">Welcome Back</h2>
@@ -117,7 +116,8 @@ const Login = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="relative">
+            {/* Username Input */}
+            <div className="relative bg-gray-200 rounded-lg shadow-neumorphism-inner p-2">
               <img src={UserLogo} alt="Username Icon" className="absolute w-5 left-3 top-3.5" />
               <input
                 type="text"
@@ -125,12 +125,13 @@ const Login = () => {
                 value={loginData.Username}
                 onChange={handleChange}
                 placeholder="Email address"
-                className="w-full pl-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-600"
+                className="w-full pl-10 py-2 border-none rounded-lg focus:outline-none bg-gray-200"
               />
               {errors.Username && <p className="text-sm text-red-500 mt-1">{errors.Username}</p>}
             </div>
 
-            <div className="relative">
+            {/* Password Input */}
+            <div className="relative bg-gray-200 rounded-lg shadow-neumorphism-inner p-2">
               <img src={PasswordLogo} alt="Password Icon" className="absolute w-5 left-3 top-3.5" />
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -138,7 +139,7 @@ const Login = () => {
                 value={loginData.Password}
                 onChange={handleChange}
                 placeholder="Password"
-                className="w-full pl-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-600"
+                className="w-full pl-10 py-2 border-none rounded-lg focus:outline-none bg-gray-200"
               />
               <button
                 type="button"
@@ -150,10 +151,10 @@ const Login = () => {
               {errors.Password && <p className="text-sm text-red-500 mt-1">{errors.Password}</p>}
             </div>
 
-          
+            {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition duration-200"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition duration-200 shadow-neumorphism"
             >
               Login
             </button>
