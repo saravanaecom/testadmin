@@ -59,6 +59,8 @@ export const APIRoutes = {
     APP_SELECTDRIVER:`${ServerURL.PRODUCTION_HOST_URL}/api/WebMobileApp/SelectDriver`, 
     APP_DELETEDRIVER:`${ServerURL.PRODUCTION_HOST_URL}/api/WebMobileApp/DeleteDriver`,
     APP_UPDATESUBCATEGORYORDER:`${ServerURL.PRODUCTION_HOST_URL}/api/SubCategoryApp/UpdateSubCategorySorting`,
+    APP_SELECTORDERCOUNT:`${ServerURL.PRODUCTION_HOST_URL}/api/WebMobileApp/Selectweekdayordercount`, 
+    APP_SELECTORDERAMOUNT:`${ServerURL.PRODUCTION_HOST_URL}/api/WebMobileApp/Selectweekdayorderamount`, 
 };
 
 export default APIRoutes;
