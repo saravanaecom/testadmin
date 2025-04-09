@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { fetchSaleOrderview } from "../services/DashBordServices";
-import '../index.css'
+import "../index.css";
 
 const RecentOrders = () => {
-  const today = new Date().toISOString().split("T")[0];
-  const [fromDate, setFromDate] = useState(today);
-  const [toDate, setToDate] = useState(today);
+  const today = new Date();
+
+  // Calculate the start (Sunday) and end (Saturday) of the current week
+  const startOfWeek = new Date(today);
+  startOfWeek.setDate(today.getDate() - today.getDay()); // Set to Sunday
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6); // Set to Saturday
+
+  const [fromDate, setFromDate] = useState(startOfWeek.toISOString().split("T")[0]);
+  const [toDate, setToDate] = useState(endOfWeek.toISOString().split("T")[0]);
   const [status, setStatus] = useState("All");
   const [orders, setOrders] = useState([]);
   const [Comid, setCompanyId] = useState(null);
@@ -14,9 +21,9 @@ const RecentOrders = () => {
   useEffect(() => {
     const adminuserid = localStorage.getItem("adminuserid");
     if (adminuserid) {
-      setCompanyId(Number(adminuserid)); 
+      setCompanyId(Number(adminuserid));
     } else {
-      console.error("ComID  not found in localStorage");
+      console.error("ComID not found in localStorage");
     }
   }, []);
 
@@ -34,7 +41,7 @@ const RecentOrders = () => {
     try {
       const data = await fetchSaleOrderview(objlist);
       if (data && Array.isArray(data)) {
-        setOrders(data); 
+        setOrders(data);
       } else {
         console.error("Unexpected API response:", data);
       }
@@ -42,6 +49,12 @@ const RecentOrders = () => {
       console.error("Failed to fetch orders:", error);
     }
   };
+
+  useEffect(() => {
+    if (Comid) {
+      fetchOrders();
+    }
+  }, [Comid, fromDate, toDate, status]);
 
   const handleApplyClick = () => {
     if (!Comid) {
@@ -52,7 +65,7 @@ const RecentOrders = () => {
   };
 
   return (
-    <div className="container mx-auto  px-4 py-8" style={{ position: "relative", right: "5px", top:"45px", width: "1200px", zIndex: "-10" }}>
+    <div className="container mx-auto px-4 py-8 mt-10">
       <div className="bg-white shadow-lg rounded-lg overflow-hidden">
         <div className="bg-gray-200 p-6">
           <h5 className="text-2xl font-semibold text-gray-800">Recent Orders</h5>
@@ -96,47 +109,52 @@ const RecentOrders = () => {
 
             <div className="flex justify-center items-center w-full sm:w-auto">
               <button
-                className="py-3 px-6 bg-[var(--primary-button-bg)] text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="py-3 px-6 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 onClick={handleApplyClick}
               >
-                Apply!
+                Apply
               </button>
             </div>
           </div>
         </div>
 
         <div className="overflow-x-auto p-6">
-          <table className="min-w-full table-auto">
+          <table className="min-w-full table-auto border-collapse border border-gray-300">
             <thead className="bg-gray-100 text-gray-700">
               <tr>
-                <th className="p-3 text-left">OrderNo</th>
-                <th className="p-3 text-left">OrderDate</th>
-                <th className="p-3 text-left">CustomerName</th>
-            
-                <th className="p-3 text-left">PaymentType</th>
-                <th className="p-3 text-left">NetAmount</th>
-                <th className="p-3 text-left">DeliverDate</th>
-                
-                <th className="p-3 text-left">OrderStatus</th>
+                <th className="p-3 text-left border border-gray-300">Order No</th>
+                <th className="p-3 text-left border border-gray-300">Order Date</th>
+                <th className="p-3 text-left border border-gray-300">Customer Name</th>
+                <th className="p-3 text-left border border-gray-300">Payment Type</th>
+                <th className="p-3 text-left border border-gray-300">Net Amount</th>
+                <th className="p-3 text-left border border-gray-300">Delivery Date</th>
+                <th className="p-3 text-left border border-gray-300">Order Status</th>
               </tr>
             </thead>
             <tbody>
               {orders.map((order, index) => (
-                <tr key={index}>
-                  <td>{order.OrderNo}</td>
-                
-                  <td> {new Date(order.OrderDate).toISOString().split('T')[0]}</td>
-                  <td>{order.CustomerName}</td>
-               
-                  <td>{order.OrderType}</td>
-                  <td>₹{order.NetAmt}</td>
-                  <td> {new Date(order.DeliveryDate).toISOString().split('T')[0]}</td>
-               
-                  <td>{order.orderstatus}</td>
+                <tr
+                  key={index}
+                  className="hover:bg-gray-100 transition-colors duration-200"
+                >
+                  <td className="p-3 border border-gray-300">{order.OrderNo}</td>
+                  <td className="p-3 border border-gray-300">
+                    {new Date(order.OrderDate).toISOString().split("T")[0]}
+                  </td>
+                  <td className="p-3 border border-gray-300">{order.CustomerName}</td>
+                  <td className="p-3 border border-gray-300">{order.OrderType}</td>
+                  <td className="p-3 border border-gray-300">₹{order.NetAmt}</td>
+                  <td className="p-3 border border-gray-300">
+                    {new Date(order.DeliveryDate).toISOString().split("T")[0]}
+                  </td>
+                  <td className="p-3 border border-gray-300">{order.orderstatus}</td>
                 </tr>
               ))}
             </tbody>
           </table>
+          {orders.length === 0 && (
+            <p className="text-center text-gray-500 mt-4">No orders found for the selected date range.</p>
+          )}
         </div>
       </div>
     </div>
