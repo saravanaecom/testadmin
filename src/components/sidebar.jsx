@@ -2,9 +2,18 @@ import React, { useState } from 'react';
 import AdminLogo from '../assets/logo.png';
 import { IoMdMenu } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
+import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
+
+import { GiKnightBanner } from "react-icons/gi"; 
+import { TbBrandCodesandbox } from "react-icons/tb";
+import { FaPersonBiking } from "react-icons/fa6";
+import { MdOutlinePriceCheck } from "react-icons/md";
+import { PiMapPinArea } from "react-icons/pi";
+import { MdOutlineLocalOffer } from "react-icons/md";
+import { BiHome, BiCategory, BiSubdirectoryRight, BiBriefcase, BiGift, BiUser, BiCart, BiBell } from "react-icons/bi"; 
 
 
-const Sidebar = () => {
+const Sidebbar = () => {
 const [isProductsOpen, setIsProductsOpen] = useState(false);
   const [isSubCategoryOpen, setIsSubCategory] = useState(false);
   const [isCategoryOpen, setCategoryOpen] = useState(false);
@@ -86,7 +95,7 @@ const [isProductsOpen, setIsProductsOpen] = useState(false);
           </div>
         </div>
 
-        <nav className="p-4">
+       
           <ul className="space-y-2">
             {/* Products Dropdown */}
            
@@ -97,6 +106,7 @@ const [isProductsOpen, setIsProductsOpen] = useState(false);
                 className="flex items-center gap-3 p-3 w-full text-left rounded-lg hover:bg-gray-700 transition font-900"
               >
                 <i className="bi bi-house text-xs font-light"></i>
+                <BiHome className="text-lg" />
                 <span>Dashboard</span>
               </button>
             </li>
@@ -106,9 +116,12 @@ const [isProductsOpen, setIsProductsOpen] = useState(false);
                 className="flex items-center gap-3 p-3 w-full text-left rounded-lg hover:bg-gray-700 transition font-900"
               >
                 <i className="bi bi-house text-lg font-900"></i>
+                <BiBriefcase className="text-lg" />
                 <span>Branch</span>
               </button>
             </li>
+
+
             {/* <li>
               <div className="group">
                 <button
@@ -197,6 +210,7 @@ const [isProductsOpen, setIsProductsOpen] = useState(false);
                 >
                   <span className="flex items-center gap-3 text-mg font-900 text-white">
                     <i className="bi bi-briefcase text-md"></i>
+                    <GiKnightBanner className="text-md" /> {/* Icon for Banner Post */}
                     <span>Banner Post</span>
                   </span>
                   <i
@@ -204,6 +218,7 @@ const [isProductsOpen, setIsProductsOpen] = useState(false);
                       isBannerOpen ? 'rotate-180' : ''
                     }`}
                   ></i>
+                
                 </button>
                 {isBannerOpen && (
                   <ul className="ml-6 mt-2 space-y-2">
@@ -239,6 +254,7 @@ const [isProductsOpen, setIsProductsOpen] = useState(false);
                 >
                   <span className="flex items-center gap-3 text-md font-900 text-white">
                     <i className="bi bi-briefcase text-md"></i>
+                    <BiCategory className="text-md" />
                     <span>Category</span>
                   </span>
                   <i
@@ -287,6 +303,7 @@ const [isProductsOpen, setIsProductsOpen] = useState(false);
                 >
                   <span className="flex items-center gap-3 text-md font-900 text-white">
                     <i className="bi bi-briefcase text-md"></i>
+                    <BiSubdirectoryRight className="text-md" />
                     <span>SubCategory</span>
                   </span>
                   <i
@@ -333,6 +350,7 @@ const [isProductsOpen, setIsProductsOpen] = useState(false);
                 >
                   <span className="flex items-center gap-3 text-md font-900 text-white">
                     <i className="bi bi-briefcase text-md"></i>
+                    <BiCart className="text-md" />
                     <span>Products</span>
                   </span>
                   <i
@@ -373,6 +391,7 @@ const [isProductsOpen, setIsProductsOpen] = useState(false);
                 >
                   <span className="flex items-center gap-3 text-md font-900 text-white">
                     <i className="bi bi-briefcase text-md"></i>
+                    <TbBrandCodesandbox />
                     <span>Brand</span>
                   </span>
                   <i
@@ -414,6 +433,7 @@ const [isProductsOpen, setIsProductsOpen] = useState(false);
                 >
                   <span className="flex items-center gap-3 text-md font-900 text-white">
                     <i className="bi bi-briefcase text-md"></i>
+                    <FaPersonBiking />
                     <span>DriverMaster</span>
                   </span>
                   <i
@@ -455,6 +475,7 @@ const [isProductsOpen, setIsProductsOpen] = useState(false);
                 >
                   <span className="flex items-center gap-3 text-md font-900 text-white">
                     <i className="bi bi-briefcase text-md"></i>
+                    <MdOutlinePriceCheck />
                     <span>DeliveryCharge</span>
                   </span>
                   <i
@@ -497,6 +518,7 @@ const [isProductsOpen, setIsProductsOpen] = useState(false);
                 >
                   <span className="flex items-center gap-3 text-md font-900 text-white">
                     <i className="bi bi-briefcase text-md"></i>
+                    <PiMapPinArea className="text-md" />
                     <span>DeliveryArea</span>
                   </span>
                   <i
@@ -537,6 +559,7 @@ const [isProductsOpen, setIsProductsOpen] = useState(false);
                 >
                   <span className="flex items-center gap-3 text-md font-900 text-white">
                     <i className="bi bi-briefcase text-md"></i>
+                    <BiGift className="text-md" />
                     <span>offer coupon</span>
                   </span>
                   <i
@@ -577,6 +600,7 @@ const [isProductsOpen, setIsProductsOpen] = useState(false);
                 >
                   <span className="flex items-center gap-3 text-md font-900 text-white">
                     <i className="bi bi-briefcase text-md"></i>
+                    <MdOutlineLocalOffer className="text-md" />
                     <span>Offer Post</span>
                   </span>
                   <i
@@ -614,6 +638,7 @@ const [isProductsOpen, setIsProductsOpen] = useState(false);
                 className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 transition font-900"
               >
                 <i className="bi bi-app-indicator text-md"></i>
+                <BiBell className="text-md" />
                 <span>Offer Notification</span>
               </button>
             </li>
@@ -623,6 +648,7 @@ const [isProductsOpen, setIsProductsOpen] = useState(false);
                 className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 transition font-900"
               >
                 <i className="bi bi-house text-md font-semibold"></i>
+                <BiCart className="text-md" />
                 <span>Orders</span>
               </button>
             </li>
@@ -632,11 +658,12 @@ const [isProductsOpen, setIsProductsOpen] = useState(false);
                 className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 transition font-900"
               >
                 <i className="bi bi-house text-md font-semibold"></i>
+                <BiUser className="text-md" />
                 <span>Customers</span>
               </button>
             </li> 
           </ul>
-        </nav>
+       
       </div>
       <div className="flex-1 p-6">
   {/* Button to toggle sidebar */}
@@ -656,4 +683,4 @@ const [isProductsOpen, setIsProductsOpen] = useState(false);
   )
 }
 
-export default Sidebar
+export default Sidebbar
