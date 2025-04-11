@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/authContext';
 import { loginUser } from '../services/AdminCommanFuncation';
-import AdminLogo from '../assets/logoadmin.png';
+import AdminLogo from '../assets/logo.png';
 import Imageside from '../assets/imagedesign.png';
 import UserLogo from '../assets/user.png';
 import PasswordLogo from '../assets/password.png';
@@ -92,8 +92,6 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-100 px-4 py-12">
       <div className="bg-white shadow-2xl rounded-3xl overflow-hidden w-full max-w-6xl h-[90vh] flex">
-        
-      
         <div className="w-1/2  bg-gradient-to-br from-[#0166ff] via-[#0166ff] to-white text-white p-10 flex flex-col justify-center relative">
           <div>
             <h2 className="text-3xl font-bold mb-4">Simplify management With Our dashboard.</h2>
@@ -110,8 +108,8 @@ const Login = () => {
 
         {/* Right Side - Login Form */}
         <div className="w-1/2 p-10 flex flex-col justify-center">
-          <div className="text-center mb-6">
-            <img src={AdminLogo} alt="Admin Logo" className="w-14 mx-auto mb-4" />
+          <div className="text-center mb-9">
+            <img src={AdminLogo} alt="Admin Logo" className="w-72 mx-auto mb-4" />
             <h2 className="text-2xl font-bold text-gray-800">Welcome Back</h2>
             <p className="text-gray-500 text-sm">Please login to your account</p>
           </div>
