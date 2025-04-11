@@ -74,7 +74,7 @@ const [isProductsOpen, setIsProductsOpen] = useState(false);
     <>
     <div className='flex ' >
   <div
-        className={`bg-[var(--primary-bg-color)] text-gray-100 w-64 min-h-screen transform ${
+        className={`bg-[#0166ff] text-gray-100 w-64 min-h-screen transform ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         } md:translate-x-0 transition-transform duration-300`}
       >
