@@ -33,6 +33,11 @@ export const APIRoutes = {
     APP_SELECTCUSTOMER:`${ServerURL.PRODUCTION_HOST_URL}/api/CustomerApp/SelectCustomer`, 
     APP_SELECTUPDATEORDER:`${ServerURL.PRODUCTION_HOST_URL}/api/WebMobileApp/UpdateSaleOrder`,
     APP_SELECTSERVICES:`${ServerURL.PRODUCTION_HOST_URL}/api/WebMobileApp//SelectSettingsNew1`,
+
+
+    APP_TOPSALEPRODUCT:`${ServerURL.PRODUCTION_HOST_URL}/api/WebMobileApp//Selecttopsaleorder`,
+
+
     APP_UPDATESERVICES:`${ServerURL.PRODUCTION_HOST_URL}/api/WebMobileApp/InsertSettings`,
     APP_UPLOADIMAGES:`${ServerURL.PRODUCTION_HOST_URL}/api/OfferPost/UploadOfferPostFile`,
     APP_INSERTBANNER:`${ServerURL.PRODUCTION_HOST_URL}/api/CategoryEcomApp/InsertBanner`,
