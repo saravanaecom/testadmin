@@ -6,7 +6,9 @@ import RecentOrderSearch from '../components/RecentOrderTable';
 import { fetchBranchAddress } from "../services/DashBordServices";
 import { useNavigate } from "react-router-dom";
 import Graf from "../components/Graf";
+import Topsaleproduct from "../components/topsaleproduct";
 import Grafinamount from "../components/Grafinamount";
+
 
 const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -132,6 +134,13 @@ const Header = () => {
             <Grafinamount className="h-full w-full" />
           </div>
         </div>
+
+        <div className="mt-20 px-4">
+  <Topsaleproduct className="w-full p-4" />
+</div>
+
+
+
 
         {/* Recent Orders Section */}
         <RecentOrderSearch className="mt-8" />
