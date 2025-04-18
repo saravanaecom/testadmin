@@ -69,8 +69,8 @@ const Branch = () => {
   return (
     <div className="flex h-screen">
       {/* Left Sidebar */}
-      <div className="slider-section w-1/5 h-full overflow-y-auto bg-white">
-        <Slider  className="position-sticky top-0" />
+      <div className="slider-section w-1/5 h-svh overflow-y-auto bg-white">
+        <Slider  className="position-sticky top-0"/>
       </div>
 
       {/* Right Content */}
@@ -80,12 +80,12 @@ const Branch = () => {
             {/* Card Header */}
             <div className="card-header  text-black font-bold  py-4 px-5 flex justify-between items-center">
               <h2 className="mb-0 text-3xl">Branch View</h2>
-              <button
+              {/* <button
                 className="bg-[var(--primary-button-bg)] hover:bg-blue-600  text-white py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105"
                 onClick={() => handleNavigate()}
               >
                 Add Branch
-              </button>
+              </button> */}
             </div>
 
             {/* Table Section */}
