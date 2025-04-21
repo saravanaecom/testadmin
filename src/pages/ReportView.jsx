@@ -499,41 +499,44 @@ const ReportView = () => {
 
       {/* Main Content Section */}
       <div className="flex-1 p-6 overflow-y-auto">
-        <div className="max-w-7xl  h-screen mx-auto bg-white p-6 rounded-2xl shadow-md">
+        <div className="max-w-7xl  mx-auto bg-white p-6 rounded-2xl shadow-md">
           <h2 className="text-2xl font-bold mb-4 text-gray-700">Report Selection</h2>
 
-          <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <form className="grid grid-cols-4 md:grid-cols-2 ">
             {/* Report Options */}
-            <div className="space-y-3">
-              <p className="font-semibold  text-lg text-gray-600">Select Report Type:</p>
-              {[
-                { label: "Sale Order Consolidated", value: "saleOrderConsolidated" },
-                { label: "Sale Order Detailed", value: "saleOrderDetailed" },
-                { label: "Itemswise Report", value: "itemswiseReport" },
-                { label: "Category Wise Report", value: "categoryWiseReport" },
-                { label: "SubCategory Wise Report", value: "subCategoryWiseReport" },
-                { label: "Top Customer Wise Report", value: "topCustomerWiseReport" },
-              ].map((report) => (
-                <label
-                  key={report.value}
-                  className="flex items-center pt-16 space-x-2 text-gray-900  text-xl"
-                >
-                  <input
-                    type="radio"
-                    name="report"
-                    value={report.value}
-                    onChange={handleReportChange}
-                  />
-                  <span>{report.label}</span>
-                </label>
-              ))}
-            </div>
+            <div className="space-y-4 mr-10 bg-white rounded-2xl shadow-md">
+  <p className="font-bold text-2xl text-gray-700 mb-2">📊 Select Report Type</p>
+  {[
+    { label: "Sale Order Consolidated", value: "saleOrderConsolidated" },
+    { label: "Sale Order Detailed", value: "saleOrderDetailed" },
+    { label: "Itemswise Report", value: "itemswiseReport" },
+    { label: "Category Wise Report", value: "categoryWiseReport" },
+    { label: "SubCategory Wise Report", value: "subCategoryWiseReport" },
+    { label: "Top Customer Wise Report", value: "topCustomerWiseReport" },
+  ].map((report) => (
+    <label
+      key={report.value}
+      className="flex items-center space-x-4 py-3 px-4 bg-gray-100 hover:bg-gray-200 transition-colors rounded-xl cursor-pointer text-gray-800 text-lg"
+    >
+      <input
+        type="radio"
+        name="report"
+        className="accent-blue-600 w-5 h-5"
+        value={report.value}
+        onChange={handleReportChange}
+      />
+      <span>{report.label}</span>
+    </label>
+  ))}
+</div>
+
 
             {/* Report Filters */}
             {selectedReport && (
-              <div className="space-y-4">
+           <div className="space-y-6 border-t pt-6">
                 {(selectedReport === "saleOrderConsolidated" ) && (
                   <>
+                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block mb-1 text-gray-600 font-medium text-base">
                         Customer
@@ -550,6 +553,7 @@ const ReportView = () => {
                       </option>
                        ))}
                        </select>
+                    </div>
                     </div>
                     <div>
                 <label className="block mb-1 text-gray-600 font-medium text-base">
@@ -584,8 +588,8 @@ const ReportView = () => {
                     type="radio"
                     name="payment"
                     value={type}
-                    checked={paymentType === type} // Bind to paymentType state
-                    onChange={(e) => setPaymentType(e.target.value)} // Update paymentType state
+                    checked={paymentType === type} 
+                    onChange={(e) => setPaymentType(e.target.value)} 
                   />
                   <span className="capitalize">{type}</span>
                 </label>
