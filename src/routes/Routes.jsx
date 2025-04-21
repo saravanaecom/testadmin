@@ -36,6 +36,7 @@ import AddDriver from '../pages/adddrivermaster';
 import AllDriver from '../pages/drivermaster';
 import AddDeliveryCharge from '../pages/Adddeliverycharge';
 import DeliveryCharge  from '../pages/deliverycharge';
+import ReportView from '../pages/ReportView';
 
 
 
@@ -58,6 +59,11 @@ const AppRoutes = () => {
         {/* Area Management */}
         <Route path="/AddArea/:id" element={<AddArea />} />
         <Route path="/Area" element={<Area />} />
+
+              
+
+        {/* Report View */}
+        <Route path="/ReportView" element={<ReportView />} />
         
         {/* Delivery Time Management */}
         <Route path="/DeliveryTime" element={<DeliveryTime />} />
