@@ -3,6 +3,7 @@ import AdminLogo from '../assets/logo.png';
 import { IoMdMenu } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
 import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
+import { TbReportSearch } from "react-icons/tb";
 
 import { GiKnightBanner } from "react-icons/gi"; 
 import { TbBrandCodesandbox } from "react-icons/tb";
@@ -662,6 +663,20 @@ const [isProductsOpen, setIsProductsOpen] = useState(false);
                 <span>Customers</span>
               </button>
             </li> 
+
+            <li>
+              <button
+            onClick={() => navigate("/ReportView")}
+                className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 transition font-900"
+              >
+                <i className="bi bi-house text-md font-semibold"></i>
+                <TbReportSearch  className="text-md" />
+                <span>reports</span>
+              </button>
+            </li> 
+
+
+            
           </ul>
        
       </div>
