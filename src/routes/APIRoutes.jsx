@@ -33,8 +33,17 @@ export const APIRoutes = {
     APP_SELECTCUSTOMER:`${ServerURL.PRODUCTION_HOST_URL}/api/CustomerApp/SelectCustomer`, 
     APP_SELECTUPDATEORDER:`${ServerURL.PRODUCTION_HOST_URL}/api/WebMobileApp/UpdateSaleOrder`,
     APP_SELECTSERVICES:`${ServerURL.PRODUCTION_HOST_URL}/api/WebMobileApp//SelectSettingsNew1`,
+    
 
 
+     // SALEORDER REPORT API
+    APP_SALEOREDEREPORT1:`${ServerURL.PRODUCTION_HOST_URL}/api/WebMobileApp/SelectSaleOrderConsolidated`,
+    APP_ITEMMASTERREPORT:`${ServerURL.PRODUCTION_HOST_URL}/api/WebMobileApp/SelectItemswiseReport`,
+    APP_SALEOREDERDDETAILS:`${ServerURL.PRODUCTION_HOST_URL}/api/WebMobileApp/SelectSaleOrderDetailed`,
+    APP_CATEGORYWISEREPORT:`${ServerURL.PRODUCTION_HOST_URL}/api/WebMobileApp/SelectcategoryReport`,
+    APP_SUBCATEGORYWISEREPORT:`${ServerURL.PRODUCTION_HOST_URL}/api/WebMobileApp/SelectsubcategoryReport`,
+    APP_TOPCUSTOMERWISEREPORT:`${ServerURL.PRODUCTION_HOST_URL}/api/WebMobileApp/SelectsubcategoryReport`,
+   
     APP_TOPSALEPRODUCT:`${ServerURL.PRODUCTION_HOST_URL}/api/WebMobileApp//Selecttopsaleorder`,
 
 
