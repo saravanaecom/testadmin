@@ -69,7 +69,8 @@ export const fetchSaleOrderview = async (objlist) => {
           deliveryTime: DD1,
           Whatsappaccountid:WhatsAppUrl,
           Ownerno:OwnerMobileNo,
-          mobilenum:userMobileNo
+          mobilenum:userMobileNo,
+          driverId: 0
         },
         body: JSON.stringify(objlist),
       });
