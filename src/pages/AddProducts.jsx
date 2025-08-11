@@ -82,7 +82,7 @@ const AddProductForm = () => {
   const [mrp1, setMrp1] = useState(""); // Single entry for MRP
   const [saleRate1, setSaleRate1] = useState("")
   const [selectedUOM, setSelectedUOM] = useState("Kgs");
-
+  var Comid = JSON.parse(localStorage.getItem("adminuserid"));
   const resetForm = () => {
     setProductCode('');
     setProductName('');
@@ -113,6 +113,7 @@ console.log(SubItemsList)
 
   useEffect(() => {
     const adminUserId = JSON.parse(localStorage.getItem("adminuserid"));
+    Comid = JSON.parse(localStorage.getItem("adminuserid"));
     if (!adminUserId) {
       alert("Session Closed. Please Login Again!");
       setTimeout(() => {
@@ -165,13 +166,6 @@ console.log(SubItemsList)
       fetchProducts();
     }
   }, [adminId]);
-  
-
-
-
-
-
-
   useEffect(() => {
     let isMounted = true;
   
@@ -395,7 +389,7 @@ console.log(SubItemsList)
       ProductName: productName,
      CategoryId: categoryid,
     SubCategoryId: selectedCategory,
-    
+    PrintName: tamilName,
      MRP:mrp,
      SalesRate:saleRate,
      UOM:selectedUOM ,
@@ -543,7 +537,7 @@ console.log(SubItemsList)
               <div className="card-header mb-4">
                 <h5 className="text-xl font-semibold text-gray-800">Add Product</h5>
               </div>
-y
+
               <form onSubmit={handleSave} className="space-y-6">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   <div className="space-y-4">
@@ -569,15 +563,18 @@ y
                     </div>
 
                     {/* Tamil Name */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">Tamil Name</label>
-                      <input
-                        type="text"
-                        className="mt-1 block w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"
-                        value={tamilName}
-                        onChange={(e) => setTamilName(e.target.value)}
-                      />
-                    </div>
+                    {Comid !== 66 && (
+                         <div>
+                         <label className="block text-sm font-medium text-gray-700">Tamil Name</label>
+                         <input
+                          type="text"
+                           className="mt-1 block w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"
+                           value={tamilName}
+                           onChange={(e) => setTamilName(e.target.value)}
+                               />
+                          </div>
+                            )}
+
 
                     {/* Category */}
                     <div>
@@ -680,13 +677,37 @@ y
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700"> Approximate delivery date <span className="text-red-500">*</span></label>
+                    {Comid === 66 ? (
+                     <label className="block text-sm font-medium text-gray-700">
+                      Youtube Video Link <span className="text-red-500">*</span>
+                         </label>) : (
+                         <label className="block text-sm font-medium text-gray-700">
+                           Approximate delivery date  <span className="text-red-500">*</span>
+                             </label>
+                              )}
+
                       <input
                         type="text"
                         className="mt-1 block w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"
                         value={AproximiateDate}
                         onChange={(e) => setAproximiate(e.target.value)}
                       />
+                    </div>
+
+
+                    <div>
+
+                    {Comid == 66 && (
+                         <div>
+                         <label className="block text-sm font-medium text-gray-700">Boxes And pieces</label>
+                         <input
+                          type="text"
+                           className="mt-1 block w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"
+                           value={tamilName}
+                           onChange={(e) => setTamilName(e.target.value)}
+                               />
+                          </div>
+                            )}
                     </div>
 
                     {/* Multiple Prices */}
@@ -857,7 +878,13 @@ y
     <div className="grid grid-cols-2 gap-3 items-center">
   {/* Our Choice */}
   <div className="flex items-center justify-between">
-    <label className="text-sm font-medium text-gray-700 w-1/2">Our Choice</label>
+  {Comid === 66 ? (
+                     <label className="text-sm font-medium text-gray-700 w-1/2"> Day Crackers</label> ) : (
+                      <label className="text-sm font-medium text-gray-700 w-1/2">Our Choice</label>
+   )}
+
+
+   
     <input
       type="checkbox"
       className="form-checkbox"
@@ -879,7 +906,17 @@ y
 
   {/* Offer Product */}
   <div className="flex items-center justify-between">
-    <label className="text-sm font-medium text-gray-700 w-1/2">Offer Product</label>
+
+
+  {Comid === 66 ? (
+                     <label className="text-sm font-medium text-gray-700 w-1/2">
+                      Kids Collection <span className="text-red-500">*</span>
+                         </label>) : (
+                         <label className="text-sm font-medium text-gray-700 w-1/2">
+                          Offer Product <span className="text-red-500">*</span>
+                        </label>
+   )}
+    
     <input
       type="checkbox"
       className="form-checkbox"
@@ -890,7 +927,16 @@ y
 
   {/* New Product */}
   <div className="flex items-center justify-between">
-    <label className="text-sm font-medium text-gray-700 w-1/2">New Product</label>
+
+  {Comid === 66 ? (
+                     <label className="text-sm font-medium text-gray-700 w-1/2">
+                     Budget Blast<span className="text-red-500">*</span>
+                         </label>) : (
+                         <label className="text-sm font-medium text-gray-700 w-1/2">
+                         New Product<span className="text-red-500">*</span>
+                        </label>
+   )}
+   
     <input
       type="checkbox"
       className="form-checkbox"
@@ -901,7 +947,12 @@ y
 
   {/* Top Product */}
   <div className="flex items-center justify-between">
-    <label className="text-sm font-medium text-gray-700 w-1/2">Top Product</label>
+  {Comid === 66 ? (
+  <label className="text-sm font-medium text-gray-700 w-1/2">Night Crackers</label>
+   ) : (
+   <label className="text-sm font-medium text-red-700 w-1/2">Top Product</label>
+   )}
+
     <input
       type="checkbox"
       className="form-checkbox"
