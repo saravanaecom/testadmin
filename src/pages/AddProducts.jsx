@@ -66,12 +66,11 @@ const AddProductForm = () => {
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const navigate = useNavigate();
   const [adminId, setAdminId] = useState(null)
- 
+  const [BrandId, setBrandId] = useState(null)
  // State for success modal
   
   const [ProductList,setProductList]=useState("")
   const [SubItemsList,setSubItemsList]=useState([
-
 
   ])
   const [MultiplePriceListTemp,setMultiplePriceListTemp]=useState([])
@@ -415,7 +414,7 @@ console.log(SubItemsList)
             ReturnPolicyDays:returnsavailabilityDate,
             OurChoice:ourchoice? 1 : 0,
             Brandname:selectedBrand,
-           
+            BrandId: BrandId ? parseInt(BrandId) : null,
 
     };
    console.log(objlist)
@@ -628,31 +627,29 @@ console.log(SubItemsList)
 
 
                    <div>
-                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
-    Select Brand
-                    </label>
-                    <select
-                     className="mt-1 block w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"
-                     value={selectedBrand}
+                  <label className="block text-sm font-medium text-gray-700">
+                  Select Brand
+                  </label>
+                  <select
+                    className="mt-1 block w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"
+                   value={BrandId || ""}
+                  onChange={(e) => {
+                  const selectedId = e.target.value;
+                    setBrandId(selectedId);
 
-                      onChange={(e) => setSelectedBrand(e.target.value)}
-                        >
-                       {console.log(selectedBrand)}
-                       <option value="">Select Brand</option>
-                        {Brand.map((item) => (
-                        <option key={item.Id} value={item.Brandname}>
-                       {item.BrandName}
-                       </option>
-                      ))}
-                      </select>
-                     </div>
-
-
-
-
-
-                   </div>
+                   // Find brand name by ID
+                  const brand = Brand.find((item) => item.Id.toString() === selectedId);
+                 setSelectedBrand(brand ? brand.BrandName : "");
+                    }}
+                 >
+               <option value="">Select Brand</option>
+                   {Brand.map((item) => (
+                  <option key={item.Id} value={item.Id}>
+                   {item.BrandName}
+                     </option>
+                     ))}
+                   </select>
+                  </div>
 
                     {/* MRP */}
                     <div>
