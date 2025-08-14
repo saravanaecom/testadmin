@@ -1,36 +1,20 @@
-export const ServerURL = {  
+export const ServerURL = {    
+    //PRODUCTION_HOST_URL: `http://localhost:44301/`,       
+    //PRODUCTION_HOST_URL:  `http://13.200.71.164:9002/`,
     PRODUCTION_HOST_URL: `https://ecomapi.kassapos.co.in/`, 
-    COMPANY_REF_ID: 58,
-    Comid: JSON.parse(localStorage.getItem("adminuserid")),
-    SubCategoryStatus: 0,
-    DeliveryStatus: 0,
-    CommonLogoName: "logo (2).jpg",
-    CompanyName: "",
-    CompanyEmailAddress: "",
-    CompanyMobileNumber: "",
-    CompanyAddress1: "",
-    CompanyAddress2: "",
-    CompanyPincode: "",
-    TabLogo: "fav.png",
-    imagepath: "/Content/images/",
-    icons: {
-      Dashboardicon: "dashboard.png",
-      Offericon: "offer.png",
-      Areaicon: "area.png",
-      Categoryicon: "category.png",
-      SubCategoryicon: "list.png",
-      Producticon: "products.png",
-      Deliveryicon: "time.png",
-      Ordericon: "orders.png",
-      Companyicon: "branch.png",
-      Customericon: "customers.png",
-      Reporticon: "Report.png",
-      Couponicon: "couponoffer.png",
-      ReferralCouponOfferPanelicon: "referral.png",
-      ProductOffericon: "productoffer.png",
-      OfferNotificationIcon: "notification.png",
-    },
-  };
-  
-  export default ServerURL;
-  
+    COMPANY_REF_ID: 66,
+    COMPANY_NAME: ``,
+    COMPANY_ADDRESS: ``,
+    COMPANY_URL: ``,
+    COMPANY_EMAIL: ``,
+    COMPANY_MOBILE: ``,
+    COMPANY_PAYMENT_RAZ_KEY: `rzp_live_7dRl4dBQlFY2Ju`,    
+    COMPANY_PAYMENT_RAZ_KEYNew: `rzp_live_7dRl4dBQlFY2Ju`,    
+    CURRENCY: 'INR',
+    MINIMUM_ORDER_AMOUNT: 300,
+    CSAH_ON_DELIVERY_LIMIT: 300,
+    MAP_KEY: 'AIzaSyC966V9u3Yu_TyIbqAiB4ukRNPBS5AWjhc'
+   
+};
+
+export default ServerURL;

@@ -1,124 +1,103 @@
-import React from 'react';
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'; 
-import Login from '../pages/login';
-import Index from '../pages/Index';
-import Branch from '../pages/branch';
-import BranchEdit from '../pages/Branchedit'; 
-import AddArea from '../pages/AddArea';
-import Area from '../pages/Area';
-import DeliveryTime from '../pages/deliveryTime';
-import AddDeliveryTime from '../pages/AddDeliveryTime';
-import OfferPost from '../pages/OfferPost';
-import AddOfferPost from '../pages/AddOfferPost';
-import BannerPost from '../pages/BannerPost';
-import AddBaner from '../pages/Addbaner'
-import Category from '../pages/Category';
-import AddCategory from '../pages/AddCategory';
-import CategoryReorder from '../pages/CategoryReorder';
-import SubCategory from '../pages/SubCategory';
-import AddSubCategory from '../pages/AddSubCategory';
-import SubCategoryReorder from '../pages/subCategoryReorder';
-import AllProducts from '../pages/AllProducts';
-import AddProducts from '../pages/AddProducts';
-import OfferNotification from '../pages/OfferNotification';
-import Order from '../pages/Order';
-import Customer from '../pages/Customer';
-import OrderEdit from '../pages/orderEdit';
-import Setting from '../pages/Setting';
-import Addbannerpost from '../pages/Addbanerpost'
-import Coupon from '../pages/coupon';
-import Addcoupon from '../pages/addcoupon';
-import Brand from '../pages/Brand';
-import AllBrand from '../pages/AllBrand';
-import DeliveryArea from '../pages/deliveryArea';
-import AddDeliveryArea from '../pages/AddDeliveryArea';
-import AddDriver from '../pages/adddrivermaster';
-import AllDriver from '../pages/drivermaster';
-import AddDeliveryCharge from '../pages/Adddeliverycharge';
-import DeliveryCharge  from '../pages/deliverycharge';
-import ReportView from '../pages/ReportView';
+/* eslint-disable no-unused-vars */
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { useMediaQuery, useTheme } from '@mui/material';
+import { AuthProvider } from '../context/authContext';
+import { CartProvider } from '../context/CartContext';
+import AppLayout from '../components/layouts/AppLayout';
+import AppBottomNavigation from '../components/layouts/AppBottom';
+import HomePage from '../pages/index';
+import Categories from '../pages/categories';
+import ProductList from '../pages/product-list';
+import ProductDetails from '../pages/product-details';
+import MyAccount from '../pages/myaccount';
+import ProductCheckout from '../pages/product-checkout';
+import AboutUs from '../pages/about-us';
+import PrivacyPolicy from '../pages/privacy-policy';
+import TermsAndConditions from '../pages/terms-and-conditions';
+import RefundAndCancellation from '../pages/refund-and-cancellation';
+import { API_FetchSettings } from '../services/settings';
+import { ThemeProvider } from '@mui/material/styles';
+import { CssBaseline } from '@mui/material';
+import ThemeSettings from '../theme/theme';
+import {ServerURL} from '../server/serverUrl';
+import SafetyTips from '../pages/safetytips';
 
 
+function AppRouter() {
+    let [themeLists, setThemeLists] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);    
+    const theme = useTheme();    
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm', 'xs')); 
 
-const AppRoutes = () => {
-  return (
-   
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<Login />} />
-        <Route path="/index" element={<Index />} />
-        
-        {/* Branch Management */}
-        <Route path="/branch" element={<Branch />} />
-        <Route path="/branchedit/:id" element={<BranchEdit />} />
-         {/* driver master  */}
-        
-         <Route path="/AddDriver/:id" element={<AddDriver />} />
-          <Route path="/AllDriver" element={<AllDriver />} />
+    useEffect(() => {
+    FetchMySettings();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-        {/* Area Management */}
-        <Route path="/AddArea/:id" element={<AddArea />} />
-        <Route path="/Area" element={<Area />} />
+  
 
-              
+    const FetchMySettings = async () => {
+        try {
+            let objtheme = await API_FetchSettings();
+            setThemeLists(objtheme.data[0]);
+            ServerURL.COMPANY_ADDRESS = [objtheme.data[0].Address1, objtheme.data[0].Address2, objtheme.data[0].City, objtheme.data[0].Pincode].filter(Boolean).join(', ');
+            ServerURL.COMPANY_NAME = objtheme.data[0].ShopName;
+            ServerURL.COMPANY_EMAIL = objtheme.data[0].Email;
+            ServerURL.COMPANY_MOBILE = objtheme.data[0].MobileNo1;            
+            ServerURL.COMPANY_URL = objtheme.data[0].CompanyUrl;
+            ServerURL.COMPANY_PAYMENT_RAZ_KEY = objtheme.data[0].PaymentId;
+            setIsLoading(false);
+        } catch (error) {
+            console.error("Error fetching order lists:", error);
+            setIsLoading(false);
+        }
+    };    
 
-        {/* Report View */}
-        <Route path="/ReportView" element={<ReportView />} />
-        
-        {/* Delivery Time Management */}
-        <Route path="/DeliveryTime" element={<DeliveryTime />} />
-        <Route path="/AddDeliveryTime/:id" element={<AddDeliveryTime />} />
-        
-           {/* AddDeliveryCharge Management */}
-           <Route path="/DeliveryCharge" element={<DeliveryCharge />} />
-        <Route path="/AddDeliveryCharge/:id" element={<AddDeliveryCharge />} />
+    const ThemeSettingsLists = ThemeSettings(themeLists);
 
 
+    const ScrollToTop = () => {
+        const location = useLocation(); // Listen for route changes
+        useEffect(() => {
+            window.scrollTo(0, 0);  // Scroll to top of the page
+        }, [location]); // Runs every time the route changes
+        return null;
+    };
 
-        {/* Offers and Banners */}
-        <Route path="/OfferPost" element={<OfferPost />} />
-        <Route path="/AddOfferPost/:id" element={< AddOfferPost/>} />
-        <Route path= "/AddBaner/:id" element={< AddBaner/>} />
-        <Route path="/bannerpost/:id" element={<BannerPost />} />
-        <Route path="/addbannerpost/:id" element={<Addbannerpost />} />
-        
-        {/* Category Management */}
-        <Route path="/category" element={<Category />} />
-        <Route path="/addcategory/:id" element={<AddCategory />} />
-        <Route path="/CategoryReorder" element={<CategoryReorder />} />
-        
-        {/* SubCategory Management */}
-        <Route path="/SubCategory" element={<SubCategory />} />
-        <Route path="/AddSubCategory/:id" element={<AddSubCategory />} />
-        <Route path="/SubCategoryReorder" element={<SubCategoryReorder />} />
-
-        {/* Products Management */}
-        <Route path="/AllProducts" element={<AllProducts />} />
-        <Route path="/AddProducts/:id" element={<AddProducts />} />
-          {/*OfferNotification Management */}
-          <Route path="/OfferNotification" element={<OfferNotification />} />
-    {/*Order  Management */}
-    <Route path="/Order" element={<Order/>} />
-    <Route path='/OrderEdit/:id'element={<OrderEdit/>}/>
-    {/*Customer  Management */}
-    <Route path="/Customer" element={<Customer/>} />
-    <Route path="/Setting" element={<Setting/>} />
-        {/* Catch-All Route */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-
-        {/*Coupon add page  */}
-    <Route path="/Coupon" element={<Coupon/>} />
-    <Route path="/Addcoupon/:id" element={<Addcoupon/>} />
-    {/* brand */}
-    <Route path="/Brand/:id" element={<Brand/>} />
-    <Route path="/AllBrand" element={<AllBrand/>} />
-
-    <Route path="/DeliveryArea" element={<DeliveryArea/>} />
-    <Route path="/AddDeliveryArea/:id" element={<AddDeliveryArea/>} />
-
-      </Routes>
- 
-  );
+    return (
+        <ThemeProvider theme={ThemeSettingsLists}>
+            <CssBaseline />
+            <Router>
+                <AuthProvider>
+                    <CartProvider>
+                        <AppLayout CompanyDetails={themeLists}>
+                            <div className="App">
+                            <ScrollToTop /> 
+                                <Routes>
+                                    <Route path="/" element={<HomePage />} />
+                                    <Route path="/categories" element={<Categories />} />
+                                    <Route path="/product-list" element={<ProductList />} />
+                                    <Route path="/product-details" element={<ProductDetails />} />
+                                    <Route path="/myaccount" element={<MyAccount />} />
+                                    <Route path="/product-checkout" element={<ProductCheckout />} />
+                                    <Route path="/about-us" element={<AboutUs />} />
+                                    <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                                    <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+                                    <Route path="/refund-and-cancellation" element={<RefundAndCancellation />} />
+                                    <Route path="/safetytips" element={<SafetyTips />} />
+                                    {/* Catch-all Route for 404 */}
+                                    <Route path="*" element={<Navigate to="/" replace />} />
+                                </Routes>
+                            </div>
+                        </AppLayout>
+                        {isMobile && (
+                            <AppBottomNavigation />
+                        )}
+                    </CartProvider>
+                </AuthProvider>
+            </Router>
+        </ThemeProvider>
+    )
 };
-
-export default AppRoutes;
+export default AppRouter;
