@@ -278,7 +278,7 @@ const Category = () => {
                 >
                   Next &gt;
                 </button>
-              </div>
+              </div>              
             </div>
           </div>
         </div>

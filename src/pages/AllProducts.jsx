@@ -636,8 +636,6 @@ const AllProducts = () => {
 
 
 
-
-
         </div>
       </div>
    

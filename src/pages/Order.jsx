@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { GrEdit } from "react-icons/gr";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import { fetchSelectCompanyAdmin } from "../services/branch";
 
 const Orders = () => {
   const today = new Date().toISOString().split("T")[0];
@@ -15,6 +16,7 @@ const Orders = () => {
   const [branchId, setBranchId] = useState("");
   const [branches, setBranches] = useState([]); 
   const [orders, setOrders] = useState([]);
+  const [filterorders, setFillterOrders] = useState([]);
   const [Comid, setCompanyId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10; 
@@ -23,6 +25,9 @@ const Orders = () => {
   const [totalamount,setTotalamount] =useState(0);
   const [totalcash,setTotalcash]=useState(2);
   const [ toatalonline,setTotalOnline]=useState(3);
+  const [branchdata, setBranchdata] = useState([]);
+
+  
   const navigate = useNavigate();
 
   const Status1 = ["All", "Pending", "Cancel", "Accepted", "Delivered"];
@@ -95,25 +100,23 @@ const Orders = () => {
   
         
         let filteredData = data;
+
+        setFillterOrders(filteredData);
+        setOrders(filteredData);
         if (Paymenttype !== "All") {
           filteredData = data.filter(order => order.OrderType === Paymenttype);
         }
+       
   
-        setOrders(filteredData);
-  
-        // Calculate total amounts
         const totalNetAmount = filteredData.reduce((sum, order) => sum + (order.NetAmt || 0), 0);
         setTotalamount(totalNetAmount);
   
-        const totalCashAmount = filteredData
-          .filter(order => order.OrderType === "COD")
-          .reduce((sum, order) => sum + (order.NetAmt || 0), 0);
+        const totalCashAmount = filteredData.filter(order => order.OrderType === "COD").reduce((sum, order) => sum + (order.NetAmt || 0), 0);
         setTotalcash(totalCashAmount);
   
         const totalOnlineAmount = filteredData
-          .filter(order => order.OrderType === "Online")
-          .reduce((sum, order) => sum + (order.NetAmt || 0), 0);
-        setTotalOnline(totalOnlineAmount);
+          .filter(order => order.OrderType === "Online").reduce((sum, order) => sum + (order.NetAmt || 0), 0);
+     setTotalOnline(totalOnlineAmount);
   
         console.log("Filtered Orders:", filteredData);
         console.log("Total Net Amount:", totalNetAmount);
@@ -127,9 +130,25 @@ const Orders = () => {
     } finally {
       setLoading(false);
     }
+  }; 
+  const fetchAdminData = async () => {
+    try {
+      const data = await fetchSelectCompanyAdmin(Comid);
+      if (data && Array.isArray(data)) {
+        setBranchdata(data);
+      } else {
+        console.log("Unexpected API response.");
+      }
+    } catch (error) {
+      console.log("Failed to fetch admin data.");
+    }
   };
-  
-  
+
+  useEffect(() => {
+    if (Comid !== null) {
+      fetchAdminData();
+    }
+  }, [Comid]);
   
 
   const handleNavigate = (id) => {
@@ -156,6 +175,41 @@ const Orders = () => {
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
   );
+
+
+  const handleBranchChange = (e) => {
+    const selectedBranchId = e.target.value;
+    setBranchId(selectedBranchId);
+  
+    const branch = branchdata.find((b) => b?.Id?.toString() === selectedBranchId);
+    console.log("Selected Branch:", branch);
+  
+    if (selectedBranchId === "") {
+     
+      setOrders(filterorders);
+    } else {
+     
+      setOrders(
+        filterorders.filter((product) => {
+          console.log("Product CompanyRefid:", product?.CompanyRefid);
+          console.log("Selected Branch ID:", selectedBranchId);
+          return product?.CompanyRefid?.toString() === selectedBranchId;
+        })
+      );
+    }
+    console.log("Filtered Orders:", orders);
+    console.log("Selected Branch ID:", selectedBranchId);
+    console.log("Selected Branch Name:", branch ? branch.BranchName : "Not Found");
+  };
+
+
+    // useEffect(() => {
+    //   if (branchdata.length > 0) {
+    //     setBranchId(branchdata[0].Id.toString()); // Set the initial value to the first branch ID
+    //   }
+    // }, [branchdata]);
+
+    
 
   return (
     <div className="flex">
@@ -228,37 +282,62 @@ const Orders = () => {
               </select>
             </div> */}
           </div>
-          <div className="flex  justify-between ">
-  <button
-    onClick={handleApplyClick}
-    className="px-5 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition"
-  >
-    Apply Filters
-  </button>
+          <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow-md space-x-6">
+  {/* Filter Buttons */}
+  <div className="flex space-x-4">
+    <button
+      onClick={handleApplyClick}
+      className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition duration-300"
+    >
+      Apply Filters
+    </button>
 
-  <button
-  onClick={downloadExcel}
-  className="mt-4 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300"
->
-  Download Excel
-</button>
+    <button
+      onClick={downloadExcel}
+      className="px-6 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition duration-300"
+    >
+      Download Excel
+    </button>
+  </div>
 
+  {/* Branch Dropdown */}
+  {branchdata.length > 0 && (
+  <div className="flex items-center space-x-2">
+    <label className="text-sm font-medium text-gray-600">Branch:</label>
+    <select
+      value={branchId}
+      onChange={handleBranchChange}
+      className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+    >
+      <option value="">All Branches</option>
+      {branchdata.map((branch) => (
+        <option key={branch.Id} value={branch.Id}>
+          {branch.BranchName}
+        </option>
+      ))}
+    </select>
+  </div>
+)}
 
-  <div className="flex space-x-40 text-gray-700 font-medium">
-    <div className="flex items-center space-x-2">
-      <h4 className="text-lg font-semibold">Total Amount:</h4>
-      <p className="text-lg">{totalamount}</p>
+  {/* Summary Section */}
+  <div className="flex space-x-8 text-gray-700 font-medium">
+    <div className="flex flex-col items-center">
+      <h4 className="text-sm font-semibold text-gray-600">Total Amount</h4>
+      <p className="text-lg font-bold text-blue-600">{Math.round(totalamount)}</p>
     </div>
-    <div className="flex items-center space-x-2">
-      <h4 className="text-lg font-semibold">Total Cash:</h4>
-      <p className="text-lg">{totalcash}</p>
+    <div className="flex flex-col items-center">
+      <h4 className="text-sm font-semibold text-gray-600">Total Cash</h4>
+      <p className="text-lg font-bold text-green-600">{Math.round(totalcash)}</p>
     </div>
-    <div className="flex items-center space-x-2">
-      <h4 className="text-lg font-semibold">Total Online Payment:</h4>
-      <p className="text-lg">{toatalonline}</p>
+    <div className="flex flex-col items-center">
+      <h4 className="text-sm font-semibold text-gray-600">Total Online Payment</h4>
+      <p className="text-lg font-bold text-purple-600">{Math.round(toatalonline)}</p>
     </div>
   </div>
 </div>
+     <div className="flex justify-between items-center mt-4">
+    
+      </div>
 
 
 

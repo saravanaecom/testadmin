@@ -4,13 +4,15 @@ export const fetchSelectProduct = async (adminId, key = '') => {
     let objlist = {
         Comid: adminId,
     };
+
+    console.log(objlist);
     
     try {
         const response = await fetch(`${APIRoutes.APP_SELECTPRODUCT}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
-                'Keyword': key,  
+                'Keyword':"" ,  
                 'Column': 'Description', 
             },
             body: JSON.stringify(objlist),

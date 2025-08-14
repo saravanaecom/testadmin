@@ -4,6 +4,7 @@ import { fetchSelectCoustomer, } from "../services/Customer";
 import { fetchSelectProduct } from "../services/Product";
 import { fetchSelectCategory,  } from "../services/Category";
 import { fetchSelectsubCategory} from "../services/SubCategory";
+import { fetchSelectCompanyAdmin } from "../services/branch";
 import { fetcsaleorderreportdata1,fetcItemmasterreportdata,fetcsaleorderdetailreport,fetccategoryreport,fetcsubcategoryreport ,fetcTopCustomer} from "../services/report";
 const ReportView = () => {
   const [selectedReport, setSelectedReport] = useState("saleOrderConsolidated");
@@ -40,8 +41,9 @@ const ReportView = () => {
 
   const [TfromDate, setTfromDate] = useState(""); 
   const [TctoDate, setTtoDate] = useState("");
-
+ const [branchId, setBranchId] = useState("");
   const [paymentType, setPaymentType] = useState("");
+   const [branchdata, setBranchdata] = useState([]);
           useEffect(() => {
             if (adminId) {
               fetchsubCategoryData();
@@ -159,16 +161,6 @@ const ReportView = () => {
     console.log("Selected Product ID:", selectedProductId);
     console.log("Selected Product Name:", selectedProduct?.Description);
   };
-
-
-
-    
-    
-    
-
-
-
-
   const handleCustomerChange = (event) => {
     const selectedId = event.target.value; 
     const selectedCustomer = customers.find((customer) => customer.Id.toString() === selectedId); 
@@ -177,6 +169,29 @@ const ReportView = () => {
     console.log("Selected Customer ID:", selectedId);
     console.log("Selected Customer Name:", selectedCustomer?.CustomerName);
   };
+   const fetchAdminData = async () => {
+     try {
+       const data = await fetchSelectCompanyAdmin(adminId);
+       if (data && Array.isArray(data)) {
+         setBranchdata(data);
+       } else {
+         console.log("Unexpected API response.");
+       }
+     } catch (error) {
+       console.log("Failed to fetch admin data.");
+     }
+   };
+   useEffect(() => {
+     if (adminId !== null) {
+       fetchAdminData();
+     }
+   }, [adminId]);
+
+
+
+
+
+
 
  useEffect(() => {
       if (companyId) {
@@ -218,7 +233,7 @@ const ReportView = () => {
       Fromdate: fromDate,
       Todate: toDate,
       paymenttype: paymentType,
-      Comid: adminId,
+      Comid: branchId ?branchId : adminId,
     };
   
     console.log("Request Payload:", objlist);
@@ -261,7 +276,7 @@ const ReportView = () => {
       Id: selectedProductId || 0,
       Fromdate: ifromDate,
       Todate: itoDate,
-      Comid: adminId,
+      Comid: branchId ?branchId : adminId,
     };
   
     console.log("Request Payload:", objlist);
@@ -304,11 +319,11 @@ const ReportView = () => {
     setLoading(true);
   
     const objlist = {
-      Id: selectedCustomerId,
+      Id: selectedProductId,
       Fromdate: fromDate,
       Todate: toDate,
       paymenttype: paymentType,
-      Comid: adminId,
+      Comid: branchId ?branchId : adminId,
     };
   
     console.log("Request Payload:", objlist);
@@ -346,8 +361,6 @@ const ReportView = () => {
   };
 
 
-
-
   const fetchcategroywidereport = async () => {
     setLoading(true);
   
@@ -355,7 +368,7 @@ const ReportView = () => {
       Id: selectedCategoryId,
       Fromdate: cfromDate,
       Todate: ctoDate,
-      Comid: adminId,
+      Comid: branchId ?branchId : adminId,
     };
   
     console.log("Request Payload:", objlist);
@@ -392,7 +405,6 @@ const ReportView = () => {
     }
   };
 
-
   const fetchSubcategroywidereport = async () => {
     setLoading(true);
   
@@ -400,7 +412,7 @@ const ReportView = () => {
       Id: selectedSubCategoryId,
       Fromdate: scfromDate,
       Todate: sctoDate,
-      Comid: adminId,
+      Comid: branchId ?branchId : adminId,
     };
   
     console.log("Request Payload:", objlist);
@@ -444,7 +456,7 @@ const ReportView = () => {
     const objlist = {
       Fromdate: TfromDate,
       Todate: TctoDate,
-      Comid: adminId,
+      Comid: branchId ?branchId : adminId,
     };
   
     console.log("Request Payload:", objlist);
@@ -483,12 +495,17 @@ const ReportView = () => {
 
 
 
-
-
-
-
-
-
+  const handleBranchChange = (e) => {
+    const selectedBranchId = e.target.value;
+    setBranchId(selectedBranchId);
+  
+    const branch = branchdata.find((b) => b?.Id?.toString() === selectedBranchId);
+    console.log("Selected Branch:", branch);
+  
+ 
+    console.log("Selected Branch ID:", selectedBranchId);
+    console.log("Selected Branch Name:", branch ? branch.BranchName : "Not Found");
+  };
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -534,84 +551,126 @@ const ReportView = () => {
             {/* Report Filters */}
             {selectedReport && (
            <div className="space-y-6 border-t pt-6">
-                {(selectedReport === "saleOrderConsolidated" ) && (
-                  <>
-                   <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block mb-1 text-gray-600 font-medium text-base">
-                        Customer
-                      </label>
-                      <select
-                       className="w-full p-2 border rounded text-base"
-                       value={selectedCustomerId}
-                       onChange={handleCustomerChange}
-                       >
-                      <option value="">Select Customer</option>
-                      {customers.map((customer) => (
-                      <option key={customer.Id} value={customer.Id}>
-                      {customer.CustomerName}
-                      </option>
-                       ))}
-                       </select>
-                    </div>
-                    </div>
-                    <div>
-                <label className="block mb-1 text-gray-600 font-medium text-base">
-                  From Date
-                </label>
-                <input
-                  type="date"
-                  className="w-full p-2 border rounded text-base"
-                  value={fromDate} 
-                  onChange={(e) => setFromDate(e.target.value)}
-                />
-              </div>
-              <div>
-                <label className="block mb-1 text-gray-600 font-medium text-base">
-                  To Date
-                </label>
-                <input
-                  type="date"
-                  className="w-full p-2 border rounded text-base"
-                  value={toDate} 
-                  onChange={(e) => setToDate(e.target.value)} 
-                />
-              </div>
-              <div className="space-y-2">
-              <p className="font-medium text-gray-600 text-base">Payment Type:</p>
-              {["COD", "ONLINE", "ALL"].map((type) => (
-                <label
-                  key={type}
-                  className="inline-flex items-center space-x-2 mr-4 text-base"
-                >
-                  <input
-                    type="radio"
-                    name="payment"
-                    value={type}
-                    checked={paymentType === type} 
-                    onChange={(e) => setPaymentType(e.target.value)} 
-                  />
-                  <span className="capitalize">{type}</span>
-                </label>
-              ))}
-            </div>
-                    {/* View Button */}
-                    <div className="mt-4">
-                    <button
-                type="button"
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-                onClick={fetchsaleorderreport1data} // Call the function
-              >
-                        View
-                      </button>
-                    </div>
-                  </>
-                )}
+          {selectedReport === "saleOrderConsolidated" && (
+  <div className="bg-white shadow-md rounded-2xl p-6 space-y-6">
+    <h2 className="text-xl font-semibold text-gray-800 mb-4">Sale Order Consolidated Report</h2>
+    
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Branch & Customer */}
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-1">Branch</label>
+          <select
+            value={branchId}
+            onChange={handleBranchChange}
+            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          >
+            {branchdata.map((branch) => (
+              <option key={branch.Id} value={branch.Id}>
+                {branch.BranchName}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-1">Customer</label>
+          <select
+            value={selectedCustomerId}
+            onChange={handleCustomerChange}
+            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          >
+            <option value="">Select Customer</option>
+            {customers.map((customer) => (
+              <option key={customer.Id} value={customer.Id}>
+                {customer.CustomerName}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* From Date & To Date */}
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-1">From Date</label>
+          <input
+            type="date"
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-1">To Date</label>
+          <input
+            type="date"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          />
+        </div>
+      </div>
+    </div>
+
+    {/* Payment Type */}
+    <div>
+      <p className="text-sm font-semibold text-gray-700 mb-2">Payment Type</p>
+      <div className="flex flex-wrap gap-4">
+        {["COD", "ONLINE", "ALL"].map((type) => (
+          <label key={type} className="inline-flex items-center space-x-2 text-sm">
+            <input
+              type="radio"
+              name="payment"
+              value={type}
+              checked={paymentType === type}
+              onChange={(e) => setPaymentType(e.target.value)}
+              className="accent-blue-500"
+            />
+            <span className="capitalize">{type}</span>
+          </label>
+        ))}
+      </div>
+    </div>
+
+    {/* View Button */}
+    <div className="text-right">
+      <button
+        type="button"
+        className="inline-flex items-center px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition duration-300"
+        onClick={fetchsaleorderreport1data}
+      >
+        View Report
+      </button>
+    </div>
+  </div>
+)}
+
 
                  {(
                   selectedReport === "saleOrderDetailed") && (
                   <>
                     <div>
+
+
+                    <div className="flex items-center space-x-2">
+    <label className="text-sm font-medium text-gray-600">Branch:</label>
+    <select
+      value={branchId}
+      onChange={handleBranchChange}
+      className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+    >
+  
+      {branchdata.map((branch) => (
+        <option key={branch.Id} value={branch.Id}>
+          {branch.BranchName}
+        </option>
+      ))}
+    </select>
+                   </div>
+
+
                       <label className="block mb-1 text-gray-600 font-medium text-base">
                         Customer
                       </label>
@@ -685,6 +744,21 @@ const ReportView = () => {
                 {selectedReport === "itemswiseReport" && (
                   <>
                     <div>
+                    <div className="flex items-center space-x-2">
+    <label className="text-sm font-medium text-gray-600">Branch:</label>
+    <select
+      value={branchId}
+      onChange={handleBranchChange}
+      className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+    >
+     
+      {branchdata.map((branch) => (
+        <option key={branch.Id} value={branch.Id}>
+          {branch.BranchName}
+        </option>
+      ))}
+    </select>
+                   </div>
               <label className="block mb-1 text-gray-600 font-medium text-base">
               Product Name
               </label>
@@ -713,6 +787,8 @@ const ReportView = () => {
            </select>
            </div>
                     <div>
+
+        
                       <label className="block mb-1 text-gray-600 font-medium text-base">
                         From Date
                       </label>
@@ -739,6 +815,21 @@ const ReportView = () => {
                 {selectedReport === "categoryWiseReport" && (
                   <>
                     <div>
+                    <div className="flex items-center space-x-2">
+    <label className="text-sm font-medium text-gray-600">Branch:</label>
+    <select
+      value={branchId}
+      onChange={handleBranchChange}
+      className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+    >
+      
+      {branchdata.map((branch) => (
+        <option key={branch.Id} value={branch.Id}>
+          {branch.BranchName}
+        </option>
+      ))}
+    </select>
+                   </div>
                       <label className="block mb-1 text-gray-600 font-medium text-base">
                         Category
                       </label>
@@ -783,6 +874,21 @@ const ReportView = () => {
                 {selectedReport === "subCategoryWiseReport" && (
                   <>
                     <div>
+                    <div className="flex items-center space-x-2">
+    <label className="text-sm font-medium text-gray-600">Branch:</label>
+    <select
+      value={branchId}
+      onChange={handleBranchChange}
+      className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+    >
+    
+      {branchdata.map((branch) => (
+        <option key={branch.Id} value={branch.Id}>
+          {branch.BranchName}
+        </option>
+      ))}
+    </select>
+                   </div>
                       <label className="block mb-1 text-gray-600 font-medium text-base">
                         SubCategory
                       </label>
@@ -827,6 +933,22 @@ const ReportView = () => {
                 {selectedReport === "topCustomerWiseReport" && (
                   <>
                     <div>
+
+                    <div className="flex items-center space-x-2">
+    <label className="text-sm font-medium text-gray-600">Branch:</label>
+    <select
+      value={branchId}
+      onChange={handleBranchChange}
+      className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+    >
+      
+      {branchdata.map((branch) => (
+        <option key={branch.Id} value={branch.Id}>
+          {branch.BranchName}
+        </option>
+      ))}
+    </select>
+                   </div>
                       <label className="block mb-1 text-gray-600 font-medium text-base"  >
                         From Date
                       </label>

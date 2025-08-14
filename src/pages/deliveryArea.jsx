@@ -3,7 +3,8 @@ import Slider from "../components/sidebar";
 import { useNavigate } from "react-router-dom";
 import { fetchSelectDeliveryarea, DeleteArea } from "../services/addDeliveryArea";
 import * as XLSX from "xlsx";
-import { insertDeliveryArea,  } from "../services/addDeliveryArea";
+import { insertDeliveryArea,ExcelDownload  } from "../services/addDeliveryArea";
+import { fetchSelectCompanyAdmin } from "../services/branch";
 
 const DeliveryArea = () => {
   const [adminId, setAdminId] = useState(null);
@@ -15,10 +16,14 @@ const DeliveryArea = () => {
   const [excelFile, setExcelFile] = useState(null);
   const [typeError, setTypeError] = useState(null);
   const [excelData, setExcelData] = useState([]);
+   const [branchdata, setBranchdata] = useState([]); 
   const [errorMessage, setErrorMessage] = useState("");
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [selectBranchId, setSelectBranchId] = useState("");
+ const [filterCompany,setFilterCompany] = useState([]);
+ const [CompanyId,setCompanyId] = useState([]);
 
   // Handle file upload
   const handleFile=(e)=>{
@@ -49,7 +54,21 @@ const DeliveryArea = () => {
       const worksheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[worksheetName];
       const data = XLSX.utils.sheet_to_json(worksheet);
-      setExcelData(data);
+
+      const mappedData = data.map((row) => {
+        const company = filterCompany.find(
+          (company) => company.CompanyName.toLowerCase() === row.companyname.toLowerCase()
+        );
+        return {
+          ...row,
+          CompanyRefId: company ? company.CompanyRefId : null, 
+        };
+      });
+  
+      setExcelData(mappedData); 
+
+console.log(mappedData); // Log the mapped data
+     
       console.log(excelData) // Defaults to an array
     } else {
       setExcelData([]); // Ensure it's always an array
@@ -58,11 +77,12 @@ const DeliveryArea = () => {
   const handleSave = async (e) => {
     e.preventDefault();
     setLoading(true);
-  
+     
+     
 
     const productsToSave = excelData.map((product) => {
       return {
-        CompanyRefId:adminId,
+        CompanyRefId: product.CompanyRefId,
         pincode: product.pincode,
         Active:1
       };
@@ -92,6 +112,40 @@ const DeliveryArea = () => {
       setLoading(false);
     }
   };
+  const DownloadExcel = async () => {
+    setLoading(true);
+
+    try {
+      const data = await ExcelDownload();
+      if (data) {
+        // Ensure the URL is valid
+        var url = data.trim().replace(/^"|"$/g, ""); // Remove extra quotes
+        console.log("URL:", url);
+  
+        // Open the URL in a new tab
+        var myWindow = window.open(url, "_blank");
+  
+        if (myWindow) {
+          // Optionally, set the title of the new tab
+          myWindow.addEventListener(
+            "load",
+            function () {
+              myWindow.document.title = "Report Viewer";
+            },
+            false
+          );
+        } else {
+          console.error("Popup blocked or failed to open.");
+          alert("Unable to open the report. Please check your browser settings.");
+        }
+      }
+    } catch (error) {
+      
+      setIsErrorModalOpen(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const adminUserId = JSON.parse(localStorage.getItem("adminuserid"));
@@ -111,6 +165,7 @@ const DeliveryArea = () => {
           const DeliveryAreaData = await fetchSelectDeliveryarea(adminId);
           localStorage.setItem("Deliveryarea", JSON.stringify(DeliveryAreaData));
           setFilteredProducts(DeliveryAreaData);
+          setFilterCompany(DeliveryAreaData);
           setTotalPages(Math.ceil(DeliveryAreaData.length / rows));
         } catch (error) {
           console.error("Failed to fetch DeliveryArea", error);
@@ -148,6 +203,48 @@ const DeliveryArea = () => {
     }
   };
 
+
+
+    const fetchAdminData = async () => {
+      try {
+        const data = await fetchSelectCompanyAdmin(adminId);
+        if (data && Array.isArray(data)) {
+          setBranchdata(data);
+        } else {
+          console.log("Unexpected API response.");
+        }
+      } catch (error) {
+        console.log("Failed to fetch admin data.");
+      }
+    };
+  
+
+    const handleBranchChange = (e) => {
+      const selectedBranchId = e.target.value; 
+      const branch = branchdata.find((b) => b.Id.toString() === selectedBranchId); 
+      setSelectBranchId(selectedBranchId); 
+    
+      if (selectedBranchId === "") {
+        setFilteredProducts(filterCompany); // Show all products
+      } 
+      else {
+        setFilteredProducts(
+          filterCompany.filter(
+            (product) => product.CompanyRefId.toString() === selectedBranchId
+          )
+        );
+      }
+      
+      console.log("Selected Branch ID:", selectedBranchId);
+      console.log("Selected Branch Name:", branch ? branch.BranchName : "");
+    };
+
+    useEffect(() => {
+      if (adminId !== null) {
+        fetchAdminData();
+      }
+    }, [adminId]);
+
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
@@ -166,7 +263,7 @@ const DeliveryArea = () => {
         <div className="flex justify-between items-center mb-6">
         <div>
       <form
-        className="flex items-center space-x-4"
+        className="flex items-center space-x-2"
         onSubmit={handleFileSubmit}
       >
         <input
@@ -181,6 +278,26 @@ const DeliveryArea = () => {
         >
           Upload
         </button>
+        <label htmlFor="branch" className="block mb-2 font-medium">
+            Select Company:
+          </label>
+          <select
+            id="branch"
+            className="w-full p-2 border rounded-md mb-4"
+            value={selectBranchId}
+            onChange={handleBranchChange}
+          >
+            <option value="">All Company</option>
+            {branchdata.map((branch) => (
+              <option key={branch.Id} value={branch.Id}>
+                {branch.BranchName}
+              </option>
+            ))}
+          </select>
+
+          
+       
+
         {typeError && (
           <div
             className="text-sm text-red-600 bg-red-100 px-3 py-2 rounded-lg shadow-md"
@@ -190,6 +307,7 @@ const DeliveryArea = () => {
           </div>
         )}
       </form>
+   
       {excelData && excelData.length > 0 && (
         <button
           className="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md transition-all duration-200"
@@ -199,6 +317,15 @@ const DeliveryArea = () => {
         </button>
       )}
     </div>
+
+    <button
+    onClick={DownloadExcel}
+    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-500 transition duration-300"
+  >
+    Download Excel For
+  </button>
+
+
   <button
     onClick={handleAddDelivery}
     className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-500 transition duration-300"
@@ -221,6 +348,7 @@ const DeliveryArea = () => {
                   <tr>
                     <th className="px-4 py-2 text-left">S. No.</th>
                     <th className="px-4 py-2 text-left">Pincode</th>
+                    <th className="px-4 py-2 text-left">CompanyName</th>
                     <th className="px-4 py-2 text-left">Action</th>
                   </tr>
                 </thead>
@@ -234,6 +362,7 @@ const DeliveryArea = () => {
                     >
                       <td className="px-4 py-2">{index + 1}</td>
                       <td className="px-4 py-2">{product.pincode}</td>
+                      <td className="px-4 py-2">{product.CompanyName}</td>
                       <td className="px-4 py-2">
                         <button
                           onClick={() => handleEdit(product.Id)}

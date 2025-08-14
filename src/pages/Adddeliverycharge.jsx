@@ -47,7 +47,7 @@ const Adddeliverycharge = () => {
     setIsErrorModalOpen(false);
   };
 
-  const closeSuccessModal = () => {  // Close success modal
+  const closeSuccessModal = () => {  
     setIsSuccessModalOpen(false);
   };
 

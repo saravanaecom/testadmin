@@ -49,6 +49,9 @@ export const insertDeliveryArea1 = async (objlist) => {
   };
 
 
+
+
+
   export const fetchSelectDeliveryarea = async (adminId) => {
     let objlist = {
         Comid: adminId,
@@ -104,5 +107,42 @@ export const insertDeliveryArea1 = async (objlist) => {
     } catch (error) {
       console.error("Error deleting area:", error);
       return false;
+    }
+  };
+
+
+
+
+
+
+
+  export const ExcelDownload = async (adminId) => {
+
+    
+    try {
+        const response = await fetch(`${APIRoutes.APP_DOWNLOAD}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+              
+            },
+          
+        });
+  
+        if (!response.ok) {
+            throw new Error('Network response was not ok.');
+        }
+  
+        const fileUrl = await response.text(); // If the API sends a raw URL string
+        // const { url } = await response.json(); // Use this line instead if the API sends { "url": "..." }
+
+        if (!fileUrl || typeof fileUrl !== 'string') {
+            throw new Error('Invalid file URL received.');
+        }
+
+        return fileUrl;
+    } catch (error) {
+        console.error('Failed to fetch product details:', error);
+        throw error; 
     }
   };
