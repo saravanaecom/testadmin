@@ -119,6 +119,9 @@ const AddSubCategory = () => {
       Sort: 0
     };
 
+
+     console.log("Submitting SubCategory:", objlist);
+
     try {
       const success = await insertsubCategory([objlist]);
       if (success) {
@@ -130,7 +133,7 @@ const AddSubCategory = () => {
         }, 2000);
       }
        else {
-        setError(" Subcategory already Exits");
+        setError("Subcategory already Exits");
         setIsErrorModalOpen(true);
       }
     } catch (error) {

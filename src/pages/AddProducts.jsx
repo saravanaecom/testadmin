@@ -152,6 +152,7 @@ console.log(SubItemsList)
           const BrandData = await fetchSelectBrand(adminId);
           if (Array.isArray(BrandData)) {
             setBrand(BrandData); // Update with array data
+            console.log('Brand data loaded:', BrandData);
           } else {
             setBrand([]); // Fallback if not array
             console.error("Expected an array but got:", BrandData);
@@ -164,7 +165,7 @@ console.log(SubItemsList)
       };
       fetchProducts();
     }
-  }, [adminId]);
+  }, [adminId, id]);
   useEffect(() => {
     let isMounted = true;
   
@@ -231,10 +232,12 @@ console.log(SubItemsList)
   // }, [dsubcategory]);
 
   useEffect(() => {
+    console.log('Current id from useParams:', id);
     const productlists = JSON.parse(localStorage.getItem("AdminProductList"));
+    console.log('ProductLists from localStorage:', productlists);
     if (productlists) {
       const products = productlists.find((product) => product.Id === parseInt(id));
-      console.log(products)
+      console.log('Found product:', products)
       if (products) {
         const mainimage = products.Img0 ? products.Img0.replace('/productimages/', '') : null;
         const aditionalimage1 = products.Img1 ? products.Img1.replace('/productimages/', '') : null;
@@ -244,6 +247,7 @@ console.log(SubItemsList)
         const producttamilname =products.TamilFont
         const selectsubcategory =products.SId;
         const selectcategory =products.CId;
+        const selectBrandId =products.BrandId;
         const MRPRate =products.MRP;
         const SaleRateed =products.Price;
         const AddMultiplPrices = products.MultiplePriceEnable === 1 ? true : false;
@@ -284,7 +288,8 @@ console.log(SubItemsList)
         setAdditionalImage1(aditionalimage2)
         setAdditionalImage(aditionalimage1);
         setSelectedUOM(selectumo);
-         
+        console.log('selectBrandId from localStorage:', selectBrandId, typeof selectBrandId);
+        setBrandId(selectBrandId);
 
       }
     }
@@ -414,10 +419,11 @@ console.log(SubItemsList)
             ReturnPolicyDays:returnsavailabilityDate,
             OurChoice:ourchoice? 1 : 0,
             Brandname:selectedBrand,
-            BrandId: BrandId ? parseInt(BrandId) : null,
+            BrandId: BrandId ? parseInt(BrandId) : 0,
 
     };
-   console.log(objlist)
+    console.log(JSON.stringify(objlist, null, 2));
+
     try {
       const success = await insertProduct([objlist]);
       if (success) {
@@ -440,11 +446,17 @@ console.log(SubItemsList)
       setLoading(false);
     }
   };
-  
+
   const handleImageUpload = async (e, type) => {
     const formData = new FormData();
     const file = e.target.files[0];
     if (file) {
+      // Validate file type
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+      if (!allowedTypes.includes(file.type)) {
+        alert('Please select a valid image file (JPEG, JPG, PNG, or GIF)');
+        return;
+      }
       formData.append("MyImages", file);
       console.log(formData);
       setLoading(true);
@@ -464,7 +476,8 @@ console.log(SubItemsList)
           } else if (type === "AdditionalImage1") {
             setAdditionalImage1(data);
           }
-        } else {
+        } 
+        else {
           alert("Image upload failed!");
         }
       } catch (error) {
@@ -632,14 +645,16 @@ console.log(SubItemsList)
                   </label>
                   <select
                     className="mt-1 block w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"
-                   value={BrandId || ""}
+                   value={BrandId ? BrandId.toString() : ""}
                   onChange={(e) => {
                   const selectedId = e.target.value;
-                    setBrandId(selectedId);
+                  console.log('Selected brand ID:', selectedId, typeof selectedId);
+                    setBrandId(selectedId ? parseInt(selectedId) : null);
 
                    // Find brand name by ID
                   const brand = Brand.find((item) => item.Id.toString() === selectedId);
                  setSelectedBrand(brand ? brand.BrandName : "");
+                 console.log('Updated BrandId:', selectedId ? parseInt(selectedId) : null);
                     }}
                  >
                <option value="">Select Brand</option>
@@ -1007,7 +1022,7 @@ console.log(SubItemsList)
       type="file"
       id="mainImage"
       className=" hidden"
-      accept="image/x-png,image/gif,image/jpeg,image/svg"
+      accept="image/x-png,image/gif,image/jpeg,image/jpg,image/svg"
       onChange={(e) => handleImageUpload(e, "MainImage")}
     />
     <label
@@ -1022,10 +1037,11 @@ console.log(SubItemsList)
   {/* Image Preview */}
   <div className="mt-4">
     <img
-      id="mainImagePreview"
+      key={mainImage || 'default-gif'}
       src={mainImage ? (ImagePathRoutes.OfferProductImagePath + mainImage) : 'https://i.gifer.com/origin/e0/e0ea055299e92297b2ec0ef1c80696bf_w200.gif'}
       alt="Main Image Preview"
-      className={`w-48 h-40  rounded-lg  }`}
+      className="w-48 h-40 rounded-lg"
+      style={{ objectFit: 'contain' }}
     />
   </div>
 </div>
@@ -1045,7 +1061,7 @@ console.log(SubItemsList)
                       type="file"
                       id="Filebannerimg3"
                       className="hidden"
-                      accept="image/x-png,image/gif,image/jpeg,image/svg"
+                      accept="image/x-png,image/gif,image/jpeg,image/jpg,image/svg"
                       onChange={(e) => handleImageUpload(e, "AdditionalImage")}
                     />
                     <label htmlFor="Filebannerimg3" className="cursor-pointer bg-indigo-600 text-white p-2 rounded mr-2">
@@ -1071,7 +1087,7 @@ console.log(SubItemsList)
                       type="file"
                       id="AdditionalImage1"
                       className="hidden"
-                      accept="image/x-png,image/gif,image/jpeg,image/svg"
+                      accept="image/x-png,image/gif,image/jpeg,image/jpg,image/svg"
                       onChange={(e) => handleImageUpload(e, "AdditionalImage1")}
                     />
                     <label htmlFor="AdditionalImage1" className="cursor-pointer bg-indigo-600 text-white p-2 rounded mr-2">
