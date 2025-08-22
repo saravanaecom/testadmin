@@ -84,22 +84,22 @@ const Brand = () => {
 
       {/* Main Content */}
       <div className="flex-1 p-6">
-      <div className="flex-1 p-6">
-      {/* Header with Add Brand Button */}
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold text-gray-800">Brand List</h2>
-        <button
-          onClick={() => navigate('/Brand/:id')} // Navigate without ID for adding a new brand
-          className="bg-blue-800 text-white px-4 py-2 rounded-md hover:bg-blue-800"
-        >
-          Add Brands
-        </button>
-      </div></div>
+        {/* Header with Add Brand Button */}
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold text-gray-800">Brand List</h2>
+          <button
+            onClick={() => navigate('/Brand/:id')}
+            className="bg-blue-800 text-white px-4 py-2 rounded-md hover:bg-blue-800"
+          >
+            Add Brands
+          </button>
+        </div>
 
         {/* Table */}
         <div className="bg-white shadow-md rounded-lg p-6">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">Brand List</h2>
-          <table className="min-w-full border-collapse border border-gray-200">
+          <div className="overflow-auto max-h-[calc(100vh-200px)]">
+            <table className="min-w-full border-collapse border border-gray-200">
             <thead>
               <tr>
                 <th className="px-4 py-2 border border-gray-300 bg-gray-100 text-left">
@@ -138,7 +138,8 @@ const Brand = () => {
                 </tr>
               ))}
             </tbody>
-          </table>
+            </table>
+          </div>
         </div>
       </div>
     </div>
