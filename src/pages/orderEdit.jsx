@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { fetcDeliveryTime, deleteDeliveryTime } from "../services/DeliveryTime";
 import { updatesaleorder,API_FetchSelectSettingsNew } from '../services/Order';
 
+
 const OrderEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -100,6 +101,302 @@ useEffect(() => {
 
 
 
+
+  const downloadInvoicePDF = () => {
+    const printContent = `
+      <html>
+        <head>
+          <title>Invoice ${OrderNo}</title>
+          <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body { 
+              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+              line-height: 1.6; 
+              color: #333; 
+              background: #fff;
+              padding: 40px;
+            }
+            .invoice-container {
+              max-width: 800px;
+              margin: 0 auto;
+              background: #fff;
+              border: 2px solid #e0e0e0;
+              border-radius: 10px;
+              overflow: hidden;
+              box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            }
+            .invoice-header {
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              color: white;
+              padding: 30px;
+              text-align: center;
+              position: relative;
+            }
+            .invoice-header::before {
+              content: '';
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="%23ffffff" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            }
+            .company-name {
+              font-size: 32px;
+              font-weight: 700;
+              margin-bottom: 5px;
+              text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            }
+            .invoice-title {
+              font-size: 18px;
+              font-weight: 300;
+              opacity: 0.9;
+            }
+            .invoice-body {
+              padding: 40px;
+            }
+            .invoice-meta {
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 40px;
+              gap: 40px;
+            }
+            .invoice-info, .customer-info {
+              flex: 1;
+              padding: 25px;
+              background: #f8f9fa;
+              border-radius: 8px;
+              border-left: 4px solid #667eea;
+            }
+            .info-title {
+              font-size: 16px;
+              font-weight: 600;
+              color: #667eea;
+              margin-bottom: 15px;
+              text-transform: uppercase;
+              letter-spacing: 1px;
+            }
+            .info-item {
+              margin-bottom: 8px;
+              display: flex;
+              justify-content: space-between;
+            }
+            .info-label {
+              font-weight: 600;
+              color: #555;
+              min-width: 100px;
+            }
+            .info-value {
+              color: #333;
+              font-weight: 500;
+            }
+            .items-table {
+              width: 100%;
+              border-collapse: collapse;
+              margin: 30px 0;
+              background: #fff;
+              border-radius: 8px;
+              overflow: hidden;
+              box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+            .items-table thead {
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              color: white;
+            }
+            .items-table th {
+              padding: 15px 12px;
+              text-align: left;
+              font-weight: 600;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+              font-size: 12px;
+            }
+            .items-table td {
+              padding: 15px 12px;
+              border-bottom: 1px solid #eee;
+              vertical-align: middle;
+            }
+            .items-table tbody tr:hover {
+              background-color: #f8f9fa;
+            }
+            .items-table tbody tr:last-child td {
+              border-bottom: none;
+            }
+            .product-name {
+              font-weight: 600;
+              color: #333;
+            }
+            .amount {
+              font-weight: 600;
+              color: #2c5aa0;
+            }
+            .summary-section {
+              margin-top: 40px;
+              display: flex;
+              justify-content: flex-end;
+            }
+            .summary-box {
+              background: #f8f9fa;
+              padding: 25px;
+              border-radius: 8px;
+              min-width: 300px;
+              border: 1px solid #e0e0e0;
+            }
+            .summary-row {
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 10px;
+              padding: 5px 0;
+            }
+            .summary-row.total {
+              border-top: 2px solid #667eea;
+              margin-top: 15px;
+              padding-top: 15px;
+              font-size: 18px;
+              font-weight: 700;
+              color: #667eea;
+            }
+            .summary-label {
+              font-weight: 600;
+              color: #555;
+            }
+            .summary-value {
+              font-weight: 600;
+              color: #333;
+            }
+            .footer {
+              margin-top: 40px;
+              text-align: center;
+              padding: 20px;
+              background: #f8f9fa;
+              border-radius: 8px;
+              color: #666;
+              font-size: 14px;
+            }
+            .thank-you {
+              font-size: 18px;
+              font-weight: 600;
+              color: #667eea;
+              margin-bottom: 10px;
+            }
+            @media print {
+              body { padding: 0; }
+              .invoice-container { border: none; box-shadow: none; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="invoice-container">
+            <div class="invoice-header">
+              <div class="company-name">YOUR COMPANY NAME</div>
+              <div class="invoice-title">Professional Invoice</div>
+            </div>
+            
+            <div class="invoice-body">
+              <div class="invoice-meta">
+                <div class="invoice-info">
+                  <div class="info-title">Invoice Details</div>
+                  <div class="info-item">
+                    <span class="info-label">Invoice #:</span>
+                    <span class="info-value">${OrderNo}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">Date:</span>
+                    <span class="info-value">${new Date(OrderDate).toLocaleDateString('en-GB')}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">Payment:</span>
+                    <span class="info-value">${OrderType || '--'}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">Delivery:</span>
+                    <span class="info-value">${DeliveryType || '--'}</span>
+                  </div>
+                </div>
+                
+                <div class="customer-info">
+                  <div class="info-title">Bill To</div>
+                  <div class="info-item">
+                    <span class="info-label">Name:</span>
+                    <span class="info-value">${CustomerName || '--'}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">Mobile:</span>
+                    <span class="info-value">${MobileNo || '--'}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">Address:</span>
+                    <span class="info-value">${[Address1, Address2, City, Pincode].filter(Boolean).join(', ') || '--'}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <table class="items-table">
+                <thead>
+                  <tr>
+                    <th style="width: 8%">#</th>
+                    <th style="width: 40%">Product Description</th>
+                    <th style="width: 13%">MRP</th>
+                    <th style="width: 13%">Unit Price</th>
+                    <th style="width: 10%">Qty</th>
+                    <th style="width: 16%">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${OrderDetails && OrderDetails.length > 0 ? OrderDetails.map((item, index) => `
+                    <tr>
+                      <td style="text-align: center; color: #666;">${index + 1}</td>
+                      <td class="product-name">${item.ProductName}</td>
+                      <td>₹${Number(item.MRP).toFixed(2)}</td>
+                      <td>₹${Number(item.SaleRate).toFixed(2)}</td>
+                      <td style="text-align: center;">${item.ItemQty}</td>
+                      <td class="amount">₹${(Number(item.SaleRate) * Number(item.ItemQty)).toFixed(2)}</td>
+                    </tr>
+                  `).join('') : '<tr><td colspan="6" style="text-align: center; color: #999; padding: 40px;">No items found</td></tr>'}
+                </tbody>
+              </table>
+              
+              <div class="summary-section">
+                <div class="summary-box">
+                  <div class="summary-row">
+                    <span class="summary-label">Subtotal:</span>
+                    <span class="summary-value">₹${Number(Grossamt || 0).toFixed(2)}</span>
+                  </div>
+                  <div class="summary-row">
+                    <span class="summary-label">Delivery Charges:</span>
+                    <span class="summary-value">₹${Number(DeliveryFees || 0).toFixed(2)}</span>
+                  </div>
+                  <div class="summary-row">
+                    <span class="summary-label">Discount:</span>
+                    <span class="summary-value">-₹${Number(CouponDiscount || 0).toFixed(2)}</span>
+                  </div>
+                  <div class="summary-row">
+                    <span class="summary-label">Wallet Used:</span>
+                    <span class="summary-value">-₹${Number(WalletAmount || 0).toFixed(2)}</span>
+                  </div>
+                  <div class="summary-row total">
+                    <span class="summary-label">Total Amount:</span>
+                    <span class="summary-value">₹${totalAmount}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="footer">
+                <div class="thank-you">Thank you for your business!</div>
+                <p>This is a computer-generated invoice. No signature required.</p>
+                <p>For any queries, please contact our customer support.</p>
+              </div>
+            </div>
+          </div>
+        </body>
+      </html>
+    `;
+    
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    printWindow.print();
+  };
 
   const handleSave = async () => {
 
@@ -320,11 +617,17 @@ useEffect(() => {
                 </div>
               </div>
 
-              <div className="mt-6 flex justify-end">
+              <div className="mt-6 flex justify-between">
+                <button
+                  onClick={downloadInvoicePDF}
+                  className="px-6 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors"
+                >
+                  🖨️ Print Invoice
+                </button>
                 <button
                   onClick={handleSave}
                   disabled={loading}
-                  className={`px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg ${loading ? 'opacity-50' : ''}`}
+                  className={`px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'} transition-colors`}
                 >
                   {loading ? "Saving..." : "Save Changes"}
                 </button>
