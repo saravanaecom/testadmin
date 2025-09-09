@@ -288,8 +288,8 @@ useEffect(() => {
         <body>
           <div class="invoice-container">
             <div class="invoice-header">
-              <div class="company-name">YOUR COMPANY NAME</div>
-              <div class="invoice-title">Professional Invoice</div>
+              <div class="company-name">Thank you  purchase </div>
+              <div class="invoice-title"></div>
             </div>
             
             <div class="invoice-body">
@@ -297,7 +297,7 @@ useEffect(() => {
                 <div class="invoice-info">
                   <div class="info-title">Invoice Details</div>
                   <div class="info-item">
-                    <span class="info-label">Invoice #:</span>
+                    <span class="info-label">Invoice NO:</span>
                     <span class="info-value">${OrderNo}</span>
                   </div>
                   <div class="info-item">
@@ -486,7 +486,7 @@ useEffect(() => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Invoice Header */}
                 <div>
-                  <h2 className="text-3xl font-semibold text-gray-800">Invoice #{OrderNo}</h2>
+                  <h2 className="text-3xl font-semibold text-gray-800">Invoice NO :{OrderNo}</h2>
                   <p className="text-gray-600 mt-2">
                     <strong>Order Date:</strong>{" "}
                     {new Date(OrderDate).toLocaleDateString()}
