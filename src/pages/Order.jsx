@@ -344,7 +344,7 @@ const Orders = () => {
 
 
          
-          <div className="overflow-x-auto px-6 py-4">
+          <div className="overflow-auto max-h-screen px-6 py-4">
   {loading ? (
     <p className="text-center text-gray-500">Loading...</p>
   ) : error ? (
@@ -356,7 +356,15 @@ const Orders = () => {
           <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Order No</th>
           <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Order Date</th>
           <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Customer</th>
-          <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Payment Type</th>
+          {Comid !== 66 ? (
+           <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            Payment Type
+            </th>
+           ) : (
+           <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+             Branch Name
+           </th>
+           )}
           <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Amount</th>
           <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Delivery Date</th>
           <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
@@ -372,7 +380,9 @@ const Orders = () => {
               {new Date(order.OrderDate).toLocaleDateString('en-GB')}</td>
               {console.log(order)}
               <td className="px-6 py-4 text-sm font-medium text-gray-700">{order.CustomerName}</td>
-              <td className="px-6 py-4 text-sm font-medium text-gray-700">{order.OrderType}</td>
+              <td className="px-6 py-4 text-sm font-medium text-gray-700">
+             {Comid !== 66 ? order.OrderType : order.SaleOrderDisplay}
+                  </td>
               <td className="px-6 py-4 text-sm font-medium text-gray-700">₹{order.NetAmt}</td>
               <td className="px-6 py-4 text-sm font-medium text-gray-700">
                   {new Date(order.DeliveryDate).toLocaleDateString('en-GB')}</td>
@@ -387,11 +397,7 @@ const Orders = () => {
               <GrEdit className="mr-1" />
               <span>Edit</span>
                 </button>
-
-             
-
                 {/* Delete Button */}
-           
               </td>
             </tr>
             {/* Horizontal Line */}
