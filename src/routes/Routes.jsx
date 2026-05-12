@@ -97,24 +97,24 @@ const AppRoutes = () => {
         <Route path="/AddProducts/:id" element={<AddProducts />} />
           {/*OfferNotification Management */}
           <Route path="/OfferNotification" element={<OfferNotification />} />
-    {/*Order  Management */}
-    <Route path="/Order" element={<Order/>} />
-    <Route path='/OrderEdit/:id'element={<OrderEdit/>}/>
-    {/*Customer  Management */}
-    <Route path="/Customer" element={<Customer/>} />
-    <Route path="/Setting" element={<Setting/>} />
+          {/*Order  Management */}
+          <Route path="/Order" element={<Order/>} />
+           <Route path='/OrderEdit/:id'element={<OrderEdit/>}/>
+           {/*Customer  Management */}
+           <Route path="/Customer" element={<Customer/>} />
+           <Route path="/Setting" element={<Setting/>} />
         {/* Catch-All Route */}
         <Route path="*" element={<Navigate to="/" replace />} />
 
         {/*Coupon add page  */}
-    <Route path="/Coupon" element={<Coupon/>} />
-    <Route path="/Addcoupon/:id" element={<Addcoupon/>} />
-    {/* brand */}
-    <Route path="/Brand/:id" element={<Brand/>} />
-    <Route path="/AllBrand" element={<AllBrand/>} />
+        <Route path="/Coupon" element={<Coupon/>} />
+         <Route path="/Addcoupon/:id" element={<Addcoupon/>} />
+         {/* brand */}
+         <Route path="/Brand/:id" element={<Brand/>} />
+         <Route path="/AllBrand" element={<AllBrand/>} />
 
-    <Route path="/DeliveryArea" element={<DeliveryArea/>} />
-    <Route path="/AddDeliveryArea/:id" element={<AddDeliveryArea/>} />
+           <Route path="/DeliveryArea" element={<DeliveryArea/>} />
+           <Route path="/AddDeliveryArea/:id" element={<AddDeliveryArea/>} />
 
       </Routes>
  

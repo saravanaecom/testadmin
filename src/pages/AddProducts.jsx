@@ -232,121 +232,48 @@ console.log(SubItemsList)
   // }, [dsubcategory]);
 
   useEffect(() => {
-    console.log('Current id from useParams:', id);
-    const productlists = JSON.parse(localStorage.getItem("AdminProductList"));
-    console.log('ProductLists from localStorage:', productlists);
-    if (productlists) {
-      const products = productlists.find((product) => product.Id === parseInt(id));
-      console.log('Found product:', products)
-      if (products) {
-        const mainimage = products.Img0 ? products.Img0.replace('/productimages/', '') : null;
-        const aditionalimage1 = products.Img1 ? products.Img1.replace('/productimages/', '') : null;
-        const aditionalimage2 = products.Img2 ? products.Img2.replace('/productimages/', '') : null;
-        const productcode =products.ProductCode;
-        const productname =products.Description;
-        const producttamilname =products.TamilFont
-        const selectsubcategory =products.SId;
-        const selectcategory =products.CId;
-        const selectBrandId =products.BrandId;
-        const MRPRate =products.MRP;
-        const SaleRateed =products.Price;
-        const AddMultiplPrices = products.MultiplePriceEnable === 1 ? true : false;
-        const selectbrand =products.Brandname;
-        const selectumo =products.UnitType;
-        setMulticategory(products.ProductWeightType);
-        const multiweight = products.ProductWeightType.WeightType
-        const activestatus =products.Active === 1 ? true : false;
-        const OfferProduct =products.OfferProduct === 1 ? true : false;
-        const NewProduct =products.NewProduct === 1 ? true : false;
-        const TopProduct =products.FeatureProduct === 1 ? true : false;
-        const Instock =products.InStock === 1 ? true : false;
-        const ProductDescription = products.ProductDescription ? products.ProductDescription : '';
-        const returnsavailability = products.ReturnsAvailability === 1 ? true : false;
-        const Aproximiate = products.Aproximiatedays;
-        const Ourchoice = products.OurChoice === 1 ? true : false;
-        const returnsavailabilityDate =products.ReturnPolicyDays;
-        setReturnsavailabilityDate(returnsavailabilityDate);
-        setAproximiate(Aproximiate);
-        setOurchoice(Ourchoice);
-        setReturnsavailability(returnsavailability);
-        setProductCode(productcode);
-        setProductName(productname);
-        setTamilName(producttamilname);
-        setSelectedCategory(selectsubcategory);
-        setSelectedBrand (selectbrand)
-        setCategoryid(selectcategory);
-        setMrp(MRPRate);
-        setSaleRate(SaleRateed);
-        setMultiplePrice(AddMultiplPrices);
-        setInStock(Instock);
-        setActiveStatus(activestatus);
-        setOfferProduct(OfferProduct);
-        setFeatureProduct(TopProduct);
-        setNewProduct(NewProduct);
-        setProductDescription(ProductDescription);
-        setMainImage(mainimage);
-        setAdditionalImage1(aditionalimage2)
-        setAdditionalImage(aditionalimage1);
-        setSelectedUOM(selectumo);
-        console.log('selectBrandId from localStorage:', selectBrandId, typeof selectBrandId);
-        setBrandId(selectBrandId);
-
-      }
-    }
-  }, [id]);
-  // const fetchMultiplePriceList= async () => {
-  //   setLoading(true);
-  //   try {
-  //     const data = await fetchMultiplePriceListNew(adminId,);
-  //     if (data) {
-  //       setMultiplePriceList(data);
-  //       localStorage.setItem("MultiplePriceListNew", data);
-  //       console.log(data)
-  //     }
-  //   } catch (error) {
-  //     setError("Error fetching subcategory data: " + error.message);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-
-  useEffect(() => {
     const fetchProductDetails = async () => {
-      let Id = id ? parseInt(id) : "";
-  
       try {
-        setLoading(true);  
-        const data = await fetchProductIdAdmin(adminId, Id);
-  
-        // Check if the data array exists and is valid
+        setLoading(true);
+        const data = await fetchProductIdAdmin(adminId, parseInt(id));
         if (Array.isArray(data) && data[0]) {
-          const updatedSubItemsList = data[0]?.ProductWeightType || []; 
-          setProductList(data); 
-          setSubItemsList(updatedSubItemsList); 
-          setMultiplePriceList(updatedSubItemsList); 
-  
-          console.log("Fetched data:", updatedSubItemsList);
-          localStorage.setItem("MultiplePriceListNew", JSON.stringify(data));
-        } else {
-         
-          console.warn("Data is null or invalid, setting default values");
-          setProductList([]);
-          setSubItemsList([]);
-          setMultiplePriceList([]);
-          localStorage.setItem("MultiplePriceListNew", JSON.stringify([]));
+          const p = data[0];
+          setProductCode(p.ProductCode || '');
+          setProductName(p.Description || '');
+          setTamilName(p.TamilFont || '');
+          setSelectedCategory(p.SId || '');
+          setCategoryid(p.CId || '');
+          setMrp(p.MRP || '');
+          setSaleRate(p.Price || '');
+          setMultiplePrice(p.MultiplePriceEnable === 1);
+          setInStock(p.InStock === 1);
+          setActiveStatus(p.Active === 1);
+          setOfferProduct(p.OfferProduct === 1);
+          setFeatureProduct(p.FeatureProduct === 1);
+          setNewProduct(p.NewProduct === 1);
+          setProductDescription(p.ProductDescription || '');
+          setMainImage(p.Img0 ? p.Img0.replace('/productimages/', '') : null);
+          setAdditionalImage(p.Img1 ? p.Img1.replace('/productimages/', '') : null);
+          setAdditionalImage1(p.Img2 ? p.Img2.replace('/productimages/', '') : null);
+          setSelectedUOM(p.UnitType || 'Kgs');
+          setBrandId(p.BrandId || null);
+          setSelectedBrand(p.Brandname || '');
+          setReturnsavailability(p.ReturnsAvailability === 1);
+          setReturnsavailabilityDate(p.ReturnPolicyDays || '');
+          setAproximiate(p.Aproximiatedays || '');
+          setOurchoice(p.OurChoice === 1);
+          setMulticategory(p.ProductWeightType || []);
+          const subItems = p.ProductWeightType || [];
+          setSubItemsList(subItems);
+          setMultiplePriceList(subItems);
         }
       } catch (error) {
-       
-        
+        console.error('Error fetching product details:', error);
       } finally {
         setLoading(false);
       }
     };
-  
-    if (adminId && id) {
-      fetchProductDetails();
-    }
+    if (adminId && id) fetchProductDetails();
   }, [adminId, id]);
   
   

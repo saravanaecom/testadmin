@@ -201,7 +201,6 @@ const AllProducts = () => {
       const fetchProducts = async () => {
         try {
           const productsData = await fetchSelectProduct(adminId);
-          localStorage.setItem("AdminProductList", JSON.stringify(productsData));
           setProducts(productsData);
           setFilteredProducts(productsData);
           setTotalPages(Math.ceil(productsData.length / rows));
