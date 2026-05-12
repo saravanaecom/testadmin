@@ -13,7 +13,7 @@ export const APIRoutes = {
     APP_SELECTDELIVERYCHARGE:`${ServerURL.PRODUCTION_HOST_URL}/api/DeliveryChargesApp/SelectDeliveryCharges`,
     APP_INSERTDELIVERYCHARGE:`${ServerURL.PRODUCTION_HOST_URL}api/DeliveryChargesApp/InsertDeliveryCharges`,
     APP_DELETEDELIVERYCHARGE:`${ServerURL.PRODUCTION_HOST_URL}/api/DeliveryChargesApp/DelelteDeliveryCharges`,
-    APP_DELETEAREA:`${ServerURL.PRODUCTION_HOST_URL}/api/AreaEcomApp/DeleteAreaMaster`,
+    APP_DELETEAREAMASTER:`${ServerURL.PRODUCTION_HOST_URL}/api/AreaEcomApp/DeleteAreaMaster`,
     APP_INSERTAREA:`${ServerURL.PRODUCTION_HOST_URL}api/AreaEcomApp/InsertAreaMaster`,
     APP_SELECTDELIVERYTIME:`${ServerURL.PRODUCTION_HOST_URL}/api/DeliveryChargesApp/SelectDeliveryTime`, 
     APP_DELETEDELIVERYTIME:`${ServerURL.PRODUCTION_HOST_URL}/api/DeliveryChargesApp/DeleteDeliveryTime`, 

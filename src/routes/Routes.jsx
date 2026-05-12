@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'; 
+import { Route, Routes, Navigate } from 'react-router-dom'; 
 import Login from '../pages/login';
 import Index from '../pages/Index';
 import Branch from '../pages/branch';

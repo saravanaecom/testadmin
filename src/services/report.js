@@ -1,5 +1,4 @@
 import APIRoutes from '../routes/APIRoutes';
-import {ServerURL} from '../../src/server/serverUrl';
 export const fetcsaleorderreportdata1 = async (objlist) => {
     try {
        

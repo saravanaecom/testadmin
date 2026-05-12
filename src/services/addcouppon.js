@@ -1,5 +1,4 @@
 import APIRoutes from '../routes/APIRoutes';
-import { toast } from 'react-toastify';
 
 export const insertSelectBranchAdmin = async (objlist) => {
     try {
