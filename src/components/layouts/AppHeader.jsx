@@ -123,13 +123,14 @@ export default function AppHeader() {
       <AppBar
         position={isScrolled ? 'sticky' : 'relative'}
         color="transparent"
-        elevation={isScrolled ? 7 : 0}
+        elevation={isScrolled ? 4 : 0}
         sx={{
-          borderBottom: isScrolled ? 'none' : '1px solid #ddd',
-          backgroundColor: isScrolled ? '#FFF' : '#FFF',
-          transition: 'all 1.5s ease',
+          borderBottom: 'none',
+          background: 'linear-gradient(135deg, #6A3DF0 0%, #5530C8 100%)',
+          transition: 'all 0.3s ease',
           zIndex: 9,
           top: 0,
+          boxShadow: isScrolled ? '0 2px 12px rgba(106, 61, 240, 0.3)' : 'none',
           '@media (max-width: 600px)': {
             position: 'relative',
             width: '100%',
@@ -146,7 +147,7 @@ export default function AppHeader() {
 
             {/* Hamburger Menu for Mobile */}
             <Grid item xs={6} sx={{ display: { xs: 'flex', sm: 'none' }, justifyContent: 'flex-end' }}>
-              <IconButton edge="end" color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
+              <IconButton edge="end" aria-label="menu" onClick={toggleDrawer(true)} sx={{ color: '#FFFFFF' }}>
                 <MenuIcon sx={{ width: '30px', height: '30px' }} />
               </IconButton>
             </Grid>
@@ -168,30 +169,45 @@ export default function AppHeader() {
             </Grid>
 
             {/* Navigation and User Action Section */}
-            <Grid item xs={6} sm={3} md={5} sx={{ display: { xs: 'none', sm: 'flex' }, justifyContent: 'flex-end', alignItems: 'center', gap: '30px' }}>
-              <Button sx={{ color: '#333', textTransform: 'none', display: { xs: 'none', md: 'block' } }}>
-                <Typography component={"p"} sx={{ fontFamily: 'inherit', fontWeight: 600 }}>WhatsApp Only<br />
-                <span style={{fontSize: 14}}>{ServerURL.COMPANY_MOBILE}</span>
+            <Grid item xs={6} sm={3} md={5} sx={{ display: { xs: 'none', sm: 'flex' }, justifyContent: 'flex-end', alignItems: 'center', gap: '24px' }}>
+              <Button sx={{ color: '#FFFFFF', textTransform: 'none', display: { xs: 'none', md: 'block' } }}>
+                <Typography component={"p"} sx={{ fontFamily: 'inherit', fontWeight: 600, color: '#FFFFFF' }}>WhatsApp Only<br />
+                <span style={{fontSize: 14, color: '#FFF5EB'}}>{ServerURL.COMPANY_MOBILE} </span>
                 </Typography>
               </Button>
-              <Button sx={{ color: '#333', fontWeight: 600, fontFamily: 'inherit', textTransform: 'none', display: { xs: 'none', md: 'none' } }}><Link to={"/"}>Home</Link></Button>
+              <Button sx={{ color: '#FFFFFF', fontWeight: 600, fontFamily: 'inherit', textTransform: 'none', display: { xs: 'none', md: 'none' } }}><Link to={"/"} style={{ color: '#FFFFFF' }}>Home</Link></Button>
               {!isAuthenticated && (
                 <>
                   <Button
                     id={"register_btn"}
-                    sx={{ color: '#333', textTransform: 'none' }}
+                    sx={{ 
+                      color: '#FFFFFF', 
+                      textTransform: 'none',
+                      '&:hover': {
+                        backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                      }
+                    }}
                     onClick={handleAuthDrawerToggle}
                   >
-                    <Typography sx={{ fontFamily: 'inherit', fontWeight: 600 }}>Register</Typography>
+                    <Typography sx={{ fontFamily: 'inherit', fontWeight: 600, color: '#FFFFFF' }}>Register</Typography>
                   </Button>
 
                   <Button
                     id={"login_btn"}
-                    sx={{ color: '#333', textTransform: 'none' }}
+                    sx={{ 
+                      color: '#FFFFFF', 
+                      textTransform: 'none',
+                      backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                      borderRadius: '8px',
+                      px: 2,
+                      '&:hover': {
+                        backgroundColor: 'rgba(255, 255, 255, 0.25)',
+                      }
+                    }}
                     onClick={handleAuthDrawerToggle}
                   >
-                    <Typography sx={{ fontFamily: 'inherit', fontWeight: 600 }}>Sign In</Typography>
-                    <PersonIcon sx={{ ml: 1 }} />
+                    <Typography sx={{ fontFamily: 'inherit', fontWeight: 600, color: '#FFFFFF' }}>Sign In</Typography>
+                    <PersonIcon sx={{ ml: 1, color: '#FFFFFF' }} />
                   </Button>
                 </>
               )}
@@ -199,21 +215,27 @@ export default function AppHeader() {
               {isAuthenticated && (
                 <Button
                   id={"profile_btn"}
-                  sx={{ color: '#333', textTransform: 'none' }}
+                  sx={{ 
+                    color: '#FFFFFF', 
+                    textTransform: 'none',
+                    '&:hover': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                    }
+                  }}
                 >
-                  <PersonIcon sx={{ ml: 1 }} />
-                  <Typography sx={{ fontFamily: 'inherit', fontWeight: 600 }}><Link to={"/myaccount"}>{isAuthenticatedName !== '' ? isAuthenticatedName : 'Profile'}</Link></Typography>
+                  <PersonIcon sx={{ ml: 1, color: '#FFFFFF' }} />
+                  <Typography sx={{ fontFamily: 'inherit', fontWeight: 600, color: '#FFFFFF' }}><Link to={"/myaccount"} style={{ color: '#FFFFFF' }}>{isAuthenticatedName !== '' ? isAuthenticatedName : 'Profile'}</Link></Typography>
                 </Button>
               )}
 
-              <IconButton color="inherit" onClick={handleAuthDrawerToggle}>
+              <IconButton sx={{ color: '#FFFFFF' }} onClick={handleAuthDrawerToggle}>
                 <Badge badgeContent={cartItemsCount} sx={{
                     '& .MuiBadge-badge': {
-                      backgroundColor: theme.palette.basecolorCode.main, 
-                      color: theme.palette.footertextcolorCode.main
+                      backgroundColor: '#FF7A00', 
+                      color: '#FFFFFF'
                     },
                   }}>
-                  <ShoppingBagIcon />
+                  <ShoppingBagIcon sx={{ color: '#FFFFFF' }} />
                 </Badge>
               </IconButton>
             </Grid>

@@ -19,7 +19,6 @@ import { useTheme } from '@mui/material/styles';
 import { connect } from 'react-redux';
 import * as actionType from '../redux/actionType';
 import DOMPurify from "dompurify";
-import CreackersEffect from '../components/CreackersEffect';
 
 
 const ProductDetails = (props) => {
@@ -298,7 +297,6 @@ const ProductDetails = (props) => {
 
     return (
         <>
-             <CreackersEffect/>
             <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={backdropOpen}>
                 <CircularProgress color="inherit" />
             </Backdrop>
@@ -313,62 +311,83 @@ const ProductDetails = (props) => {
 
                 </Box>
             </Box>
-            <Container maxWidth="lg" sx={{ my: 3 }}>
-                <Grid container spacing={3}>
+            <Container maxWidth="lg" sx={{ my: 4 }}>
+                <Grid container spacing={4}>
                     <Grid item xs={12} sm={5}>
-                    <Slider {...settings1}>
-    {imageLists.map((image, index) => (
-        <div key={index}>
-            <img
-                style={{
-                    width: '100%',
-                    height: 'auto', // Maintain aspect ratio
-                    objectFit: 'contain', // Ensure image is fully visible without distortion
-                }}
-                src={
-                    ImagePathRoutes.ProductImagePath + image === '/productimages/Undefined.jpg' ||
-                    ImagePathRoutes.ProductImagePath + image === '/productimages/Undefined.png' ||
-                    ImagePathRoutes.ProductImagePath + image === null ||
-                    ImagePathRoutes.ProductImagePath + image === ''
-                        ? NoImage
-                        : ImagePathRoutes.ProductImagePath + image
-                }
-                alt={productDetails.Description || "Product name is not available " + (index + 1)}
-            />
-        </div>
-    ))}
-</Slider>
+                        <Box sx={{ 
+                            background: '#FFFFFF',
+                            borderRadius: '16px',
+                            p: 3,
+                            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                            border: '2px solid #FFF5EB',
+                            position: 'sticky',
+                            top: 100
+                        }}>
+                            <Slider {...settings1}>
+                                {imageLists.map((image, index) => (
+                                    <div key={index}>
+                                        <img
+                                            style={{
+                                                width: '100%',
+                                                height: 'auto',
+                                                objectFit: 'contain',
+                                                borderRadius: '12px'
+                                            }}
+                                            src={
+                                                ImagePathRoutes.ProductImagePath + image === '/productimages/Undefined.jpg' ||
+                                                ImagePathRoutes.ProductImagePath + image === '/productimages/Undefined.png' ||
+                                                ImagePathRoutes.ProductImagePath + image === null ||
+                                                ImagePathRoutes.ProductImagePath + image === ''
+                                                    ? NoImage
+                                                    : ImagePathRoutes.ProductImagePath + image
+                                            }
+                                            alt={productDetails.Description || "Product name is not available " + (index + 1)}
+                                        />
+                                    </div>
+                                ))}
+                            </Slider>
+                        </Box>
                     </Grid>
                     <Grid item xs={12} sm={7}>
-                        <Box>
-                            <Box sx={{ pb: 1 }}><BreadCrumbs CategoryId={productDetails.CId} CategoryName={productDetails.CategoryName} SubCateoryId={productDetails.SId} SubCategoryName={productDetails.SubCategoryName} ProductName={productDetails.Description} /></Box>
-                            <Typography component={"h4"} sx={{ fontSize: 20, fontWeight: 600, fontFamily: "inherit", textAlign: "left", pb: 1.5 }}>
+                        <Box sx={{ 
+                            background: '#FFFFFF',
+                            borderRadius: '16px',
+                            p: { xs: 3, md: 4 },
+                            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                            border: '2px solid #E8F5E9'
+                        }}>
+                            <Box sx={{ pb: 2 }}><BreadCrumbs CategoryId={productDetails.CId} CategoryName={productDetails.CategoryName} SubCateoryId={productDetails.SId} SubCategoryName={productDetails.SubCategoryName} ProductName={productDetails.Description} /></Box>
+                            <Typography component={"h4"} sx={{ fontSize: { xs: 20, md: 24 }, fontWeight: 700, fontFamily: "inherit", textAlign: "left", pb: 2, color: '#1a1a2e' }}>
                                 {productDetails.Description || "Product name is not available"}
                             </Typography>
-                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '100px', pb: 1 }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 2, pb: 2 }}>
                             {productDetails.MRP && currentPrice && productDetails.MRP > currentPrice && (
-    <Typography sx={{
-        position: 'relative',
-        left: '8px',
-        backgroundColor: '#fff6e0',
-        color: '#5d3e03',
-        padding: '2px 5px',
-        borderRadius: '3px',
-        border: '1px solid #90784159',
-        fontSize: '12px',
-        fontWeight: 'bold',
-        fontFamily: 'inherit',
-        display: 'block'
-    }}>
-        {Math.round(((productDetails.MRP - currentPrice) / productDetails.MRP) * 100)}% OFF
-    </Typography>
-)}
+                                <Chip
+                                    label={`${Math.round(((productDetails.MRP - currentPrice) / productDetails.MRP) * 100)}% OFF`}
+                                    sx={{
+                                        backgroundColor: '#138808',
+                                        color: '#FFFFFF',
+                                        fontWeight: 700,
+                                        fontSize: '13px',
+                                        height: '28px'
+                                    }}
+                                />
+                            )}
                                 <Box sx={{
-                                    position: 'relative',
                                     cursor: 'pointer',
-                                    color: productDetails.isFavorite ? '#3BB77E' : '#3BB77E',
+                                    background: '#FFF5EB',
+                                    borderRadius: '50%',
+                                    p: 1,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    transition: 'all 0.2s ease',
+                                    '&:hover': {
+                                        transform: 'scale(1.1)',
+                                        background: '#FFE6CC'
+                                    }
                                 }}>
-                                    {isFavoriteProduct !== 0 ? <FavoriteIcon size="small" sx={{ color: '#ee4372', fontSize: '18px' }} onClick={(event) => { handleRemoveFavProduct(productDetails?.Productid ? productDetails.Productid : productDetails?.Id, event); }} /> : <FavoriteBorderIcon onClick={(event) => { handleAddFavProduct(productDetails?.Productid ? productDetails.Productid : productDetails?.Id, event, 'Add'); }} size="small" sx={{ color: '#ee4372', fontSize: '18px' }} />}
+                                    {isFavoriteProduct !== 0 ? <FavoriteIcon size="small" sx={{ color: '#FF9933', fontSize: '22px' }} onClick={(event) => { handleRemoveFavProduct(productDetails?.Productid ? productDetails.Productid : productDetails?.Id, event); }} /> : <FavoriteBorderIcon onClick={(event) => { handleAddFavProduct(productDetails?.Productid ? productDetails.Productid : productDetails?.Id, event, 'Add'); }} size="small" sx={{ color: '#FF9933', fontSize: '22px' }} />}
                                 </Box>
                             </Box>
                             {/* <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', pb: 2 }}>
@@ -411,33 +430,34 @@ const ProductDetails = (props) => {
                                     }
                                 </Typography>
                             </Box> */}
-                            <Box sx={{ pb: 2, display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '30px' }}>
-                                <Typography variant="body2" sx={{ color: '#253D4E', fontSize: '16px', lineHeight: '30px', fontFamily: 'inherit', textAlign: 'left' }}>
+                            <Box sx={{ pb: 3, display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: 3 }}>
+                                <Typography variant="h4" sx={{ color: '#138808', fontSize: { xs: '24px', md: '28px' }, fontWeight: 700, fontFamily: 'inherit', textAlign: 'left' }}>
                                     {(currentPrice > 0 ? currentPrice : totalPrice).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </Typography>
                                 {productDetails.MRP && (
-                                    <Typography variant="body2" sx={{ textDecoration: 'line-through', fontSize: '14px', fontWeight: 200, color: '#a3a4ae', fontFamily: 'inherit', textAlign: 'left' }}>
-                                        {'MRP:' + ((selectedMRP > 0 ? selectedMRP : productDetails.MRP)).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                    <Typography variant="body1" sx={{ textDecoration: 'line-through', fontSize: '16px', fontWeight: 500, color: '#9e9e9e', fontFamily: 'inherit', textAlign: 'left' }}>
+                                        {'MRP: ' + ((selectedMRP > 0 ? selectedMRP : productDetails.MRP)).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                     </Typography>
                                 )}
                             </Box>
                             <Button
                                 variant="outlined"
                                 sx={{
-                                    width: "20%",
+                                    minWidth: '140px',
                                     display: quantity !== 0 ? 'flex' : 'none',
                                     alignItems: 'center',
                                     justifyContent: 'space-between',
                                     marginTop: '10px',
                                     fontFamily: 'inherit',
-                                    border: '1px solid',
-                                    borderColor: theme.palette.basecolorCode.main,
-                                    padding: { xs: '6px 0px', sm: '7px 0px', md: '7.2px 0px' },
+                                    border: '2px solid #FF9933',
+                                    borderRadius: '8px',
+                                    background: 'linear-gradient(135deg, #FFF5EB 0%, #FFFFFF 100%)',
+                                    padding: { xs: '8px 12px', sm: '10px 16px' },
+                                    boxShadow: '0 2px 8px rgba(255, 153, 51, 0.2)',
                                     '&:hover': {
-                                        background: 'none',
-                                        border: '1px solid',
-                                        borderColor: theme.palette.basecolorCode.main,
-                                        color: theme.palette.basecolorCode.main
+                                        background: 'linear-gradient(135deg, #FFE6CC 0%, #FFF5EB 100%)',
+                                        border: '2px solid #FF9933',
+                                        boxShadow: '0 4px 12px rgba(255, 153, 51, 0.3)'
                                     }
                                 }}
                             >
@@ -446,18 +466,23 @@ const ProductDetails = (props) => {
                                     onClick={(e) => { handleDecrement(e); }}
                                     sx={{
                                         width: '25%',
-                                        color: theme.palette.basecolorCode.main,
+                                        color: '#FF9933',
                                         fontFamily: 'inherit',
+                                        fontWeight: 700,
+                                        fontSize: '20px',
+                                        cursor: 'pointer'
                                     }}
                                 >
-                                    -
+                                    −
                                 </Typography>
                                 <Typography
                                     variant="body2"
                                     sx={{
                                         width: '50%',
-                                        color: theme.palette.basecolorCode.main,
+                                        color: '#1a1a2e',
                                         fontFamily: 'inherit',
+                                        fontWeight: 700,
+                                        fontSize: '16px'
                                     }}
                                 >
                                     {quantity}
@@ -470,8 +495,11 @@ const ProductDetails = (props) => {
                                     onClick={(e) => { handleIncrement(e); }}
                                     sx={{
                                         width: '25%',
-                                        color: theme.palette.basecolorCode.main,
+                                        color: '#FF9933',
                                         fontFamily: 'inherit',
+                                        fontWeight: 700,
+                                        fontSize: '20px',
+                                        cursor: 'pointer'
                                     }}
                                 >
                                     +
@@ -479,22 +507,23 @@ const ProductDetails = (props) => {
                             </Button>
                             {productDetails.InStock !== 0 ?
                                 <Button
-                                    variant="outlined"
+                                    variant="contained"
                                     sx={{
                                         display: quantity === 0 ? 'block' : 'none',
                                         marginTop: '10px',
-                                        width: { xs: 'auto', sm: 'auto', md: "30%", lg: "20%" },
+                                        width: { xs: 'auto', sm: 'auto', md: "40%" },
                                         textTransform: 'none',
                                         fontFamily: 'inherit',
-                                        fontWeight: 600,
-                                        borderColor: theme.palette.basecolorCode.main,
-                                        backgroundColor: theme.palette.shadowcolorCode.main,
-                                        color: theme.palette.basecolorCode.main,
+                                        fontWeight: 700,
+                                        fontSize: '16px',
+                                        borderRadius: '8px',
+                                        background: 'linear-gradient(135deg, #FF9933 0%, #FFB366 100%)',
+                                        color: '#FFFFFF',
+                                        py: 1.5,
+                                        boxShadow: '0 4px 12px rgba(255, 153, 51, 0.3)',
                                         '&:hover': {
-                                            background: 'none',
-                                            border: '1px solid',
-                                            borderColor: theme.palette.basecolorCode.main,
-                                            color: theme.palette.basecolorCode.main,
+                                            background: 'linear-gradient(135deg, #E68A2E 0%, #FF9933 100%)',
+                                            boxShadow: '0 6px 16px rgba(255, 153, 51, 0.4)'
                                         }
                                     }}
                                     onClick={(e) => { handleIncrement(e); }}
@@ -503,20 +532,19 @@ const ProductDetails = (props) => {
                                 </Button>
                                 :
                                 <Button
-                                    variant="outlined"
+                                    variant="contained"
+                                    disabled
                                     sx={{
                                         marginTop: '10px',
                                         width: 'auto',
-                                        float: 'left',
                                         textTransform: 'none',
                                         fontFamily: 'inherit',
-                                        border: '1px solid #dc3545',
+                                        fontWeight: 600,
+                                        borderRadius: '8px',
                                         backgroundColor: '#dc3545',
                                         color: '#fff',
                                         '&:hover': {
-                                            background: '#dc3545',
-                                            border: '1px solid #dc3545',
-                                            color: '#fff'
+                                            backgroundColor: '#c82333'
                                         }
                                     }}
                                 >

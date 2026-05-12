@@ -292,10 +292,10 @@ export default function AccordionAmountDetails({ useWallet, walletAmount }) {
                     fontSize: '12px'
                   }}
                 >
-                  {MRPAmount.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  {(MRPAmount || 0).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </Typography>
                 <Typography sx={{ fontWeight: 'bold', fontSize: '12px', color: '#253D4E' }}>
-                  {TotalPrice.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  {(TotalPrice || 0).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </Typography>
               </Box>
               <Typography
@@ -310,7 +310,7 @@ export default function AccordionAmountDetails({ useWallet, walletAmount }) {
                   fontSize: '10px',
                 }}
               >
-                {'SAVINGS' + SavingsAmount.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                {'SAVINGS' + (SavingsAmount || 0).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </Typography>
             </Box>
           </Box>
@@ -323,7 +323,7 @@ export default function AccordionAmountDetails({ useWallet, walletAmount }) {
               </Grid>
               <Grid item xs={4} sx={{mt: 0.5}}>
                 <Typography sx={{ fontSize: '14px' }} variant="body1" align="right">
-                {MRPAmount.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                {(MRPAmount || 0).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </Typography>
               </Grid>
               
@@ -359,7 +359,7 @@ export default function AccordionAmountDetails({ useWallet, walletAmount }) {
               <Grid item xs={4} sx={{mt: 0.5}}>
                 <Typography sx={{ fontSize: '14px' }} variant="body1" align="right" color="green">
                   <span></span>
-                {SavingsAmount.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                {(SavingsAmount || 0).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </Typography>
               </Grid>
 
@@ -368,39 +368,51 @@ export default function AccordionAmountDetails({ useWallet, walletAmount }) {
               </Grid>
               <Grid item xs={4} sx={{mt: 0.5}}>                
                 <Typography sx={{ fontSize: '14px', fontWeight: 600 }} variant="body1" align="right">
-                  {(TotalPrice + DeliveryFee + HandlingCharge - ExtraDiscount).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  {((TotalPrice || 0) + (DeliveryFee || 0) + (HandlingCharge || 0) - (ExtraDiscount || 0)).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </Typography>
               </Grid>
 
              {/* my updated code  */}
                 
-             {/* <Grid item xs={8} sx={{ mt: 0.5 }}>
+             <Grid item xs={8} sx={{ mt: 0.5 }}>
   <Typography sx={{ fontSize: '14px', borderBottom: 'dashed 1px lightgray', display: 'inline' }} variant="body1">
   Discount Applied
   </Typography>
-</Grid> */}
-{/* <Grid item xs={4} sx={{ mt: 0.5 }}>
+</Grid>
+<Grid item xs={4} sx={{ mt: 0.5 }}>
   <Typography sx={{ fontSize: '14px', fontWeight: 600 }} variant="body1" align="right">
     {CouponDiscountdata?.type === 'percent' && discountAmount > 0 ? (
       <>
-       {discountAmount.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+       {(discountAmount || 0).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
       </>
     ) : CouponDiscountdata?.type === 'value' && discountValue > 0 ? (
       <>
-      {discountValue.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      {(discountValue || 0).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
       </>
     ) : (
      0
     )}
   </Typography>
-           </Grid> */}
+           </Grid>
 
              {/* myupdated code */}
+
+
+
              <AccordionDetails>
         <Grid container spacing={2}>
         </Grid>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 2 }}>
+          <TextField label="Enter Coupon" variant="outlined" size="small" value={couponCode} onChange={(e) => setCouponCode(e.target.value)} fullWidth />
+          <Button variant="contained" onClick={handleApplyCoupon} disabled={loading}>Apply</Button>
+        </Box>
+        {CouponDiscountdata && (
+          <Typography sx={{ mt: 1, color: 'green' }}>Coupon Applied: {CouponDiscountdata.value}</Typography>
+        )}
       </AccordionDetails>
-          </Grid>
+
+
+            </Grid>
           </Box>
         </AccordionDetails>
       </Accordion>

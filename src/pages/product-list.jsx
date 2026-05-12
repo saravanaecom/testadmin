@@ -4,13 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Container, Select, MenuItem, FormControl, Drawer, List, ListItem, ListItemText, Grid, Typography, Avatar, CircularProgress, Backdrop } from '@mui/material';
 import ProductCard from '../components/ProductCard';
-import { API_FetchOfferFastMovingProduct, API_FetchNewProduct,fetchSelectProduct, API_FetchProductByIndexPage,API_FetchProductIdMoreItems, API_FetchProductByCategory, API_FetchProductBySubCategory, API_FetchBrand } from '../services/productListServices';
+import { API_FetchOfferFastMovingProduct, API_FetchNewProduct, API_FetchProductIdMoreItems, API_FetchProductByCategory, API_FetchProductBySubCategory, API_FetchBrand } from '../services/productListServices';
 import { API_FetchCategorySubCategory } from '../services/categoryServices';
 import { ImagePathRoutes } from '../routes/ImagePathRoutes';
 import { positions, styled } from '@mui/system';
 import { useTheme } from '@mui/material/styles';
 import AllCategory from '../assets/alc.jpg';
-import CreackersEffect from '../components/CreackersEffect';
 //import PlayStrore from '../../D:\KarthikWorkSpace\ReactProject\treeandleef\ecommercev7_frontend-main\src\assets\alc.jpg';
 
 const drawerWidth = 240;
@@ -125,8 +124,8 @@ const ProductList = () => {
         setOfferProducts(null);
         setRelatedProducts(null);
         setNewProducts(categoryId);
-        setActiveCategory("ALL products");
-        productLists = await fetchSelectProduct();
+        setActiveCategory("New products for you");
+        productLists = await API_FetchNewProduct();
       }
       else if (categoryId === "related_product") {
         setOfferProducts(null);
@@ -176,7 +175,12 @@ const ProductList = () => {
       setProductLists([]);
     }
   };
+
+
   const handleBrandChange = (event) => {
+
+
+
     const selectedBrandId = event.target.value;
     setSelectedBrand(selectedBrandId);
 
@@ -244,6 +248,7 @@ const ProductList = () => {
       setActiveCategory("All Products");
       GetProductLists(productId, Multipleitems, Startindex, PageCount);
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.search]);
 
@@ -366,6 +371,7 @@ const ProductList = () => {
     }
   
     setProductLists(sortedProducts);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productFilterName]);
   
 
@@ -655,7 +661,6 @@ const ProductList = () => {
           </Grid>
         </Grid>
       </Container>
-      <CreackersEffect/>
     </>
 
   );

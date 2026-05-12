@@ -1,7 +1,6 @@
 import React from 'react';
 import { Box, Container } from '@mui/material';
 import CategoryCard from '../components/category/categoryCard';
-import CreackersEffect from '../components/CreackersEffect';
 
 function Categories() {
     return (
@@ -9,7 +8,6 @@ function Categories() {
                 disableGutters 
                 sx={{ paddingLeft: { xs: 0, sm: 2, md: 3, lg: 4, xl: 5 }, paddingRight: { xs: 0, sm: 2, md: 3, lg: 4, xl: 5 } }}
             >
-                     <CreackersEffect/>
             <Box className="ShopByCategories">
                 <h1 
                     className="text-center font-bold text-2xl sm:text-3xl lg:text-4xl mt-6 mb-6"

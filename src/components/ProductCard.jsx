@@ -9,11 +9,9 @@ import { ServerURL } from '../server/serverUrl';
 import { API_InsertMyFavoriteProducts, API_DeleteMyFavoriteProducts, API_FetchMyFavoriteProducts } from '../services/userServices';
 import { useCart } from '../context/CartContext';
 import { useTheme } from '@mui/material/styles';
-import AppCart from './cart/AppCart';
 import * as actionType from '../redux/actionType';
 import { connect } from 'react-redux';
 import { motion } from 'framer-motion';
-import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'; 
 
 const ProductCard = ({ get_fav_lists, product, isLoading, offerProducts, relatedProducts, newProducts }) => {
   const navigate = useNavigate();
@@ -30,11 +28,7 @@ const ProductCard = ({ get_fav_lists, product, isLoading, offerProducts, related
   const [selectedMRP, setselectedMRP] = useState(0);
   const [currentPrice, setCurrentPrice] = useState(0);
   const [favProductLists, setFavProductLists] = useState([]);
-  const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
-  const [loginDrawerOpen, setLoginDrawerOpen] = useState(false);
-  const offerPercent = product.MRP && product.Price
-  ? Math.round(((product.MRP - product.Price) / product.MRP) * 100)
-  : 0;
+
   //Fav product lists
   const FetchMyFavoriteProducts = async (ProductId) => {
     if (get_fav_lists.length !== 0) {
@@ -56,18 +50,6 @@ const ProductCard = ({ get_fav_lists, product, isLoading, offerProducts, related
   }, []);
 
 
-
-  const handleAuthDrawerToggle = (event) => {
-    if (event === false) {
-    
-        setCartDrawerOpen((prev) => !prev);
-     
-    }
-    else {
-        setCartDrawerOpen(true);
-  
-    }
-  };
 
   const handleProductWeightChange = (event, ProductWeightLists) => {
     event.stopPropagation();
@@ -171,8 +153,6 @@ const ProductCard = ({ get_fav_lists, product, isLoading, offerProducts, related
     setTotalPrice(newTotalPrice);
     setCurrentPrice(newTotalPrice);
     updateCartItems(newQuantity, newTotalPrice, MRP);
-
-    
   };
 
   // Quantity decrement function
@@ -256,42 +236,25 @@ const ProductCard = ({ get_fav_lists, product, isLoading, offerProducts, related
         height: { xs: 320, sm: 380, md: 400, lg: 420 },
         margin: '0 auto',
         textAlign: 'left',
-        background: 'rgba(255, 255, 255, 0.25)', // Glassmorphism base
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)', // For Safari
-        border: '1px solid rgba(255, 255, 255, 0.18)',
-        borderRadius: '16px',
-        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.15)',
+        background: '#FFFFFF',
+        border: '1px solid #e0e0e0',
+        borderRadius: '12px',
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
         cursor: 'pointer',
         position: 'relative',
         overflow: 'hidden',
-        transition: 'all 0.3s ease-in-out',
+        transition: 'all 0.25s ease-in-out',
         '&:hover': {
-          boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.25)',
-          transform: 'translateY(-5px)',
+          boxShadow: '0 8px 24px rgba(106, 61, 240, 0.12)',
+          transform: 'translateY(-4px)',
+          borderColor: '#6A3DF0',
           '& .card-media': {
-            transform: 'scale(1.08)',
+            transform: 'scale(1.05)',
           },
-          '&::before': {
-            opacity: 1,
-          }
         },
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0))',
-          opacity: 0,
-          transition: 'opacity 0.3s ease-in-out',
-          zIndex: 1,
-          pointerEvents: 'none',
-        }
       }}
     >
       {isLoading ? (
@@ -313,7 +276,7 @@ const ProductCard = ({ get_fav_lists, product, isLoading, offerProducts, related
             value={product?.Productid ? product.Productid : product?.Id}
             component="img"
             onClick={handleProductClick}
-            image={newProducts === 'new_product' ? ImagePathRoutes.ProductImagePath + product.Img0 : ImagePathRoutes.ProductImagePath + product.Img0}
+            image={newProducts === 'new_product' ? ImagePathRoutes.ProductDetailsImagePath + product.Img0 : ImagePathRoutes.ProductImagePath + product.Img0}
             alt={product.Description}
             className="card-media"
             sx={{
@@ -327,84 +290,67 @@ const ProductCard = ({ get_fav_lists, product, isLoading, offerProducts, related
             }}
           />
 
-        {product.MRP && product.Price && offerPercent > 0 && (
-        <Box
-        sx={{
-              position: 'absolute',
-              bottom: '12px',
-              left: '12px',
-              background: 'linear-gradient(90deg, #ff3c3c, #ffb347, #43e97b, #38f9d7, #ff3c3c)',
-               backgroundSize: '400% 400%',
-              animation: 'blinkBadge 1.2s linear infinite',
-               border: '2px solid #fff176',
-               color: '#fff',
-               padding: '7px 16px',
-               borderRadius: '24px',
-                fontSize: '14px',
-                fontWeight: 'bold',
-                 boxShadow: '0 4px 16px 0 rgba(255, 107, 107, 0.25), 0 0 8px 2px #fff176',
-                 display: 'flex',
-                 alignItems: 'center',
-                gap: '6px',
-                zIndex: 2,
-                letterSpacing: '1px',
-                textShadow: '0 0 6px #fff176, 0 0 2px #ff3c3c',
-                transition: 'all 0.3s',
-               '@keyframes blinkBadge': {
-                 '0%': { filter: 'brightness(1)' },
-               '50%': { filter: 'brightness(1.5)' },
-               '100%': { filter: 'brightness(1)' },
-                },
-             }}
-                >
-               <span style={{ fontSize: '16px', fontWeight: 'bold' }}>{offerPercent}%</span>
-               <span style={{ fontSize: '13px', fontWeight: 'bold', letterSpacing: '2px' }}>OFF</span>
-              </Box>
-           )}
+          {Math.round(product.Offer) !== 0 && (
+            <Box
+              sx={{
+                position: 'absolute',
+                bottom: '12px',
+                left: '12px',
+                background: '#EF4444',
+                color: '#FFFFFF',
+                padding: '4px 10px',
+                borderRadius: '4px',
+                fontSize: '12px',
+                fontWeight: '600',
+                boxShadow: '0 2px 4px rgba(239, 68, 68, 0.3)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                zIndex: 2
+              }}
+            >
+                <span style={{ fontSize: '13px', fontWeight: 700 }}>{Math.round(product.Offer)}% OFF</span>
+            </Box>
+          )}
           <Box
             sx={{
               position: 'absolute',
-              top: '12px',
-              right: '12px',
-              background: 'rgba(255, 255, 255, 0.25)',
-              backdropFilter: 'blur(8px)',
-              border: '1px solid rgba(255, 255, 255, 0.18)',
+              top: '10px',
+              right: '10px',
+              background: '#FFFFFF',
+              border: '1px solid #e0e0e0',
               borderRadius: '50%',
-              padding: '8px',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+              padding: '6px',
+              boxShadow: '0 2px 6px rgba(0, 0, 0, 0.08)',
               transition: 'all 0.2s ease',
               zIndex: 2,
               '&:hover': {
                 transform: 'scale(1.1)',
-                background: 'rgba(255, 255, 255, 0.35)',
+                borderColor: '#6A3DF0',
+                boxShadow: '0 4px 12px rgba(106, 61, 240, 0.2)',
               }
             }}
             id={product.isFavorite !== null ? product.isFavorite : isFavoriteProduct}
           >
-            {isFavoriteProduct !== 0 ? <FavoriteIcon size="small"   sx={{ 
-                      color: '#ee4372',
-                      fontSize: '20px',
-                      filter: 'drop-shadow(0 2px 2px rgba(238, 67, 114, 0.2))'
+            {isFavoriteProduct !== 0 ? <FavoriteIcon size="small" sx={{ 
+                      color: '#FF7A00',
+                      fontSize: '18px',
                     }} 
-                    onClick={(event) => { handleRemoveFavProduct(product?.Productid ? product.Productid : product?.Id, event); }} /> : <FavoriteBorderIcon onClick={(event) => { handleAddFavProduct(product?.Productid ? product.Productid : product?.Id, event, 'Add'); }} size="small" sx={{ color: '#ee4372', fontSize: '18px' }} />}
+                    onClick={(event) => { handleRemoveFavProduct(product?.Productid ? product.Productid : product?.Id, event); }} /> : <FavoriteBorderIcon onClick={(event) => { handleAddFavProduct(product?.Productid ? product.Productid : product?.Id, event, 'Add'); }} size="small" sx={{ color: '#6A3DF0', fontSize: '18px' }} />}
           </Box>
  
         </Box>
       )}
  
       <CardContent 
-
-      
        sx={{ 
         height: { xs: '50%', sm: '45%', md: '40%' },
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        padding: '16px',
-        background: 'rgba(255, 255, 255, 0.15)',
-        backdropFilter: 'blur(8px)',
-        borderTop: '1px solid rgba(255, 255, 255, 0.18)',
-        zIndex: 2
+        padding: '12px 14px',
+        background: '#FFFFFF',
+        borderTop: '1px solid #f0f0f0',
       }}>
         {isLoading ? (
           <>
@@ -421,13 +367,13 @@ const ProductCard = ({ get_fav_lists, product, isLoading, offerProducts, related
       position: 'absolute',
       bottom:'150px',
       right: '8px',
-      backgroundColor: '#ee4372',
-      color: '#fff',
-      fontSize: '12px',
+      backgroundColor: '#FF7A00',
+      color: '#FFFFFF',
+      fontSize: '11px',
       fontWeight: 'bold',
       borderRadius: '4px',
-      padding: '4px 8px',
-      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+      padding: '3px 8px',
+      boxShadow: '0 2px 4px rgba(255, 122, 0, 0.3)',
       zIndex: 10,
     }}
   >
@@ -470,31 +416,67 @@ const ProductCard = ({ get_fav_lists, product, isLoading, offerProducts, related
             </Box>
     
 
-  
-        
-            <Box         sx={{ 
+   
+
+
+
+            <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
+              {/* <Typography
+                variant="body2"
+                sx={{ color: theme.palette.lightblackcolorCode.main, fontSize: '14px', lineHeight: '24px', fontFamily: 'inherit' }}
+              >
+                {product.MultiplePriceEnable === 0 ? product.UnitType :
+                  <Box sx={{ minWidth: 75, p: 0 }}>
+                    <FormControl fullWidth sx={{ p: 0, border: 'none' }}>
+                      <Select
+                        sx={{
+                          height: '30px',
+                          border: '1px dotted #999',
+                          '& .MuiOutlinedInput-notchedOutline': {
+                            border: 'none',
+                          },
+                          '&:hover .MuiOutlinedInput-notchedOutline': {
+                            border: 'none',
+                          },
+                          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                            border: 'none',
+                          },
+                        }}
+                        size="small"
+                        labelId="demo-simple-select-label-multi"
+                        id="demo-simple-select-multi"
+                        value={productWeight}
+                        onChange={(e) => handleProductWeightChange(e, product.ProductWeightType)}
+                      >
+                        {product.ProductWeightType.map((weight, index) => (
+                          <MenuItem sx={{ px: 1, py: 0 }} key={index} name={weight.Id} value={weight.WeightType}>
+                            {weight.WeightType}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Box>
+                }
+              </Typography> */}
+            </Box>
+            <Box sx={{ 
                     display: 'flex', 
                     alignItems: 'center',
                     gap: '8px',
                     marginTop: 'auto',
-                    padding: '8px',
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    backdropFilter: 'blur(8px)',
-                    borderRadius: '8px',
-                    border: '1px solid rgba(255, 255, 255, 0.18)'
                   }}>
               <Typography
                 variant="body2"
-                sx={{ color: theme.palette.lightblackcolorCode.main, fontSize: '16px', lineHeight: '24px', fontFamily: 'inherit' }}
+                sx={{ color: '#1a1a2e', fontSize: '16px', fontWeight: 700, lineHeight: '24px', fontFamily: 'inherit' }}
               >
                 {(currentPrice > 0 ? currentPrice : totalPrice).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </Typography>
               {product.MRP && (
                 <Typography
                   variant="body2"
-                  sx={{ textDecoration: 'line-through', fontSize: '14px', fontWeight: 200, color: '#a3a4ae', fontFamily: 'inherit' }}
+                  sx={{ textDecoration: 'line-through', fontSize: '13px', fontWeight: 400, color: '#9ca3af', fontFamily: 'inherit' }}
                 >
-                  {'MRP:' + ((selectedMRP > 0 ? selectedMRP : product.MRP)).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  {((selectedMRP > 0 ? selectedMRP : product.MRP)).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </Typography>
               )}
             </Box>
@@ -505,16 +487,14 @@ const ProductCard = ({ get_fav_lists, product, isLoading, offerProducts, related
                 display: quantity !== 0 ? 'flex' : 'none',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                marginTop: '10px',
-                border: '1px solid',
-                borderColor: theme.palette.basecolorCode.main,
+                marginTop: '8px',
+                border: '2px solid #FF7A00',
+                borderRadius: '8px',
                 fontFamily: 'inherit',
-                padding: { xs: '6px 0px', sm: '7px 0px', md: '7.2px 0px' },
+                padding: { xs: '4px 0px', sm: '5px 0px', md: '6px 0px' },
                 '&:hover': {
-                  background: 'none',
-                  border: '1px solid',
-                  borderColor: theme.palette.basecolorCode.main,
-                  color: theme.palette.basecolorCode.main
+                  background: '#FFF0E0',
+                  border: '2px solid #FF7A00',
                 }
               }}
             >
@@ -524,8 +504,10 @@ const ProductCard = ({ get_fav_lists, product, isLoading, offerProducts, related
                 disabled={quantity === 0}
                 sx={{
                   width: '25%',
-                  color: theme.palette.basecolorCode.main,
+                  color: '#FF7A00',
                   fontFamily: 'inherit',
+                  fontWeight: 700,
+                  fontSize: '18px',
                 }}
               >
                 -
@@ -534,8 +516,9 @@ const ProductCard = ({ get_fav_lists, product, isLoading, offerProducts, related
                 variant="body2"
                 sx={{
                   width: '50%',
-                  color: theme.palette.basecolorCode.main,
+                  color: '#1a1a2e',
                   fontFamily: 'inherit',
+                  fontWeight: 600,
                 }}
               >
                 {quantity}
@@ -548,8 +531,10 @@ const ProductCard = ({ get_fav_lists, product, isLoading, offerProducts, related
                 onClick={(e) => { handleIncrement(e); }}
                 sx={{
                   width: '25%',
-                  color: theme.palette.basecolorCode.main,
+                  color: '#FF7A00',
                   fontFamily: 'inherit',
+                  fontWeight: 700,
+                  fontSize: '18px',
                 }}
               >
                 +
@@ -557,45 +542,43 @@ const ProductCard = ({ get_fav_lists, product, isLoading, offerProducts, related
             </Button>
             {product.InStock !== 0 ?
               <Button
-                variant="outlined"
+                variant="contained"
                 sx={{
                   display: quantity !== 0 ? 'none' : 'block',
-                  marginTop: '10px',
+                  marginTop: '8px',
                   width: '100%',
                   textTransform: 'none',
                   fontFamily: 'inherit',
                   fontWeight: 600,
-                  border: '1px solid',
-                  borderColor: theme.palette.basecolorCode.main,
-                  backgroundColor: theme.palette.shadowcolorCode.main,
-                  color: theme.palette.basecolorCode.main,
+                  borderRadius: '8px',
+                  backgroundColor: '#FF7A00',
+                  color: '#FFFFFF',
+                  boxShadow: 'none',
                   '&:hover': {
-                    background: 'none',
-                    border: '1px solid',
-                    borderColor: theme.palette.basecolorCode.main,
-                    color: theme.palette.basecolorCode.main,
+                    backgroundColor: '#E06800',
+                    boxShadow: '0 4px 12px rgba(255, 122, 0, 0.3)',
                   }
                 }}
                 id={product.Id}
-                onClick={(e) => { handleIncrement(e);handleAuthDrawerToggle(); }}
+                onClick={(e) => { handleIncrement(e); }}
               >
                 Add to Cart
               </Button>
               :
               <Button
-                variant="outlined"
+                variant="contained"
                 sx={{
-                  marginTop: '10px',
+                  marginTop: '8px',
                   width: '100%',
                   textTransform: 'none',
                   fontFamily: 'inherit',
-                  border: '1px solid #dc3545',
+                  fontWeight: 600,
+                  borderRadius: '8px',
                   backgroundColor: '#dc3545',
-                  color: theme.palette.whitecolorCode.main,
+                  color: '#FFFFFF',
+                  boxShadow: 'none',
                   '&:hover': {
-                    border: '1px solid #dc3545',
-                    backgroundColor: '#dc3545',
-                    color: theme.palette.whitecolorCode.main,
+                    backgroundColor: '#c82333',
                   }
                 }}
                 id={product.Id}
@@ -606,7 +589,6 @@ const ProductCard = ({ get_fav_lists, product, isLoading, offerProducts, related
           </>
         )}
       </CardContent>
-       <AppCart CartDrawerOpen={cartDrawerOpen} setLoginDrawerOpen={setLoginDrawerOpen} handleAuthDrawerToggle={handleAuthDrawerToggle} />
     </Card>
 
   );

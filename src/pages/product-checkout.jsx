@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
-import React, {useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { checkExistingUser, registerUser,otpverification } from '../services/userServices';
 import { Link, Modal, Container, TextField, Button, CircularProgress, Typography, Grid, Box, RadioGroup, FormControlLabel, Radio, Divider } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useCart } from '../context/CartContext';
@@ -14,6 +13,7 @@ import { useTheme } from '@mui/material/styles';
 import CircularLoader from '../components/circular-loader';
 import OrderSuccess from '../assets/success.gif';
 import OrderInfo from '../assets/information.gif';
+import ScannerImage from '../assets/gpy.jpeg';
 import AddressChangeModal from '../components/cart/addressChangeModal';
 import RazorpayPayment from '../components/RazorpayPayment';
 import dayjs from 'dayjs';
@@ -47,15 +47,15 @@ export default function ProductCheckout() {
     const [walletAmount, setwalletAmount] = React.useState(0);
     const [DeliveryTimeList, setDeliveryTimeList] = React.useState([]);
     const [whatsapdata, setwhatsapdata] = React.useState([]);
-      const [ShowErrorMsg, setShowErrorMsg] = useState('');
+    
     const [DateValue, setDateValue] = React.useState(dayjs());
     const [DeliverytimeId, setDeliverytimeId] = React.useState(0);
     const [Deliverytime, setDeliverytime] = React.useState('');
-    const [PaymentType, setPaymentType] = React.useState('COD');
+    const [PaymentType, setPaymentType] = React.useState('');
     const [OnlinePayment, setOnlinePayment] = React.useState(false);
     const [DeliveryType, setDeliveryType] = React.useState('Delivery');
     const [DeliveryTypeState, setDeliveryTypeState] = React.useState(true);
-    
+    const [selectedAddress, setSelectedAddress] = React.useState('');
     const [InfoStatus, setInfoStatus] = React.useState('');
     const [loading, setLoading] = React.useState(false);
     const [showLoader, setShowLoader] = React.useState(false);
@@ -73,40 +73,196 @@ export default function ProductCheckout() {
     const [distance, setDistance] =  React.useState(0);
     const [deliverychargelist,  setDeliverychargelist] = React.useState([]);
     const [deliverycharge,  setDeliveryCharge] = React.useState([]);
-    const [receivedOtp, setReceivedOtp] = useState(null);
-    const [enteredOtp, setEnteredOtp] = useState('');
-    const [showOtpInput, setShowOtpInput] = React.useState(false);
-    const [isOtpValid, setIsOtpValid] = React.useState(false);
-    const [selectedAddress, setSelectedAddress] = React.useState({
-        Address1: '',
-        Address2: '',
-        City: '',
-        Pincode: '',
-        LandMark: '',
-        Latitude: '',
-        Langitude: '',
-        CompanyRefId: '66',
-        MobileNumber:''
-      });
-      
     const handleAlertClose = () => {
         if (InfoStatus === 'Your order has been placed') {
             navigate('/');
         }
         setAlertOpen(false);
     };
+
+    const handleChangeAddress = () => {
+        let userLogin = localStorage.getItem("userLogin");
+        let userId = Number(atob(localStorage.getItem("userId")));
+        if (userLogin === null) {
+            setUserId(0);
+            setModalOpen(false);
+        }
+        else if(userLogin === "false" || userId === 0){
+            setUserId(0);
+            setModalOpen(false);
+        }
+        else{
+          setUserId(userId);
+          setModalOpen(true);
+        }
+    };
+
+
+    const handleChangeAddressClose = () => {
+        setModalOpen(false);
+        let address = JSON.parse(sessionStorage.getItem('selectedAddress'));
+        setSelectedAddress(address);
+    };
+
+    //Load delivery time lists
+    const FetchDeliveryTimes = async () => {
+        try {
+            const list = await API_FetchDeliveryTimes();
+            setDeliveryTimeList(list);
+        } catch (error) {
+            setDeliveryTimeList([]);
+            console.error('Error fetching categories:', error);
+        }
+    };
+    const FetchSelectSettingsNew = async () => {
+        try {
+
+
+            const list = await API_FetchSelectSettingsNew();
+      
     
-    const handleOtpInputChange = (e) => {
-        setEnteredOtp(e.target.value);
-      };
+            if (Array.isArray(list) && list.length > 0) {
+                setwhatsapdata(list);
+                const firstItem = list[0];
+                setAdminlatitude(firstItem.Latitude);
+                console.log(adminlatitude)
+                setAdminLangitude(firstItem.Longitude);
+                  console.log(adminLangitude)
+                
+                
+            } else {
+                console.error("Fetched data is not a valid array or is empty.");
+                setwhatsapdata([]); 
+            }
+        } catch (error) {
+            setwhatsapdata([]);
+            console.error("Error fetching categories:", error);
+        }
+    };
+    
+             
+    const handleCalculateDistance = () => {
+        if (!selectedAddress || !selectedAddress.Latitude || !selectedAddress.Langitude) return;
+        if (!adminlatitude || !adminLangitude) return;
+        
+        setUserlatitude(selectedAddress.Latitude);
+        setuserLangitude(selectedAddress.Langitude);
+        const dist = getDistance(
+          { latitude: selectedAddress.Latitude, longitude: selectedAddress.Langitude },
+          { latitude: adminlatitude, longitude: adminLangitude }
+        );
+        const distInKilometers = dist / 1000;
+        setDistance(distInKilometers);
+        console.log(distInKilometers); 
+    };
+
+
+ const handlefetchdeliverycharges = async()=>{
+
+    try {
+        
+        const list = await API_Fetchdeliverycharges();
+        if (Array.isArray(list) && list.length > 0) {
+          
+            setDeliverychargelist(list);
+            
+        } else {
+            console.error("Fetched data is not a valid array or is empty.");
+ 
+        }
+
+    } catch (error) {
+
+        setDeliverychargelist([]);
+        console.error("Error fetching categories:", error);
+        
+    }
+
+      }
+
+
+  const findDeliveryCharge = React.useCallback(() => {
+        const chargeData = deliverychargelist.find(item => 
+            distance >= item.StartKM && distance <= item.EndKM
+        );
+    
+        if (chargeData) {
+            setDeliveryCharge(chargeData.DeliveryCharges);
+            console.log(`Delivery Charge: ${chargeData.DeliveryCharges}`);
+        } else {
+            setDeliveryCharge(0);
+            console.log("No matching range found.");
+        }
+    }, [distance, deliverychargelist]);
+    
+    React.useEffect(() => {
+        findDeliveryCharge();
+    }, [findDeliveryCharge]); 
+
+
+
+    
+  
+
+    const FetchPincode = async () => {
+        try {
+            const list = await API_Fetchpincode();
+            if (Array.isArray(list) && list.length > 0) {
+                const extractedPincodes = list.map(item => item.pincode);
+                setPincodes(extractedPincodes);
+                console.log(pincodes);
+                setPincodedata(list); 
+        console.log(pincodedata)
+            } else {
+                console.error("Fetched data is not a valid array or is empty.");
+                setPincodedata([]); 
+            }
+        } catch (error) {
+            setPincodedata([]);
+            console.error("Error fetching categories:", error);
+        }
+    };
+    useEffect(() => {
+        FetchDeliveryTimes();
+        FetchSelectSettingsNew();
+        FetchPincode();
+        handlefetchdeliverycharges();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+     
+
+
 
     useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const encodedWalletAmount = queryParams.get('Wallet');
+        if (encodedWalletAmount) {
+            let amt = atob(encodedWalletAmount);
+            setwalletAmount(Number(amt) || 0);
+        }
+    
+        let address = JSON.parse(sessionStorage.getItem('selectedAddress'));
+        if (address) {
+            setSelectedAddress(address);
+        }
+    }, [location.search]); 
+    
+
+    useEffect(() => {
+        if (selectedAddress && adminlatitude && adminLangitude) {
+            handleCalculateDistance();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedAddress,adminlatitude,adminLangitude]);
+    
+    useEffect(() => {
         if (cartItems.length > 0) {
-            const totalMRP = cartItems.reduce((acc, item) => acc + item.totalMRP, 0);
-            const totalPrice = cartItems.reduce((acc, item) => acc + item.totalPrice, 0);
+            const totalMRP = cartItems.reduce((acc, item) => acc + (item.totalMRP || 0), 0);
+            const totalPrice = cartItems.reduce((acc, item) => acc + (item.totalPrice || 0), 0);
             
             setMRPAmount(totalMRP);
-            setTotalPrice(totalPrice );
+            setTotalPrice(totalPrice);
             setSavingsAmount(totalMRP - totalPrice);
     
             // 🏦 Apply Wallet Discount
@@ -154,91 +310,76 @@ export default function ProductCheckout() {
             }
         }
     }, [cartItems, walletAmount]);
+    
+
     //Delivery date function
     const handleSelectDate = (newValue) => {
         setDateValue(newValue);
     };
-
-     const handleOtpSubmit = async () => {
-       if (receivedOtp.toString() === enteredOtp){
-         setIsOtpValid(true);
-       } else {
-         setIsOtpValid(false);
-         setShowErrorMsg("Invalid OTP. Please try again.");
-       }
-     };
 
     const handleDeliveryTime = (id, time) => {
         setDeliverytime(time);
         setDeliverytimeId(id);
     };
 
+    const handlePaymentType = (type) => {
+        setPaymentType(type);
+    };
+
+    const handleDeliveryType = (type) => {
+        setDeliveryType(type);
+        if(type === 'Pickup'){
+            setDeliveryTypeState(false);
+        }        
+        else{
+            setDeliveryTypeState(true);
+        }
+    };
+
     //Place order function
     const handlePlaceOrder = async() => {          
-
+        if (Deliverytime === '' && DeliveryType === 'Delivery' && DeliveryTimeList.length !== 0) {
+            setInfoStatus('Please choose delivery time');
+            handleAlertOpen(true);
+        }
+        else if (DateValue === null) {
+            setInfoStatus('Please select date');
+            handleAlertOpen(true);
+        }
+        else if (PaymentType === '') {
+            setInfoStatus('Please choose payment type');
+            handleAlertOpen(true);
+        }
+        else {
+            if(PaymentType === 'COD'){
                 setOnlinePayment(false);
                 setAlertOpen(false);
                 PlaceOrder(0, '');
- 
-                     
-     
+            }
+            else{
+                setOnlinePayment(true);
+                console.log("call");
+                //PlaceOrder();
+            }            
+        }
     };
 
 
-  const FetchSelectSettingsNew = async () => {
-    try {
+      
 
 
-        const list = await API_FetchSelectSettingsNew();
-  
-
-        if (Array.isArray(list) && list.length > 0) {
-            setwhatsapdata(list); 
-    
-        } else {
-            console.error("Fetched data is not a valid array or is empty.");
-            setwhatsapdata([]); 
-        }
-    } catch (error) {
-        setwhatsapdata([]);
-        console.error("Error fetching categories:", error);
-    }
-};
-
-     useEffect(() => {  
-     
-        FetchSelectSettingsNew();   
-   
-    }, []);
 
     //Order save API function
     const InsertSaleOrderSave = async (master) => {
         try {
             let WhatsAppUrl = "";
             let OwnerMobileNo = "";
-            var mobileno = selectedAddress.MobileNumber;
             if (whatsapdata.length > 0) {
                 ({ WhatsAppUrl, OwnerMobileNo } = whatsapdata[0]);
             }
-             
-              const otpresponse = await otpverification(WhatsAppUrl, mobileno);
-                  
-              if (otpresponse) {
-                // OTP verification is successful, show input for OTP
-        
-                const otpString = otpresponse.toString();
-                setReceivedOtp(otpString);  // OTP received from backend
-                setShowOtpInput(true);  // Show OTP input field
-                setShowLoader(false);  // Hide loader
-              } else {
-                setShowLoader(false);
-                setShowErrorMsg("Failed to send OTP. Please try again.");
-              }
-            if (receivedOtp.toString() === enteredOtp) {
-                setIsOtpValid(true);
-            //const pincode1 = selectedAddress.Pincode.toString().trim();
-             const response = await API_InsertSaleOrderSave(master, WhatsAppUrl, OwnerMobileNo);
-             console.log(response);
+         //   const pincode1 = selectedAddress.Pincode.toString().trim();
+            const response = await API_InsertSaleOrderSave(master, WhatsAppUrl, OwnerMobileNo);
+            console.log(response);
     
             if (response.length !== 0) {
                 setLoading(false);
@@ -248,18 +389,11 @@ export default function ProductCheckout() {
                 setInfoStatus('Your order has been placed');
                 setShowLoader(false);
                 handleAlertOpen(true);
-            } 
-            else {
+            } else {
                 setLoading(false);
                 setInfoStatus('Your order has been rejected.');
                 setShowLoader(false);
                 handleAlertOpen(true);
-            }
-        } 
-            
-            else {
-                setShowLoader(false);
-                setShowErrorMsg("Invalid OTP. Please try again.");
             }
         } catch (error) {
             console.error("Error inserting order details:", error);
@@ -272,14 +406,6 @@ export default function ProductCheckout() {
         
     };
     
-    const handleAddressChange = (field, value) => {
-        setSelectedAddress(prev => ({
-          ...prev,
-          [field]: value
-        }));
-      };
-      
-
 
     const PlaceOrder = async(onlinePStatus, onlinePaymentId) => {
         setShowLoader(true);
@@ -302,18 +428,18 @@ export default function ProductCheckout() {
         const master = [
             {
                 Id: 0,
-                CustomerRefId: 1,
-                CutomerName: "nun",
-                MobileNo:"8825537674",
-                Email: "karthick123svks@gmail.com",
-                Address1: selectedAddress.Address1,
-                Address2: selectedAddress.Address2,
-                City: selectedAddress.City,
-                LandMark: selectedAddress.LandMark,
-                Pincode: selectedAddress.Pincode,
-                lattitude: selectedAddress.Latitude,
-                longitude: selectedAddress.Langitude,
-                CompanyRefid: selectedAddress.CompanyRefId,
+                CustomerRefId: Number(atob(localStorage.getItem("userId"))),
+                CutomerName: atob(localStorage.getItem("userName")),
+                MobileNo: atob(localStorage.getItem("userMobileNo") || ''),
+                Email: atob(localStorage.getItem("userEmail") || ''),
+                Address1: selectedAddress?.Address1 || '',
+                Address2: selectedAddress?.Address2 || '',
+                City: selectedAddress?.City || '',
+                LandMark: selectedAddress?.LandMark || '',
+                Pincode: selectedAddress?.Pincode || '',
+                lattitude: selectedAddress?.Latitude || 0,
+                longitude: selectedAddress?.Langitude || 0,
+                CompanyRefid: selectedAddress?.CompanyRefId || ServerURL.COMPANY_REF_ID,
                 CompanyName: ServerURL.COMPANY_NAME,
                 CompanyMobile: ServerURL.COMPANY_MOBILE,
                 CompanyEmail: ServerURL.COMPANY_EMAIL,
@@ -332,7 +458,8 @@ export default function ProductCheckout() {
                 OrderCount: 1,
                 ReferalAmount: 0.0,                
                 disper:Number(couponDiscount),
-                discamount:Number(discountAmount),    
+                discamount:Number(discountAmount),
+                schargeamount: deliverycharge,                
                 ReferalBalance: 0,
                 coinage: 0,
                 DeliveryCharge: deliverycharge,
@@ -347,8 +474,7 @@ export default function ProductCheckout() {
             },
         ];
         console.log(deliverycharge)
-        console.log('Master',master)
-
+        console.log(master)
         await InsertSaleOrderSave(master);
 
     
@@ -356,7 +482,11 @@ export default function ProductCheckout() {
 
     return (
         <>
-            <CircularLoader showLoader={showLoader} />    
+            <CircularLoader showLoader={showLoader} />
+            {OnlinePayment && (
+                <RazorpayPayment PlaceOrder={PlaceOrder} OnlinePayment={OnlinePayment} payableamount={(TotalPrice + deliverycharge + HandlingCharge - ExtraDiscount)} usedwalledamount={walletAmount} Customer={selectedAddress}/>
+            )}
+            <AddressChangeModal UserId={UserId} setUserId={setUserId} ModalOpen={ModalOpen} handleChangeAddressClose={handleChangeAddressClose} handleAddressSelect={handleChangeAddress} />
             <Modal
                 open={AlertOpen}
                 onClose={handleAlertClose}
@@ -400,105 +530,94 @@ export default function ProductCheckout() {
                     {/* Left Section - Delivery Address */}
                     <Grid item xs={12} md={8}>
                         <Box sx={{ border: '1px solid #3BB77' }} padding={3} mb={2}>
-                        
+                            <Typography variant="h6" style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
+                                <CheckCircleIcon color="success" style={{ marginRight: '10px' }} />
+                                Delivery Address
+                                <Button variant="outlined" size="small"
+                                    onClick={handleChangeAddress}
+                                    sx={{
+                                        marginLeft: 'auto',
+                                        width: 'auto',
+                                        borderRadius: '3px',
+                                        padding: '2px 15px',
+                                        textTransform: 'none',
+                                        fontWeight: 'bold',
+                                        fontSize: '14px',
+                                        background: theme.palette.shadowcolorCode.main,
+                                        border: '1px solid',
+                                        borderColor: theme.palette.basecolorCode.main,
+                                        color: theme.palette.basecolorCode.main,
+                                        boxShadow: 'none',
+                                        '&:hover': {
+                                            border: '1px solid',
+                                            background: theme.palette.basecolorCode.main,
+                                            borderColor: theme.palette.basecolorCode.main,
+                                            color: theme.palette.whitecolorCode.main,
+                                            boxShadow: 'none',
+                                        }
+                                    }}>Change address</Button>
+                            </Typography>
+
                             {/* Address Form */}
                             <Grid container spacing={2}>
                                 <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        fullWidth
-                                        label="Address-1"
-                                        value={selectedAddress.Address1}
-                                        onChange={(e) => handleAddressChange('Address1', e.target.value)}
-                                    />
+                                    <TextField fullWidth label="Address-1" value={selectedAddress?.Address1 || ''} />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        fullWidth
-                                        label="Address-2"
-                                        value={selectedAddress.Address2}
-                                        onChange={(e) => handleAddressChange('Address2', e.target.value)}
-                                    />
+                                    <TextField fullWidth label="Address-2" value={selectedAddress?.Address2 || ''} />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        fullWidth
-                                        label="City"
-                                        value={selectedAddress.City}
-                                        onChange={(e) => handleAddressChange('City', e.target.value)}
-                                    />
+                                    <TextField fullWidth label="City" value={selectedAddress?.City || ''} />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        fullWidth
-                                        label="Pincode"
-                                        value={selectedAddress.Pincode}
-                                        onChange={(e) => handleAddressChange('Pincode', e.target.value)}
-                                    />
+                                    <TextField fullWidth label="Pincode" value={selectedAddress?.Pincode || ''} />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <TextField
-                                        fullWidth
-                                        label="Landmark"
-                                        value={selectedAddress.LandMark}
-                                        onChange={(e) => handleAddressChange('LandMark', e.target.value)}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <TextField
-                                        fullWidth
-                                        label="MobileNumber"
-                                        value={selectedAddress.MobileNumber}
-                                        onChange={(e) => handleAddressChange('MobileNumber', e.target.value)}
-                                    />
+                                    <TextField fullWidth label="Landmark" value={selectedAddress?.Landmark || ''} />
                                 </Grid>
                             </Grid>
-
                         </Box>
-                         
-                           {showOtpInput && (
-                                     <div>
-                                       <TextField
-                                         fullWidth
-                                         label="Enter OTP"
-                                         variant="outlined"
-                                         margin="normal"
-                                         value={enteredOtp}
-                                         onChange={handleOtpInputChange}
-                                         error={!!ShowErrorMsg}
-                                         helperText={ShowErrorMsg || ''}
-                                         InputLabelProps={{ shrink: true }}
-                                         className="mb-4"
-                                         required
-                                       />
-                         
-                                          <Typography variant="body2" align="left" className="mb-4">
-                                         OTP sent to your What'sApp . Please enter it above.
-                                       </Typography>
-                                       <Button 
-                                         fullWidth
-                                         variant="contained"
-                                         sx={{
-                                           my: 3,
-                                           backgroundColor: theme.palette.basecolorCode.main,
-                                           color: theme.palette.whitecolorCode.main,
-                                           '&:hover': {
-                                             backgroundColor: theme.palette.basecolorCode.main,
-                                             color: theme.palette.whitecolorCode.main,
-                                           },
-                                         }}
-                                         onClick={handleOtpSubmit}
-                                       >
-                                         Verify OTP
-                                       </Button>
-                                     </div>
-                                   )}
+
                         {/* Delivery type */}
-                
+                        <Box padding={3} sx={{ paddingTop: 0 }}>
+                            <Typography variant="h6" style={{ display: 'flex', alignItems: 'center' }}>
+                                <CheckCircleIcon color="success" style={{ marginRight: '10px' }} />
+                               Delivery Type
+                            </Typography>
+
+                            <RadioGroup>
+                                <FormControlLabel value="Pickup" control={<Radio checked={DeliveryType === 'Pickup' ? true : false} onChange={() => handleDeliveryType('Pickup')} size="small" />} label="Pickup" />
+                                <FormControlLabel value="Delivery" control={<Radio checked={DeliveryType === 'Delivery' ? true : false} onChange={() => handleDeliveryType('Delivery')} size="small" />} label="Delivery" />
+                            </RadioGroup>
+                        </Box>
+
+                        {/* Delivery Time and Date */}
+                        <Box padding={3} sx={{ paddingTop: 0 }}>
+                            <Typography variant="h6" style={{ display: 'flex', alignItems: 'center' }}>
+                                <CheckCircleIcon color="success" style={{ marginRight: '10px' }} />
+                                Delivery Time & Date
+                            </Typography>
+                            {DeliveryTypeState && (
+                                <RadioGroup style={{ marginTop: '10px' }}>
+                                    {DeliveryTimeList.map((item, index) => (
+                                        <FormControlLabel value={item.Id} control={<Radio onChange={() => handleDeliveryTime(item.Id, item.Deliverytime)} value={item.Id} size="small" />} label={item.Deliverytime} />
+                                    ))}
+                                </RadioGroup>
+                            )}                           
+                            <Calendar DateValue={DateValue} handleSelectDate={handleSelectDate} />
+                        </Box>
 
                         {/* Payment Method */}
                         <Box padding={3} sx={{ paddingTop: 1 }}>
-                        
+                            <Typography variant="h6" style={{ display: 'flex', alignItems: 'center' }}>
+                                <CheckCircleIcon color="success" style={{ marginRight: '10px' }} />
+                                Payment
+                            </Typography>
+                            <RadioGroup>
+                                <FormControlLabel value="PayOnline" control={<Radio onChange={() => handlePaymentType('PayOnline')} size="small" />} label="Pay Online" />
+                                <FormControlLabel value="COD" control={<Radio onChange={() => handlePaymentType('COD')} size="small" />} label="Cash on Delivery" />
+                            </RadioGroup>
+
                             <Box sx={{ mt: 2, float: 'left' }}>
                                 <Button
                                     size="small"
@@ -585,12 +704,12 @@ export default function ProductCheckout() {
                                             </Typography>
                                         </Box>
                                         <Box>
-                                            <Typography align='left' variant="body2">Qty: {product.item} X {product.Price.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Typography>
+                                            <Typography align='left' variant="body2">Qty: {product.item} X {(product.Price || 0).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Typography>
                                             {/* <Typography variant="body2" align="right" style={{ color: 'green' }}>{product.totalMRP.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Typography> */}
                                         </Box>
                                     </Box>
                                 </Box>
-                                <Typography variant="body2" align="right" style={{ color: 'green' }}>{product.totalPrice.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Typography>
+                                <Typography variant="body2" align="right" style={{ color: 'green' }}>{(product.totalPrice || 0).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Typography>
                             </Box>
                             </>
                         ))}
@@ -604,7 +723,7 @@ export default function ProductCheckout() {
                                 </Grid>
                                 <Grid item xs={4} sx={{ mt: 0.5 }}>
                                     <Typography sx={{ fontSize: '14px' }} variant="body1" align="right">
-                                        {MRPAmount.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                        {(MRPAmount || 0).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={8} sx={{ mt: 0.5 }}>
@@ -612,7 +731,7 @@ export default function ProductCheckout() {
                                 </Grid>
                                 <Grid item xs={4} sx={{ mt: 0.5 }}>
                                     <Typography sx={{ fontSize: '14px' }} variant="body1" align="right" color="green">
-                                        {SavingsAmount.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                        {(SavingsAmount || 0).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={8} sx={{ display: 'none', mt: 0.5 }}>
@@ -637,12 +756,17 @@ export default function ProductCheckout() {
                                 </Grid>
                                 <Grid item xs={4} sx={{  mt: 0.5 }}>
                                     <Typography sx={{ fontSize: '14px' }} variant="body1" align="right">
-                                        {discountAmount.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                        {(discountAmount || 0).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                     </Typography>
+                                </Grid>
+                                
+
+                                <Grid item xs={8} sx={{  mt: 0.5 }}>
+                                    <Typography sx={{ fontSize: '14px', borderBottom: 'dashed 1px lightgray', display: 'inline' }} variant="body1">Delivery fee:</Typography>
                                 </Grid>
                                 <Grid item xs={4} sx={{  mt: 0.5 }}>
                                     <Typography sx={{ fontSize: '14px' }} variant="body1" align="right">
-                                        {deliverycharge.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                        {(deliverycharge || 0).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                     </Typography>
                                 </Grid>
 
@@ -653,11 +777,16 @@ export default function ProductCheckout() {
                                 </Grid>
                                 <Grid item xs={4} sx={{ mt: 0.5 }}>
                                     <Typography sx={{ fontSize: '14px' }} variant="body1" align="right">
-                                        {(TotalPrice + deliverycharge + HandlingCharge ).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                        {((TotalPrice || 0) + (deliverycharge || 0) + (HandlingCharge || 0)).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                     </Typography>
                                 </Grid>
                             </Grid>
                         </Box>
+                      <Box sx={{ mt: 2, textAlign: 'center' }}>  
+                        <img src={ScannerImage} alt="Scanner" style={{ width: '100%', maxWidth: '300px', height: 'auto' }} />
+                      </Box>
+           
+
                         </Box>
                     </Grid>
                 </Grid>

@@ -111,45 +111,60 @@ const ProductItemCard = ({ product }) => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        gap: '5px',
-        padding: '10px 0px',
+        gap: { xs: '8px', sm: '12px' },
+        padding: { xs: '12px 8px', sm: '16px 12px' },
         borderBottom: '1px solid #e0e0e0',
-        backgroundColor: '#FFF',
+        backgroundColor: '#FFFFFF',
+        borderRadius: '8px',
+        mb: 1,
+        transition: 'all 0.2s ease',
+        '&:hover': {
+          backgroundColor: '#FFF5EB',
+          boxShadow: '0 2px 8px rgba(255, 153, 51, 0.1)',
+        }
       }}
     >
       <Box
         component="img"
         sx={{
-          width: 60,
-          height: 60,
-          borderRadius: 1,
+          width: { xs: 60, sm: 70 },
+          height: { xs: 60, sm: 70 },
+          borderRadius: '8px',
           marginRight: 0,
+          objectFit: 'cover',
+          border: '2px solid #FFF5EB',
+          transition: 'transform 0.2s ease',
+          '&:hover': {
+            transform: 'scale(1.05)',
+          }
         }}
         src={ImagePathRoutes.ProductImagePath + product.Img0}
         alt={product.Description}
       />
-      <Box>
+      <Box sx={{ flex: 1, minWidth: 0 }}>
         <Typography variant="p"
           sx={{
-            fontSize: '12px',
-            fontWeight: 'bold',
+            fontSize: { xs: '13px', sm: '14px' },
+            fontWeight: 600,
             overflow: 'hidden',
             display: '-webkit-box',
             WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical',
             textOverflow: 'ellipsis',
-            lineHeight: '12px',
+            lineHeight: '1.4',
             fontFamily: 'inherit',
             minHeight: '20px',
-            width: '150px',
-            marginRight: 0,
+            color: '#1a1a2e',
+            mb: 0.5,
           }}
         >
           {product.Description}
         </Typography>
         <Typography variant="p" color="textSecondary"
           sx={{
-            fontSize: '10px',
+            fontSize: { xs: '11px', sm: '12px' },
+            color: '#4a4a4a',
+            fontWeight: 500,
           }}
         >
           {product.UnitType}
@@ -158,20 +173,23 @@ const ProductItemCard = ({ product }) => {
       <Button
         variant="outlined"
         sx={{
-          width: "20%",
+          minWidth: { xs: '70px', sm: '80px' },
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          background: theme.palette.shadowcolorCode.main,
-          border: `1px solid ${theme.palette.basecolorCode.main}`,
+          background: 'linear-gradient(135deg, #FFF5EB 0%, #FFFFFF 100%)',
+          border: `2px solid ${theme.palette.basecolorCode.main}`,
           color: theme.palette.basecolorCode.main,
           fontFamily: 'inherit',
           marginRight: 0,
-          padding: { xs: '4px 0px', sm: '5px 0px', md: '5px 0px' },
+          padding: { xs: '6px 8px', sm: '8px 10px' },
+          borderRadius: '8px',
+          boxShadow: '0 2px 4px rgba(255, 153, 51, 0.15)',
           '&:hover': {
-            background: theme.palette.shadowcolorCode.main,
-            border: `1px solid ${theme.palette.basecolorCode.main}`,
+            background: 'linear-gradient(135deg, #FFE6CC 0%, #FFF5EB 100%)',
+            border: `2px solid ${theme.palette.basecolorCode.main}`,
             color: theme.palette.basecolorCode.main,
+            boxShadow: '0 4px 8px rgba(255, 153, 51, 0.25)',
           }
         }}
       >
@@ -183,9 +201,16 @@ const ProductItemCard = ({ product }) => {
             width: '25%',
             color: theme.palette.basecolorCode.main,
             fontFamily: 'inherit',
+            fontWeight: 700,
+            fontSize: { xs: '16px', sm: '18px' },
+            cursor: 'pointer',
+            transition: 'transform 0.1s ease',
+            '&:active': {
+              transform: 'scale(0.9)',
+            }
           }}
         >
-          -
+          −
         </Typography>
         <Typography
           variant="body2"
@@ -193,6 +218,8 @@ const ProductItemCard = ({ product }) => {
             width: '50%',
             color: theme.palette.basecolorCode.main,
             fontFamily: 'inherit',
+            fontWeight: 700,
+            fontSize: { xs: '14px', sm: '15px' },
           }}
         >
           {product.item}
@@ -207,20 +234,38 @@ const ProductItemCard = ({ product }) => {
             width: '25%',
             color: theme.palette.basecolorCode.main,
             fontFamily: 'inherit',
+            fontWeight: 700,
+            fontSize: { xs: '16px', sm: '18px' },
+            cursor: 'pointer',
+            transition: 'transform 0.1s ease',
+            '&:active': {
+              transform: 'scale(0.9)',
+            }
           }}
         >
           +
         </Typography>
       </Button>
-      <Box sx={{ textAlign: 'right' }}>
-        <Typography variant="p" sx={{ fontWeight: 500, fontSize: '14px' }}>
-          {product.totalPrice.toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY })}
+      <Box sx={{ textAlign: 'right', minWidth: { xs: '60px', sm: '70px' } }}>
+        <Typography variant="p" sx={{ 
+          fontWeight: 700, 
+          fontSize: { xs: '14px', sm: '15px' },
+          color: '#138808',
+          display: 'block',
+          mb: 0.3,
+        }}>
+          {(product.totalPrice || 0).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY })}
         </Typography>
         <Typography
           variant="body2"
-          sx={{ textDecoration: 'line-through', color: '#9e9e9e', fontSize: '12px' }}
+          sx={{ 
+            textDecoration: 'line-through', 
+            color: '#9e9e9e', 
+            fontSize: { xs: '11px', sm: '12px' },
+            fontWeight: 500,
+          }}
         >
-          {(product.selectedMRP > 0 ? product.selectedMRP : product.MRP).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY })}
+          {((product.selectedMRP > 0 ? product.selectedMRP : product.MRP) || 0).toLocaleString('en-IN', { style: 'currency', currency: ServerURL.CURRENCY })}
         </Typography>
       </Box>
     </Box>

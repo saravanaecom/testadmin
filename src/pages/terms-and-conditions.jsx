@@ -1,12 +1,10 @@
 import React from 'react';
 import { Container, Typography, Box, Divider } from '@mui/material';
-import CreackersEffect from '../components/CreackersEffect';
 
 export default function TermsAndConditions() {
     return (
         <>
             <Container  maxWidth="xl" sx={{px: { xs: 0, md: 3 }}}>
-            <CreackersEffect/>
                 <Box elevation={3} sx={{ padding: 4, pt: 1, marginTop: 1 }} align="left">
                     <Typography variant="h4" fontSize={22} fontWeight={600} gutterBottom align="left">
                         Terms and Conditions

@@ -8,17 +8,17 @@ export default function PrivacyPolicy() {
             <Container  maxWidth="xl" sx={{px: { xs: 0, md: 3 }}}>
                 <Box elevation={3} sx={{ padding: 4, pt: 1, marginTop: 1 }} align="left">
                     <Typography variant="h4" fontSize={22} fontWeight={600} gutterBottom align="left">
-                        Privacy Policy
+                        Privacy Policy – A2S Super Market
                     </Typography>
                     <Typography variant="body2" color="textSecondary" align="left">
-                        Last Updated on January 01, 2022
+                        Last Updated on January 01, 2025
                     </Typography>
 
                     <Divider sx={{ margin: '20px 0' }} />
 
                     <Typography variant="h6" fontSize={18} fontWeight={600}>Personal Information</Typography>
                     <Typography variant="body1" paragraph>
-                        It contains personally identifiable information, such as your name, shipping address, email address, and telephone number, that you voluntarily give to us when you register with the site or our mobile application.
+                        It contains personally identifiable information, such as your name, shipping address, email address, and telephone number, that you voluntarily give to us when you register with the A2S Super Market site or our mobile application.
                     </Typography>
 
                     <Divider sx={{ margin: '20px 0' }} />
@@ -39,7 +39,7 @@ export default function PrivacyPolicy() {
 
                     <Typography variant="h6" fontSize={18} fontWeight={600}>How is information used?</Typography>
                     <Typography variant="body1" paragraph fontSize={16} m={0}>
-                        Having accurate information about you permits us to provide you with a smooth, efficient, and customized experience when you ask for the order of delivery option. Specifically, we may use the information collected about you via the site to:
+                        Having accurate information about you permits A2S Super Market to provide you with a smooth, efficient, and customized experience when you ask for the order of delivery option. Specifically, we may use the information collected about you via the A2S Super Market site to:
                     </Typography>
                     <List>
                         <ListItem>Provide our products, which includes updating, securing, and troubleshooting, as well as providing support.</ListItem>
@@ -74,9 +74,11 @@ export default function PrivacyPolicy() {
 
                     <Typography variant="h6" fontSize={18} fontWeight={600}>Contact Information</Typography>
                     <Typography variant="body1" paragraph>
-                        {ServerURL.COMPANY_ADDRESS}<br />
+                        <strong>A2S Super Market</strong><br />
+                        Main road, Koovathur, Koovathur Post, Andimadam Taluk,<br />
+                        Ariyalur District, Pincode: 621803<br />
                         Mobile: {ServerURL.COMPANY_MOBILE}<br />
-                        Email: <a href={ServerURL.COMPANY_EMAIL}>{ServerURL.COMPANY_EMAIL}</a>
+                        Email: <a href="mailto:a2ssupermarket@gmail.com">a2ssupermarket@gmail.com</a>
                     </Typography>
                 </Box>
             </Container>

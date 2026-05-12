@@ -14,11 +14,9 @@ import Paper from '@mui/material/Paper';
 import AppCart from '../cart/AppCart';
 import { useAuth } from '../../context/authContext';
 import { useCart } from '../../context/CartContext';
-import { useTheme } from '@mui/material/styles';
 import AppLogin from '../authentication/AppLogin';
 
 export default function AppBottomNavigation() {
-  const theme = useTheme();
   const { isAuthenticated } = useAuth();
   const {cartItems} = useCart();
   const [value, setValue] = useState(0);
@@ -86,6 +84,16 @@ export default function AppBottomNavigation() {
             showLabels
             value={value}
             onChange={handleNavigation}
+            sx={{
+              backgroundColor: '#FFFFFF',
+              borderTop: '2px solid #6A3DF0',
+              '& .MuiBottomNavigationAction-root': {
+                color: '#4a4a4a',
+                '&.Mui-selected': {
+                  color: '#6A3DF0',
+                },
+              },
+            }}
           >
             <BottomNavigationAction label="Home" icon={<HomeIcon />} />
             {isAuthenticated ? <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} /> : null}
@@ -94,8 +102,8 @@ export default function AppBottomNavigation() {
               <IconButton color="inherit" onClick={handleAuthDrawerToggle}>
               <Badge badgeContent={cartItemsCount} sx={{
                   '& .MuiBadge-badge': {
-                    backgroundColor: theme.palette.basecolorCode.main, 
-                    color: theme.palette.footertextcolorCode.main
+                    backgroundColor: '#FF7A00', 
+                    color: '#FFFFFF'
                   },
                 }}>
                 <ShoppingBagIcon />

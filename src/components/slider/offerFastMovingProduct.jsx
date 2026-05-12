@@ -17,7 +17,6 @@ const OfferFastMovingProduct = (props) => {
   const GetOfferProductLists = async () => {
       try {
           const objLists = await API_FetchOfferFastMovingProduct();
-          const sortedProducts = objLists.sort((a, b) => a.SaleRate - b.SaleRate);
           setProductLists(objLists);
       } catch (error) {
           console.error("Error fetching categories:", error);
@@ -117,7 +116,7 @@ const OfferFastMovingProduct = (props) => {
           <Skeleton variant="text" height={40} width="30%" />
         ) : (
           <CategoryHeader
-            CategoryHeading=" Family products for you"
+            CategoryHeading="Offer products for you"
             categoryId="offer_product"
             categoryValue="Offer Products"
           />

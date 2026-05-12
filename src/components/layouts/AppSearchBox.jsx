@@ -57,24 +57,26 @@ const AppSearchBox = () => {
             variant="outlined"
             sx={{
               padding: 0,
+              backgroundColor: 'rgba(255, 255, 255, 0.95)',
+              borderRadius: '8px',
               '& .MuiOutlinedInput-root': {
+                borderRadius: '8px',
                 '& fieldset': {
-                  borderColor: theme.palette.basecolorCode.main,
+                  borderColor: 'rgba(255, 255, 255, 0.5)',
+                  borderWidth: '2px',
                 },
                 '&:hover fieldset': {
-                  borderColor: theme.palette.basecolorCode.main,
+                  borderColor: '#FF9933',
                 },
                 '&.Mui-focused fieldset': {
-                  borderColor: theme.palette.basecolorCode.main, 
+                  borderColor: '#FF9933',
+                  borderWidth: '2px',
                 },
               },
               '& .MuiInputLabel-root': {
-                color: 'gray', 
+                color: '#4a4a4a', 
                 '&.Mui-focused': {
-                  color: theme.palette.basecolorCode.main,
-                },
-                '&:hover': {
-                  color: theme.palette.basecolorCode.main,
+                  color: '#FF9933',
                 },
               },
             }}
