@@ -1,128 +1,74 @@
 import React, { useState, useEffect } from "react";
-import Slider from "../components/sidebar";
 import { insertBrand } from "../services/addBrand";
 import { useParams, useNavigate } from "react-router-dom";
+import { PageLayout } from "../components/PageLayout";
 
 const Brand = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-
   const [brandName, setBrandName] = useState("");
   const [adminId, setAdminId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [Active, setActive] = useState(true);
 
-  // Fetch existing brand data if id exists
   useEffect(() => {
     const Brandlists = JSON.parse(localStorage.getItem("BrandDataList"));
     if (Brandlists) {
-      const selectedBrand = Brandlists.find((Brand) => Brand.Id === parseInt(id));
-      if (selectedBrand) {
-        setBrandName(selectedBrand.BrandName || "");
-        setActive(selectedBrand.Active === 1);
-      }
+      const selectedBrand = Brandlists.find((b) => b.Id === parseInt(id));
+      if (selectedBrand) { setBrandName(selectedBrand.BrandName || ""); setActive(selectedBrand.Active === 1); }
     }
   }, [id]);
 
-  // Verify Admin User
   useEffect(() => {
     const adminUserId = JSON.parse(localStorage.getItem("adminuserid"));
-    if (!adminUserId) {
-      alert("Session Closed. Please Login Again!");
-      setTimeout(() => {
-        navigate("/");
-      }, 2000);
-    } else {
-      setAdminId(Number(adminUserId));
-    }
+    if (!adminUserId) { alert("Session Closed."); navigate("/"); }
+    else setAdminId(Number(adminUserId));
   }, [navigate]);
 
-  // Handle Save Button Click
   const handleSave = async (e) => {
     e.preventDefault();
     setLoading(true);
-
-    const objlist = {
-      Id: id ? parseInt(id) : "",
-      Active: Active ? 1 : 0,
-      BrandName: brandName,
-    };
-
-    console.log("Saving brand:", objlist);
-
     try {
-      const success = await insertBrand([objlist], adminId);
-      if (success) {
-        alert("Brand saved successfully!");
-        navigate(`/AllBrand`);
-      } else {
-        alert("Failed to save the brand.");
-      }
-    } catch (error) {
-      console.error("Error during brand save:", error);
-      alert("An error occurred while saving the brand.");
-    } finally {
-      setLoading(false);
-    }
+      const success = await insertBrand([{ Id: id ? parseInt(id) : "", Active: Active ? 1 : 0, BrandName: brandName }], adminId);
+      if (success) { alert("Brand saved successfully!"); navigate('/AllBrand'); }
+      else alert("Failed to save.");
+    } catch (error) { alert("Error: " + error.message); }
+    finally { setLoading(false); }
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
-      <div className="w-64 bg-white shadow-lg border-r">
-        <Slider />
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1 flex items-center justify-center p-4">
-        <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
-  {id && !isNaN(parseInt(id)) ? `Edit Brand` : "Add Brand"}
-</h2>
-
-          {/* Form Section */}
-          <form onSubmit={handleSave}>
-            {/* Brand Name Input */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Brand Name
-              </label>
-              <input
-                type="text"
-                value={brandName}
-                onChange={(e) => setBrandName(e.target.value)}
-                placeholder="Enter your brand name"
-                className="w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              />
+    <PageLayout title={id && !isNaN(parseInt(id)) ? "Edit Brand" : "Add Brand"} subtitle="Manage brand information">
+      <div className="max-w-md">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          <form onSubmit={handleSave} className="space-y-5">
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">Brand Name <span className="text-red-400">*</span></label>
+              <input type="text" value={brandName} onChange={(e) => setBrandName(e.target.value)} placeholder="Enter brand name"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none" required />
             </div>
 
-            {/* Active Status Toggle */}
-            <div className="mb-4 flex items-center">
-              <label className="block text-sm font-medium text-gray-700 mr-2">Active:</label>
-              <input
-                type="checkbox"
-                checked={Active}
-                onChange={(e) => setActive(e.target.checked)}
-                className="form-checkbox h-5 w-5 text-indigo-600"
-              />
+            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+              <input type="checkbox" id="active" checked={Active} onChange={(e) => setActive(e.target.checked)} className="w-4 h-4 text-blue-600 rounded" />
+              <label htmlFor="active" className="text-sm font-medium text-gray-700">Active Status</label>
+              <span className={`ml-auto text-xs font-semibold px-2 py-1 rounded-full ${Active ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-500'}`}>
+                {Active ? 'Active' : 'Inactive'}
+              </span>
             </div>
 
-            {/* Save Button */}
-            <button
-              type="submit"
-              className={`w-full ${
-                loading
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-indigo-600 hover:bg-indigo-700"
-              } text-white font-medium py-2 rounded-md mt-4 transition-all duration-200`}
-              disabled={loading}
-            >
-              {loading ? "Saving..." : "Save Brand"}
-            </button>
+            <div className="flex gap-3 pt-2">
+              <button type="submit" disabled={loading}
+                className="flex-1 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-md">
+                {loading ? "Saving..." : "Save Brand"}
+              </button>
+              <button type="button" onClick={() => navigate('/AllBrand')}
+                className="px-5 py-2.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-200 transition-colors">
+                Cancel
+              </button>
+            </div>
           </form>
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 };
 

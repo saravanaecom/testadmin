@@ -9,143 +9,115 @@ import Graf from "../components/Graf";
 import Topsaleproduct from "../components/topsaleproduct";
 import Grafinamount from "../components/Grafinamount";
 
-
 const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [branchData, setBranchData] = useState([]);
   const navigate = useNavigate();
   const [companyDetails, setCompanyDetails] = useState({
     CompanyName: "",
     CompanyEmailAddress: "",
-    CompanyMobileNumber: "",
-    Address1: "",
-    Address2: "",
-    AreaName: "",
-    Pincode: "",
   });
-
-  const updateCompanyDetails = (BranchList) => {
-    if (BranchList.length !== 0) {
-      const company = BranchList[0];
-      setCompanyDetails({
-        CompanyName: company.CName || "",
-        CompanyEmailAddress: company.Email || "",
-        CompanyMobileNumber: company.MobileNo1 || "",
-        Address1: company.Address1 || "",
-        Address2: company.Address2 || "",
-        AreaName: company.AreaName || "",
-        Pincode: company.Pincode || "",
-      });
-    }
-  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const adminUserId = localStorage.getItem("adminuserid");
-        if (!adminUserId) {
-          console.error("No admin user ID found in localStorage.");
-          return;
-        }
-
+        if (!adminUserId) return;
         const data = await fetchBranchAddress(adminUserId);
-        setBranchData(data);
-        updateCompanyDetails(data);
+        if (data && data.length > 0) {
+          setCompanyDetails({
+            CompanyName: data[0].CName || "",
+            CompanyEmailAddress: data[0].Email || "",
+          });
+        }
       } catch (error) {
         console.error("Failed to load branch data:", error);
       }
     };
-
     fetchData();
   }, []);
 
-  const handleDropdownToggle = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
-  const handleHomeNavigate = () => {
-    navigate(`/index`);
-  };
-
-  const handleNavigate = () => {
-    navigate(`/Setting`);
-  };
-
   return (
-    <>
-      <div className="bg-white shadow-sm z-50 w-full">
-        <div className="container flex justify-between items-center px-4 py-3">
-          <h1 className="text-lg md:text-2xl font-semibold">
-            <span role="img" aria-label="wave" className="mr-2">👋</span>
-            Hi, <span className="font-bold text-indigo-600">{companyDetails.CompanyName}</span>
+    <div className="flex-1 flex flex-col overflow-hidden">
+      {/* Top Navbar */}
+      <div className="bg-white border-b border-gray-200 shadow-sm px-6 py-3 flex justify-between items-center sticky top-0 z-30">
+        <div>
+          <p className="text-xs text-gray-400">Welcome back 👋</p>
+          <h1 className="text-lg font-bold text-gray-800">
+            <span className="text-blue-600">{companyDetails.CompanyName || "Admin"}</span>
           </h1>
+        </div>
 
+        <div className="relative">
           <button
-            onClick={handleDropdownToggle}
-            className="flex items-center gap-5 text-gray-700"
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className="flex items-center gap-3 bg-gray-50 hover:bg-gray-100 px-3 py-2 rounded-xl border border-gray-200 transition-all"
           >
-            <div className="w-14 h-14 bg-white rounded-full overflow-hidden">
-              <img
-                className="w-full h-full object-cover"
-                alt="Admin Avatar"
-                src={AdminLogo}
-              />
+            <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-blue-500">
+              <img src={AdminLogo} alt="Admin" className="w-full h-full object-cover" />
             </div>
-            <span className="hidden sm:block text-base font-bold md:text-lg">Admin</span>
-            <IoMdArrowDropdownCircle className="text-2xl md:text-3xl" />
+            <div className="hidden sm:flex flex-col text-left">
+              <span className="text-sm font-semibold text-gray-700">Admin</span>
+              <span className="text-xs text-gray-400">Administrator</span>
+            </div>
+            <IoMdArrowDropdownCircle className={`text-xl text-blue-500 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
           </button>
+
+          {isDropdownOpen && (
+            <div className="absolute right-0 mt-2 bg-white border border-gray-100 rounded-xl shadow-xl w-52 z-50 overflow-hidden">
+              <div className="px-4 py-3 bg-blue-50 border-b border-gray-100">
+                <p className="text-sm font-semibold text-gray-700">Admin Panel</p>
+                <p className="text-xs text-gray-400 truncate">{companyDetails.CompanyEmailAddress || "admin@example.com"}</p>
+              </div>
+              <button onClick={() => navigate('/index')} className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50">
+                <i className="bi bi-house text-blue-500"></i> Dashboard
+              </button>
+              <button onClick={() => navigate('/Setting')} className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50">
+                <i className="bi bi-gear text-blue-500"></i> Settings
+              </button>
+              <div className="border-t border-gray-100"></div>
+              <button
+                onClick={() => { localStorage.removeItem('adminuserid'); window.location.href = '/'; }}
+                className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-red-500 hover:bg-red-50"
+              >
+                <i className="bi bi-box-arrow-right"></i> Logout
+              </button>
+            </div>
+          )}
         </div>
-
-        {isDropdownOpen && (
-          <div className="absolute right-4 mt-2 bg-white border rounded-lg shadow-md w-48 z-50">
-            <button
-              onClick={handleHomeNavigate}
-              className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-            >
-              <i className="bi bi-house mr-2"></i> Home
-            </button>
-            <button
-              onClick={handleNavigate}
-              className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-            >
-              <i className="bi bi-gear mr-2"></i> Settings
-            </button>
-            <div className="border-t my-2"></div>
-            <button
-              onClick={() => {
-                localStorage.removeItem('adminuserid');
-                window.location.href = '/login';
-              }}
-              className="block w-full px-4 py-2 text-left text-red-600 hover:bg-red-100"
-            >
-              <i className="bi bi-person mr-2"></i> Logout
-            </button>
-          </div>
-        )}
-
-        <Card top="80px" />
-
-        {/* Graph Section */}
-        <div className="flex flex-row justify-between mt-8 px-4">
-          <div className="relative w-1/2 p-2 top-16">
-            <Graf className="h-full w-full" />
-          </div>
-          <div className="relative w-1/2 p-2 top-16">
-            <Grafinamount className="h-full w-full" />
-          </div>
-        </div>
-
-        <div className="mt-20 px-4">
-  <Topsaleproduct className="w-full p-4" />
-</div>
-
-
-
-
-        {/* Recent Orders Section */}
-        <RecentOrderSearch className="mt-8" />
       </div>
-    </>
+
+      {/* Dashboard Content */}
+      <div className="flex-1 overflow-y-auto p-6 bg-gray-100">
+
+        {/* Stats Cards */}
+        <Card />
+
+        {/* Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <div className="bg-white rounded-2xl shadow-md p-5">
+            <h2 className="text-base font-semibold text-gray-700 mb-4">Order Count</h2>
+            <Graf />
+          </div>
+          <div className="bg-white rounded-2xl shadow-md p-5">
+            <h2 className="text-base font-semibold text-gray-700 mb-4">Order Amount</h2>
+            <Grafinamount />
+          </div>
+        </div>
+
+        {/* Top Sale Products */}
+        <div className="bg-white rounded-2xl shadow-md p-5 mb-6">
+          <h2 className="text-base font-semibold text-gray-700 mb-4">🏆 Top Sale Products</h2>
+          <Topsaleproduct />
+        </div>
+
+        {/* Recent Orders */}
+        <div className="bg-white rounded-2xl shadow-md p-5">
+          <h2 className="text-base font-semibold text-gray-700 mb-4">📦 Recent Orders</h2>
+          <RecentOrderSearch />
+        </div>
+
+      </div>
+    </div>
   );
 };
 

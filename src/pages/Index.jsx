@@ -1,17 +1,15 @@
-import React, { useState } from 'react';
-import Silder  from '../components/sidebar'
-import Header  from '../components/Header'
-const Index = () => {
- 
-  return (
- <>
-<div className="flex ">
-  <Silder className="flex-1 overflow-y-auto max-h-screen "/>
-  <Header className="flex-1" />
-</div>
+import React from 'react';
+import Silder from '../components/sidebar';
+import Header from '../components/Header';
 
- 
- </>
+const Index = () => {
+  return (
+    <div className="flex h-screen bg-gray-100 overflow-hidden">
+      <Silder />
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <Header />
+        </div>
+    </div>
   );
 };
 

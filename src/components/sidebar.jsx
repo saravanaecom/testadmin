@@ -1,701 +1,181 @@
 import React, { useState } from 'react';
 import AdminLogo from '../assets/logo.png';
-import { IoMdMenu } from "react-icons/io";
-import { useNavigate } from 'react-router-dom';
-import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
+import { IoMdMenu, IoMdClose } from "react-icons/io";
+import { useNavigate, useLocation } from 'react-router-dom';
 import { TbReportSearch } from "react-icons/tb";
-
-import { GiKnightBanner } from "react-icons/gi"; 
+import { GiKnightBanner } from "react-icons/gi";
 import { TbBrandCodesandbox } from "react-icons/tb";
 import { FaPersonBiking } from "react-icons/fa6";
-import { MdOutlinePriceCheck } from "react-icons/md";
+import { MdOutlinePriceCheck, MdOutlineLocalOffer, MdKeyboardArrowDown } from "react-icons/md";
 import { PiMapPinArea } from "react-icons/pi";
-import { MdOutlineLocalOffer } from "react-icons/md";
-import { BiHome, BiCategory, BiSubdirectoryRight, BiBriefcase, BiGift, BiUser, BiCart, BiBell } from "react-icons/bi"; 
-
+import { BiHome, BiCategory, BiSubdirectoryRight, BiBriefcase, BiGift, BiUser, BiCart, BiBell } from "react-icons/bi";
 
 const Sidebbar = () => {
-const [isProductsOpen, setIsProductsOpen] = useState(false);
+  const [isProductsOpen, setIsProductsOpen] = useState(false);
   const [isSubCategoryOpen, setIsSubCategory] = useState(false);
   const [isCategoryOpen, setCategoryOpen] = useState(false);
   const [isBannerOpen, setIsBannerOpen] = useState(false);
   const [isOfferOpen, setIsOfferpostOpen] = useState(false);
-  const [isDeliveryTimeOpen, setIsDeliveryTime] = useState(false);
-  const [isAreasOpen, setIsAreaOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isCouponOpen, setIsCouponOpen] = useState(false);
   const [isBrandOpen, setIsBrandOpen] = useState(false);
   const [isDeliveryAreaOpen, setIsDeliveryAreaOpen] = useState(false);
- const [isDeliverychargeopen,setIsDeliverychargeopen] =useState(false);
+  const [isDeliverychargeopen, setIsDeliverychargeopen] = useState(false);
   const [IsDriver, setIsDriver] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-  
-  const toggleProducts = () => {
-    setIsProductsOpen(!isProductsOpen);
-  };
-  const toggleAreas = () => {
-    setIsAreaOpen(!isAreasOpen);
-  };
-  const toggleDeliveryTime = () => {
-    setIsDeliveryTime(!isDeliveryTimeOpen);
-  };
-  const toggleOffer = () => {
-    setIsOfferpostOpen(!isOfferOpen);
-  };
-  const toggleBanner = () => {
-    setIsBannerOpen(!isBannerOpen);
-  };
-  const toggleCategory = () => {
-    setCategoryOpen(!isCategoryOpen);
-  };
-  const toggleSubCategory = () => {
-    setIsSubCategory(!isSubCategoryOpen);
-  };
-  const toggleCoupon = () => {
-    setIsCouponOpen(!isCouponOpen);
-  };
+  const isActive = (path) => location.pathname === path;
 
-  const toggleBrand = () => {
-    setIsBrandOpen(!isBrandOpen);
-  };
+  const menuItemClass = (path) =>
+    `flex items-center gap-3 px-4 py-2.5 w-full rounded-lg transition-all duration-200 text-sm font-medium ${
+      isActive(path)
+        ? 'bg-white text-blue-600 shadow-md'
+        : 'text-blue-100 hover:bg-blue-600 hover:text-white'
+    }`;
 
-  const toggledeliveryArea = () => {
-    setIsDeliveryAreaOpen(!isDeliveryAreaOpen);
-  };
+  const subMenuItemClass = (path) =>
+    `flex items-center gap-2 px-3 py-2 w-full rounded-lg text-sm transition-all duration-200 ${
+      isActive(path)
+        ? 'bg-white text-blue-600 font-semibold'
+        : 'text-blue-200 hover:bg-blue-600 hover:text-white'
+    }`;
 
-
-  const toggledeliverycharge = () => {
-    setIsDeliverychargeopen(!isDeliverychargeopen);
-  };
-
-
-  const toggledriver = () => {
-    setIsDriver(!IsDriver);
-  };
-
-
-
+  const MenuGroup = ({ icon, label, isOpen, onToggle, children }) => (
+    <div>
+      <button
+        onClick={onToggle}
+        className="flex items-center justify-between w-full px-4 py-2.5 rounded-lg text-blue-100 hover:bg-blue-600 hover:text-white transition-all duration-200 text-sm font-medium"
+      >
+        <span className="flex items-center gap-3">{icon}<span>{label}</span></span>
+        <MdKeyboardArrowDown className={`text-lg transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+      {isOpen && (
+        <div className="ml-4 mt-1 space-y-1 border-l-2 border-blue-400 pl-3">
+          {children}
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <>
-    <div className='flex ' >
-  <div
-        className={`bg-[#0166ff] text-gray-100 w-64 min-h-screen transform ${
-          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } md:translate-x-0 transition-transform duration-300`}
+      {/* Mobile Toggle */}
+      <button
+        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        className="fixed top-4 left-4 z-50 md:hidden bg-blue-600 text-white p-2 rounded-lg shadow-lg"
       >
-        <div className="p-4 text-center text-xl font-bold border-b border-gray-700">
-          <div className="header mb-6">
-            <div className="logo bg-white rounded-lg h-20">
-              <img src={AdminLogo} alt="Admin Logo" className="w-56 mx-auto h-20" />
-            </div>
+        {isSidebarOpen ? <IoMdClose size={22} /> : <IoMdMenu size={22} />}
+      </button>
+
+      {/* Overlay */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-40 z-30 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div className={`fixed md:static top-0 left-0 h-full z-40 flex flex-col w-64 bg-gradient-to-b from-blue-700 to-blue-900 shadow-2xl transform transition-transform duration-300 ${
+        isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+      }`}>
+
+        {/* Logo */}
+        <div className="flex items-center justify-center px-4 py-5 border-b border-blue-600">
+          <div className="bg-white rounded-xl p-1 shadow-md">
+            <img src={AdminLogo} alt="Logo" className="h-12 w-48 object-contain" />
           </div>
         </div>
 
-       
-          <ul className="space-y-2">
-            {/* Products Dropdown */}
-           
+        {/* Nav */}
+        <div className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
 
-            <li>
-            <button
-                onClick={() => navigate('/index')}
-                className="flex items-center gap-3 p-3 w-full text-left rounded-lg hover:bg-gray-700 transition font-900"
-              >
-                <i className="bi bi-house text-xs font-light"></i>
-                <BiHome className="text-lg" />
-                <span>Dashboard</span>
-              </button>
-            </li>
-            <li>
-            <button
-                onClick={() => navigate('/branch')}
-                className="flex items-center gap-3 p-3 w-full text-left rounded-lg hover:bg-gray-700 transition font-900"
-              >
-                <i className="bi bi-house text-lg font-900"></i>
-                <BiBriefcase className="text-lg" />
-                <span>Branch</span>
-              </button>
-            </li>
+          <button onClick={() => navigate('/index')} className={menuItemClass('/index')}>
+            <BiHome className="text-lg" /><span>Dashboard</span>
+          </button>
 
+          <button onClick={() => navigate('/branch')} className={menuItemClass('/branch')}>
+            <BiBriefcase className="text-lg" /><span>Branch</span>
+          </button>
 
-            {/* <li>
-              <div className="group">
-                <button
-                  onClick={toggleAreas}
-                  className="flex items-center justify-between w-full p-3 rounded-lg hover:bg-gray-700 transition focus:outline-none"
-               
-                >
-                  <span className="flex items-center gap-3 text-md font-900 text-white">
-                    <i className="bi bi-briefcase text-md font-900"></i>
-                    <span>Areas</span>
-                  </span>
-                  <i
-                    className={`bi bi-chevron-down transition-transform ${
-                      isAreasOpen ? 'rotate-180' : ''
-                    }`}
-                  ></i>
-                </button>
-                {isAreasOpen && (
-                  <ul className="ml-6 mt-2 space-y-2">
-                     <li>
-                  <button
-                   onClick={() => navigate('/Area')}
-               className="block p-2 rounded-lg hover:bg-gray-600 text-white w-full text-left"
-                 >
-                All Areas
-               </button>
-               </li>
-                    <li>
-           <button
-                         onClick={() => navigate("/AddArea/id")}
-                        className="block p-2 rounded-lg hover:bg-gray-600 text-white"
-                      >
-                        Add Areas
-                      </button>
-                    </li>
-                  </ul>
-                )}
-              </div>
-            </li> */}
-            {/* <li>
-              <div className="group">
-                <button
-                  onClick={toggleDeliveryTime }
-                  className="flex items-center justify-between w-full p-3 rounded-lg hover:bg-gray-700 transition focus:outline-none"
-                 
-                >
-                  <span className="flex items-center gap-3 text-md font-900 text-white">
-                    <i className="bi bi-briefcase text-md"></i>
-                    <span>Delivery Time</span>
-                  </span>
-                  <i
-                    className={`bi bi-chevron-down transition-transform ${
-                      isDeliveryTimeOpen ? 'rotate-180' : ''
-                    }`}
-                  ></i>
-                </button>
-                {isDeliveryTimeOpen && (
-                  <ul className="ml-6 mt-2 space-y-2">
-                    <li>
-                    <button
-                         onClick={() => navigate("/DeliveryTime")}
-                        className="block p-2 rounded-lg hover:bg-gray-600 text-white"
-                      >
-                     All Delivery Time 
-                      </button>
-                    </li>
-                    <li>
-                      <button
-                        onClick={() => navigate("/AddDeliveryTime/:id")}
-                        className="block p-2 rounded-lg hover:bg-gray-600 text-white"
-                      >
-                        Add DeliveryTime
-                      </button>
-                    </li>
-                  </ul>
-                )}
-              </div>
-            </li> */}
-          
-            <li>
-              <div className="group">
-                <button
-                  onClick={toggleBanner }
-                  className="flex items-center justify-between w-full p-3 rounded-lg hover:bg-gray-700 transition focus:outline-none"
-                 
-                >
-                  <span className="flex items-center gap-3 text-mg font-900 text-white">
-                    <i className="bi bi-briefcase text-md"></i>
-                    <GiKnightBanner className="text-md" /> {/* Icon for Banner Post */}
-                    <span>Banner Post</span>
-                  </span>
-                  <i
-                    className={`bi bi-chevron-down transition-transform ${
-                      isBannerOpen ? 'rotate-180' : ''
-                    }`}
-                  ></i>
-                
-                </button>
-                {isBannerOpen && (
-                  <ul className="ml-6 mt-2 space-y-2">
-                    <li>
-                      <button
-                       onClick={() => navigate("/bannerpost/:id")}
-                        className="block p-2 rounded-lg hover:bg-gray-600 text-white"
-                      >
-                        All Banner Post
-                      </button>
-                    </li>
-                 
-                    <li>
-                      <button
-                       onClick={() => navigate("/addbannerpost/:id")}
-                        className="block p-2 rounded-lg hover:bg-gray-600 text-white"
-                      >
-                       Add Banner Post
-                      </button>
-                    </li>
+          <MenuGroup icon={<GiKnightBanner className="text-lg" />} label="Banner Post" isOpen={isBannerOpen} onToggle={() => setIsBannerOpen(!isBannerOpen)}>
+            <button onClick={() => navigate('/bannerpost/:id')} className={subMenuItemClass('/bannerpost')}>All Banner Post</button>
+            <button onClick={() => navigate('/addbannerpost/:id')} className={subMenuItemClass('/addbannerpost')}>Add Banner Post</button>
+          </MenuGroup>
 
+          <MenuGroup icon={<BiCategory className="text-lg" />} label="Category" isOpen={isCategoryOpen} onToggle={() => setCategoryOpen(!isCategoryOpen)}>
+            <button onClick={() => navigate('/category')} className={subMenuItemClass('/category')}>All Category</button>
+            <button onClick={() => navigate('/addcategory/:id')} className={subMenuItemClass('/addcategory')}>Add Category</button>
+            <button onClick={() => navigate('/CategoryReorder')} className={subMenuItemClass('/CategoryReorder')}>Category Reorder</button>
+          </MenuGroup>
 
-                  </ul>
-                )}
-              </div>
-            </li>
-            <li>
-              <div className="group">
-                <button
-                  onClick={toggleCategory }
-                  className="flex items-center justify-between w-full p-3 rounded-lg hover:bg-gray-700 transition focus:outline-none"
-                 
-                >
-                  <span className="flex items-center gap-3 text-md font-900 text-white">
-                    <i className="bi bi-briefcase text-md"></i>
-                    <BiCategory className="text-md" />
-                    <span>Category</span>
-                  </span>
-                  <i
-                    className={`bi bi-chevron-down transition-transform ${
-                      isCategoryOpen ? 'rotate-180' : ''
-                    }`}
-                  ></i>
-                </button>
-                {isCategoryOpen && (
-                  <ul className="ml-6 mt-2 space-y-2">
-                    <li>
-                      <a
-                       onClick={() => navigate("/category")}
-                        className="block p-2 rounded-lg hover:bg-gray-600 text-white"
-                      >
-                        All Category
-                      </a>
-                    </li>
-                    <li>
-                      <button
-                       onClick={() => navigate("/addcategory/:id")}
-                        className="block p-2 rounded-lg hover:bg-gray-600 text-white"
-                      >
-                        Add Category
-                      </button>
-                    </li>
-                    <li>
-                      <button
-                       onClick={() => navigate("/CategoryReorder")}
-                        className="block p-2 rounded-lg hover:bg-gray-600 text-white"
-                      >
-                        Category Recorder
-                        
-                      </button>
-                    </li>
-                  </ul>
-                )}
-              </div>
-            </li>
-            <li>
-              <div className="group">
-                <button
-                  onClick={toggleSubCategory }
-                  className="flex items-center justify-between w-full p-3 rounded-lg hover:bg-gray-700 transition focus:outline-none"
-                 
-                >
-                  <span className="flex items-center gap-3 text-md font-900 text-white">
-                    <i className="bi bi-briefcase text-md"></i>
-                    <BiSubdirectoryRight className="text-md" />
-                    <span>SubCategory</span>
-                  </span>
-                  <i
-                    className={`bi bi-chevron-down transition-transform ${
-                      isSubCategoryOpen ? 'rotate-180' : ''
-                    }`}
-                  ></i>
-                </button>
-                {isSubCategoryOpen && (
-                  <ul className="ml-6 mt-2 space-y-2">
-                    <li>
-                      <button
-                     onClick={() => navigate("/SubCategory")}
-                        className="block p-2 rounded-lg hover:bg-gray-600 text-white"
-                      >
-                        All SubCategory
-                      </button>
-                    </li>
-                    <li>
-                      <button
-                     onClick={() => navigate("/AddSubCategory/:id")}
-                        className="block p-2 rounded-lg hover:bg-gray-600 text-white"
-                      >
-                        Add SubCategory
-                      </button>
-                    </li>
-                    <li>
-                      <button
-                      onClick={() => navigate("/SubCategoryReorder")}
-                        className="block p-2 rounded-lg hover:bg-gray-600 text-white"
-                      >
-                        SubCategory Recorder
-                      </button>
-                    </li>
-                  </ul>
-                )}
-              </div>
-              <li>
-              <div className="group">
-                <button
-                  onClick={toggleProducts}
-                  className="flex items-center justify-between w-full p-3 rounded-lg hover:bg-gray-700 transition focus:outline-none"
-                 
-                >
-                  <span className="flex items-center gap-3 text-md font-900 text-white">
-                    <i className="bi bi-briefcase text-md"></i>
-                    <BiCart className="text-md" />
-                    <span>Products</span>
-                  </span>
-                  <i
-                    className={`bi bi-chevron-down transition-transform ${
-                      isProductsOpen ? 'rotate-180' : ''
-                    }`}
-                  ></i>
-                </button>
-                {isProductsOpen && (
-                  <ul className="ml-6 mt-2 space-y-2">
-                    <li>
-                      <button
-                       onClick={() => navigate("/AllProducts")}
-                        className="block p-2 rounded-lg hover:bg-gray-600 text-white"
-                      >
-                        All Products
-                      </button>
-                    </li>
-                    <li>
-                      <button
-                     onClick={() => navigate("/AddProducts/:id")}
-                        className="block p-2 rounded-lg hover:bg-gray-600 text-white"
-                      >
-                        Add Products
-                      </button>
-                    </li>
-                  </ul>
-                )}
-              </div>
-            </li>
-            
-            <li>
-              <div className="group">
-                <button
-                  onClick={toggleBrand}
-                  className="flex items-center justify-between w-full p-3 rounded-lg hover:bg-gray-700 transition focus:outline-none"
-                 
-                >
-                  <span className="flex items-center gap-3 text-md font-900 text-white">
-                    <i className="bi bi-briefcase text-md"></i>
-                    <TbBrandCodesandbox />
-                    <span>Brand</span>
-                  </span>
-                  <i
-                    className={`bi bi-chevron-down transition-transform ${
-                      isBrandOpen ? 'rotate-180' : ''
-                    }`}
-                  ></i>
-                </button>
-                {isBrandOpen && (
-                  <ul className="ml-6 mt-2 space-y-2">
-                    <li>
-                      <button
-                       onClick={() => navigate("/AllBrand")}
-                        className="block p-2 rounded-lg hover:bg-gray-600 text-white"
-                      >
-                        All Brand
-                      </button>
-                    </li>
-                    <li>
-                      <button
-                     onClick={() => navigate("/Brand/:id")}
-                        className="block p-2 rounded-lg hover:bg-gray-600 text-white"
-                      >
-                        Add Brand
-                      </button>
-                    </li>
-                  </ul>
-                )}
-              </div>
-            </li>
+          <MenuGroup icon={<BiSubdirectoryRight className="text-lg" />} label="SubCategory" isOpen={isSubCategoryOpen} onToggle={() => setIsSubCategory(!isSubCategoryOpen)}>
+            <button onClick={() => navigate('/SubCategory')} className={subMenuItemClass('/SubCategory')}>All SubCategory</button>
+            <button onClick={() => navigate('/AddSubCategory/:id')} className={subMenuItemClass('/AddSubCategory')}>Add SubCategory</button>
+            <button onClick={() => navigate('/SubCategoryReorder')} className={subMenuItemClass('/SubCategoryReorder')}>SubCategory Reorder</button>
+          </MenuGroup>
 
-             
-            <li>
-              <div className="group">
-                <button
-                  onClick={toggledriver }
-                  className="flex items-center justify-between w-full p-3 rounded-lg hover:bg-gray-700 transition focus:outline-none"
-                 
-                >
-                  <span className="flex items-center gap-3 text-md font-900 text-white">
-                    <i className="bi bi-briefcase text-md"></i>
-                    <FaPersonBiking />
-                    <span>DriverMaster</span>
-                  </span>
-                  <i
-                    className={`bi bi-chevron-down transition-transform ${
-                      IsDriver ? 'rotate-180' : ''
-                    }`}
-                  ></i>
-                </button>
-                {IsDriver && (
-                  <ul className="ml-6 mt-2 space-y-2">
-                    <li>
-                      <button
-                       onClick={() => navigate("/AllDriver")}
-                        className="block p-2 rounded-lg hover:bg-gray-600 text-white"
-                      >
-                        All Driver
-                      </button>
-                    </li>
-                    <li>
-                      <button
-                     onClick={() => navigate("/AddDriver/:id")}
-                        className="block p-2 rounded-lg hover:bg-gray-600 text-white"
-                      >
-                        Add Driver
-                      </button>
-                    </li>
-                  </ul>
-                )}
-              </div>
-            </li>
-           
+          <MenuGroup icon={<BiCart className="text-lg" />} label="Products" isOpen={isProductsOpen} onToggle={() => setIsProductsOpen(!isProductsOpen)}>
+            <button onClick={() => navigate('/AllProducts')} className={subMenuItemClass('/AllProducts')}>All Products</button>
+            <button onClick={() => navigate('/AddProducts/:id')} className={subMenuItemClass('/AddProducts')}>Add Products</button>
+          </MenuGroup>
 
-            <li>
-              <div className="group">
-                <button
-                  onClick={toggledeliverycharge }
-                  className="flex items-center justify-between w-full p-3 rounded-lg hover:bg-gray-700 transition focus:outline-none"
-                 
-                >
-                  <span className="flex items-center gap-3 text-md font-900 text-white">
-                    <i className="bi bi-briefcase text-md"></i>
-                    <MdOutlinePriceCheck />
-                    <span>DeliveryCharge</span>
-                  </span>
-                  <i
-                    className={`bi bi-chevron-down transition-transform ${
-                      isDeliverychargeopen ? 'rotate-180' : ''
-                    }`}
-                  ></i>
-                </button>
-                {isDeliverychargeopen && (
-                  <ul className="ml-6 mt-2 space-y-2">
-                    <li>
-                      <button
-                       onClick={() => navigate("/DeliveryCharge")}
-                        className="block p-2 rounded-lg hover:bg-gray-600 text-white"
-                      >
-                        All Delivery Charge
-                      </button>
-                    </li>
-                    <li>
-                      <button
-                     onClick={() => navigate("/AddDeliveryCharge/:id")}
-                        className="block p-2 rounded-lg hover:bg-gray-600 text-white"
-                      >
-                        Add Delivery Charge
-                      </button>
-                    </li>
-                  </ul>
-                )}
-              </div>
-            </li>
+          <MenuGroup icon={<TbBrandCodesandbox className="text-lg" />} label="Brand" isOpen={isBrandOpen} onToggle={() => setIsBrandOpen(!isBrandOpen)}>
+            <button onClick={() => navigate('/AllBrand')} className={subMenuItemClass('/AllBrand')}>All Brand</button>
+            <button onClick={() => navigate('/Brand/:id')} className={subMenuItemClass('/Brand')}>Add Brand</button>
+          </MenuGroup>
 
+          <MenuGroup icon={<FaPersonBiking className="text-lg" />} label="Driver Master" isOpen={IsDriver} onToggle={() => setIsDriver(!IsDriver)}>
+            <button onClick={() => navigate('/AllDriver')} className={subMenuItemClass('/AllDriver')}>All Driver</button>
+            <button onClick={() => navigate('/AddDriver/:id')} className={subMenuItemClass('/AddDriver')}>Add Driver</button>
+          </MenuGroup>
 
+          <MenuGroup icon={<MdOutlinePriceCheck className="text-lg" />} label="Delivery Charge" isOpen={isDeliverychargeopen} onToggle={() => setIsDeliverychargeopen(!isDeliverychargeopen)}>
+            <button onClick={() => navigate('/DeliveryCharge')} className={subMenuItemClass('/DeliveryCharge')}>All Delivery Charge</button>
+            <button onClick={() => navigate('/AddDeliveryCharge/:id')} className={subMenuItemClass('/AddDeliveryCharge')}>Add Delivery Charge</button>
+          </MenuGroup>
 
-            <li>
-              <div className="group">
-                <button
-                  onClick={toggledeliveryArea }
-                  className="flex items-center justify-between w-full p-3 rounded-lg hover:bg-gray-700 transition focus:outline-none"
-                 
-                >
-                  <span className="flex items-center gap-3 text-md font-900 text-white">
-                    <i className="bi bi-briefcase text-md"></i>
-                    <PiMapPinArea className="text-md" />
-                    <span>DeliveryArea</span>
-                  </span>
-                  <i
-                    className={`bi bi-chevron-down transition-transform ${
-                      isDeliveryAreaOpen ? 'rotate-180' : ''
-                    }`}
-                  ></i>
-                </button>
-                {isDeliveryAreaOpen && (
-                  <ul className="ml-6 mt-2 space-y-2">
-                    <li>
-                      <button
-                       onClick={() => navigate("/DeliveryArea")}
-                        className="block p-2 rounded-lg hover:bg-gray-600 text-white"
-                      >
-                        All DeliveryArea
-                      </button>
-                    </li>
-                    <li>
-                      <button
-                     onClick={() => navigate("/AddDeliveryArea/:id")}
-                        className="block p-2 rounded-lg hover:bg-gray-600 text-white"
-                      >
-                        Add DeliveryArea
-                      </button>
-                    </li>
-                  </ul>
-                )}
-              </div>
-            </li>
+          <MenuGroup icon={<PiMapPinArea className="text-lg" />} label="Delivery Area" isOpen={isDeliveryAreaOpen} onToggle={() => setIsDeliveryAreaOpen(!isDeliveryAreaOpen)}>
+            <button onClick={() => navigate('/DeliveryArea')} className={subMenuItemClass('/DeliveryArea')}>All Delivery Area</button>
+            <button onClick={() => navigate('/AddDeliveryArea/:id')} className={subMenuItemClass('/AddDeliveryArea')}>Add Delivery Area</button>
+          </MenuGroup>
 
-            <li>
-              <div className="group">
-                <button
-                  onClick={toggleCoupon}
-                  className="flex items-center justify-between w-full p-3 rounded-lg hover:bg-gray-700 transition focus:outline-none"
-                 
-                >
-                  <span className="flex items-center gap-3 text-md font-900 text-white">
-                    <i className="bi bi-briefcase text-md"></i>
-                    <BiGift className="text-md" />
-                    <span>offer coupon</span>
-                  </span>
-                  <i
-                    className={`bi bi-chevron-down transition-transform ${
-                      isCouponOpen ? 'rotate-180' : ''
-                    }`}
-                  ></i>
-                </button>
-                {isCouponOpen && (
-                  <ul className="ml-6 mt-2 space-y-2">
-                    <li>
-                      <button
-                       onClick={() => navigate("/Coupon")}
-                        className="block p-2 rounded-lg hover:bg-gray-600 text-white"
-                      >
-                        All Coupon
-                      </button>
-                    </li>
-                    <li>
-                      <button
-                     onClick={() => navigate("/Addcoupon/:id")}
-                        className="block p-2 rounded-lg hover:bg-gray-600 text-white"
-                      >
-                        Add Coupon
-                      </button>
-                    </li>
-                  </ul>
-                )}
-              </div>
-            </li>
-            </li>
-            <li>
-              <div className="group">
-                <button
-                  onClick={toggleOffer }
-                  className="flex items-center justify-between w-full p-3 rounded-lg hover:bg-gray-700 transition focus:outline-none"
-                 
-                >
-                  <span className="flex items-center gap-3 text-md font-900 text-white">
-                    <i className="bi bi-briefcase text-md"></i>
-                    <MdOutlineLocalOffer className="text-md" />
-                    <span>Offer Post</span>
-                  </span>
-                  <i
-                    className={`bi bi-chevron-down transition-transform ${
-                      isOfferOpen ? 'rotate-180' : ''
-                    }`}
-                  ></i>
-                </button>
-                {isOfferOpen && (
-                  <ul className="ml-6 mt-2 space-y-2">
-                    <li>
-                      <button
-                        onClick={() => navigate("/OfferPost")}
-                        className="block p-2 rounded-lg hover:bg-gray-600 text-white"
-                      >
-                         Posters
-                      </button>
-                    </li>
-                    <li>
-                      <button
-                         onClick={() => navigate("/AddOfferPost/:id")}
-                        className="block p-2 rounded-lg hover:bg-gray-600 text-white"
-                      >
-                        Posters
-                      </button>
-                    </li>
-                  </ul>
-                )}
-              </div>
-            </li>
-         
-            <li>
-              <button
-              onClick={() => navigate("/OfferNotification")}
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 transition font-900"
-              >
-                <i className="bi bi-app-indicator text-md"></i>
-                <BiBell className="text-md" />
-                <span>Offer Notification</span>
-              </button>
-            </li>
-            <li>
-              <button
-               onClick={() => navigate("/Order")}
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 transition font-900"
-              >
-                <i className="bi bi-house text-md font-semibold"></i>
-                <BiCart className="text-md" />
-                <span>Orders</span>
-              </button>
-            </li>
-            <li>
-              <button
-            onClick={() => navigate("/Customer")}
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 transition font-900"
-              >
-                <i className="bi bi-house text-md font-semibold"></i>
-                <BiUser className="text-md" />
-                <span>Customers</span>
-              </button>
-            </li> 
+          <MenuGroup icon={<BiGift className="text-lg" />} label="Offer Coupon" isOpen={isCouponOpen} onToggle={() => setIsCouponOpen(!isCouponOpen)}>
+            <button onClick={() => navigate('/Coupon')} className={subMenuItemClass('/Coupon')}>All Coupon</button>
+            <button onClick={() => navigate('/Addcoupon/:id')} className={subMenuItemClass('/Addcoupon')}>Add Coupon</button>
+          </MenuGroup>
 
-            <li>
-              <button
-            onClick={() => navigate("/ReportView")}
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 transition font-900"
-              >
-                <i className="bi bi-house text-md font-semibold"></i>
-                <TbReportSearch  className="text-md" />
-                <span>reports</span>
-              </button>
-            </li> 
+          <MenuGroup icon={<MdOutlineLocalOffer className="text-lg" />} label="Offer Post" isOpen={isOfferOpen} onToggle={() => setIsOfferpostOpen(!isOfferOpen)}>
+            <button onClick={() => navigate('/OfferPost')} className={subMenuItemClass('/OfferPost')}>All Posters</button>
+            <button onClick={() => navigate('/AddOfferPost/:id')} className={subMenuItemClass('/AddOfferPost')}>Add Poster</button>
+          </MenuGroup>
 
+          <button onClick={() => navigate('/OfferNotification')} className={menuItemClass('/OfferNotification')}>
+            <BiBell className="text-lg" /><span>Offer Notification</span>
+          </button>
 
-            
-          </ul>
-       
+          <button onClick={() => navigate('/Order')} className={menuItemClass('/Order')}>
+            <BiCart className="text-lg" /><span>Orders</span>
+          </button>
+
+          <button onClick={() => navigate('/Customer')} className={menuItemClass('/Customer')}>
+            <BiUser className="text-lg" /><span>Customers</span>
+          </button>
+
+          <button onClick={() => navigate('/ReportView')} className={menuItemClass('/ReportView')}>
+            <TbReportSearch className="text-lg" /><span>Reports</span>
+          </button>
+
+        </div>
+
+        {/* Footer */}
+        <div className="px-4 py-3 border-t border-blue-600 text-center text-xs text-blue-300">
+          © 2025 Admin Panel
+        </div>
       </div>
-      <div className="flex-1 p-6">
-  {/* Button to toggle sidebar */}
-  <button
-    onClick={toggleSidebar}
-    className="absolute top-4 right-4 text-white focus:outline-none md:hidden lg:hidden"
-  >
-    <IoMdMenu style={{ height: '30px', width: '30px', color: 'black' }} />
-  </button>
-
-  {/* Content Goes Here */}
-</div>
-
-      </div>
-      
     </>
-  )
-}
+  );
+};
 
-export default Sidebbar
+export default Sidebbar;
