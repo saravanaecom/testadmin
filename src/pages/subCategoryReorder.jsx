@@ -3,14 +3,12 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useNavigate } from "react-router-dom";
 import Slider from "../components/sidebar";
 import {fetchSelectCategory,fetchSelectsubCategoryid,UpdateSubCategoryReorder } from "../services/SubCategory";
-import ServerURL from "../server/serverUrl";
 
 
 const SubCategoryReorder = () => {
   const [subCategories, setSubCategories] = useState([]);
   const [categoryid, setCategoryid] = useState('');
   const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("");
   const [adminId, setAdminId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -30,9 +28,8 @@ const SubCategoryReorder = () => {
 
 
   useEffect(() => {
-    if (categoryid) {
-      fetchsubcategoryid();
-    }
+    if (categoryid) fetchsubcategoryid();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categoryid]);
   const fetchsubcategoryid = async () => {
     setLoading(true);

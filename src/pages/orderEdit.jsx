@@ -1,7 +1,7 @@
 import Slider from "../components/sidebar";
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetcDeliveryTime, deleteDeliveryTime } from "../services/DeliveryTime";
+import { fetcDeliveryTime } from "../services/DeliveryTime";
 import { updatesaleorder,API_FetchSelectSettingsNew } from '../services/Order';
 
 
@@ -12,7 +12,6 @@ const OrderEdit = () => {
   const [orderDetails, setOrderDetails] = useState(null);
   const [deliverytime, setDeliverytime] = useState([]);
   const [adminId, setAdminId] = useState(null);
-  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [selectedDeliveryTime, setSelectedDeliveryTime] = useState("");
@@ -53,6 +52,7 @@ const OrderEdit = () => {
     if (adminId) {
       fetchDeliveryTimeData();
     }
+     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [adminId]);
 
 
@@ -76,8 +76,8 @@ const OrderEdit = () => {
 
 
 useEffect(() => {
-  // Call FetchSelectSettingsNew() just once when the component mounts
   FetchSelectSettingsNew();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
 }, []);
 
 
@@ -89,8 +89,8 @@ useEffect(() => {
       const data = await fetcDeliveryTime(adminId);
       console.log(data)
       setDeliverytime(data || []);
-    } catch (error) {
-      setError("Error fetching delivery time data: " + error.message);
+    } catch (err) {
+      console.error("Error fetching delivery time data: " + err.message);
     }
   };
 
@@ -407,6 +407,7 @@ useEffect(() => {
     const DD1 = selectedDeliveryTime;
     const DD = deliverydate;
     const userMobileNo = orderDetails?.MobileNo || "";
+    // eslint-disable-next-line no-unused-vars
      const objlist = {
       temp: status,
       deliveryTime: selectedDeliveryTime,

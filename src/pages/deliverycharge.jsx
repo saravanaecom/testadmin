@@ -1,23 +1,15 @@
 import React, { useState,useEffect } from 'react';
 import Slider from "../components/sidebar";  // Sidebar component
 import { FaShippingFast, FaEdit, FaTrash } from 'react-icons/fa'; // Icons for delivery charge actions
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { fetchdeliverycharges,deleteDeliverycharge} from "../services/deliverycharges";
 
 const DeliveryCharge = () => {
   const [adminId, setAdminId] = useState(null);
   const [chargesData, setChargesData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
-  const [deliveryCharge, setDeliveryCharge] = useState('');
-  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
- 
-    
-    const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
-  const [editCharge, setEditCharge] = useState(null);
   
 
     useEffect(() => {
@@ -34,9 +26,8 @@ const DeliveryCharge = () => {
 
 
     useEffect(() => {
-        if (adminId) {
-          fetchdeliverycharge();
-        }
+        if (adminId) fetchdeliverycharge();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [adminId]);
       
 
@@ -57,9 +48,9 @@ const DeliveryCharge = () => {
           }
         };
       
+  // eslint-disable-next-line no-unused-vars
   const handleEditCharge = (chargeData) => {
-    setEditCharge(chargeData);
-    setDeliveryCharge(chargeData.charge);
+    console.log('edit', chargeData);
   };
 
  const handleDeleteClick = async (id) => {
@@ -67,14 +58,11 @@ const DeliveryCharge = () => {
       const isDeleted = await deleteDeliverycharge(id);
       if (isDeleted) {
         setChargesData((prevAreaData) => prevAreaData.filter((Charges) => Charges.Id !== id));
-        setSuccessMessage("deliverycharge deleted successfully!");
-        setIsSuccessModalOpen(true);
       } else {
-        setError("Failed to delete the deliverycharge. Please try again.");
+        setErrorMessage("Failed to delete the deliverycharge.");
       }
-    } catch (error) {
-      setErrorMessage("Error deleting the area: " + error.message);
-      setIsErrorModalOpen(true);
+    } catch (err) {
+      setErrorMessage("Error deleting: " + err.message);
     }
   };
 

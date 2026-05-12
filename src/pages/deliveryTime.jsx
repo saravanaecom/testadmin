@@ -8,15 +8,11 @@ import { MdDelete } from "react-icons/md";
 import { GrEdit } from "react-icons/gr";
 
 const DeliveryTime = () => {
-  const [rows, setRows] = useState(5); 
-  const [deliveryData, setDeliveryData] = useState([]); 
+  const [rows, setRows] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(5);
   const [adminId, setAdminId] = useState(null);
   const [areaData, setAreaData] = useState([]);
-  const [isActive, setIsActive] = useState(true);
-  const [loading, setLoading] = useState(false);  
-  const [error, setError] = useState(null);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
@@ -62,14 +58,14 @@ const DeliveryTime = () => {
     }
   }, [navigate]);
 
+  // eslint-disable-next-line no-unused-vars
   const handleNavigate = (id) => {
     navigate(`/AddDeliveryTime/${id}`);
   };
 
   useEffect(() => {
-    if (adminId) {
-      fetchAreaData();
-    }
+    if (adminId) fetchAreaData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [adminId]);
 
   const fetchAreaData = async () => {

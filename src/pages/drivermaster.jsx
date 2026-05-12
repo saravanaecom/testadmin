@@ -12,7 +12,6 @@ const Drivermaster = () => {
   const [driverData, setDriverData] = useState([]);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
 
   const handleNavigate = (id) => {
  
@@ -31,9 +30,8 @@ const Drivermaster = () => {
   }, []);
 
   useEffect(() => {
-    if (Comid !== null) {
-      fetchDriverData();
-    }
+    if (Comid !== null) fetchDriverData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Comid]);
   const fetchDriverData = async () => {
     let adminId = Comid;
@@ -80,8 +78,8 @@ const Drivermaster = () => {
 
 
   const showError = (message) => {
-    setModalMessage(message);
     setIsErrorModalOpen(true);
+    console.error(message);
   };
 
 
