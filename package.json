@@ -31,6 +31,7 @@
     "react-sortablejs": "^6.1.4",
     "react-to-pdf": "^2.0.0",
     "react-toastify": "^10.0.6",
+    "slick-carousel": "^1.8.1",
     "web-vitals": "^2.1.4",
     "xlsx": "^0.18.5"
   },
