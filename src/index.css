@@ -1,101 +1,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap');
-
-/* Indian Flag Theme CSS Variables */
 :root {
-  /* Primary - Saffron */
-  --color-saffron: #FF9933;
-  --color-saffron-light: #FFF5EB;
-  --color-saffron-dark: #E68A2E;
-  
-  /* Secondary - India Green */
-  --color-india-green: #138808;
-  --color-india-green-light: #E8F5E9;
-  --color-india-green-dark: #0F6B06;
-  
-  /* Neutrals */
-  --color-white: #FFFFFF;
-  --color-navy: #1a1a2e;
-  --color-charcoal: #4a4a4a;
-  
-  /* UI Colors */
-  --color-border: #e0e0e0;
-  --color-background: #f8f9fa;
-  
-  /* Legacy variable mappings for backward compatibility */
-  --primary-color: #1a1a2e;
-  --secondary-background: #FFF5EB;
-  --color-black: #1a1a2e;
-  --color-grey-dark-3: #FFFFFF;
-  --secondary-color: #4a4a4a;
-}
-
-body {
-  margin: 0;
-  width: 100%;
-  height: 100%;
-  font-family: 'Barlow', sans-serif !important;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: var(--color-navy);
-  background: linear-gradient(180deg, 
-    rgba(255, 153, 51, 0.03) 0%, 
-    rgba(255, 255, 255, 1) 15%, 
-    rgba(255, 255, 255, 1) 85%, 
-    rgba(19, 136, 8, 0.03) 100%);
-  background-attachment: fixed;
-  min-height: 100vh;
-}
-
-
-.offer_box {
-  margin-top: "64px";
-}
-
-@media (max-width: 786px) {
-  .offer_slider {
-    display: none;
+    --page-bg-color: #f7f7f7;        /* Background color */
+    --primary-text-color: #4a4a4a;      /* Text color */
+    --primary-button-bg: #083983;       /* Button background color */
+    --primary-button-text: #ffffff;     /* Button text color */
+    --success-bg: #d1fad8;              /* Success background */
+    --error-bg: #fee2e2;                /* Error background */
+    --hover-effect: rgba(0, 0, 0, 0.1); /* Hover effect for buttons */
+    --border-color: #e5e7eb;            /* Border color */
+    --table-header-bg: #f3f4f6;         /* Table header background */
+    --active-status-color: #10b981;     /* Active status color */
+    --inactive-status-color: #f87171; 
+    --primary-bg-color: #3b82f6; /* Blue */
+    --secondary-bg-color: #4b5563; /* Gray */
+    --text-color: #f3f4f6; /* Light Gray */
+    --hover-bg-color: #2d3748; /* Dark Gray */
+    --border-color: #374151;
+    --button-color: /* Darker Gray *//* Inactive status color */
   }
-}
-
-@media (min-width: 789px) {
-  .offer_box {
-    display: none;
-  }
-}
-
-/* .slick-prev {
-  left: -30px !important;
-}
-.slick-next {
-  right: -30px !important;
-}
-.slick-prev, .slick-next {  
-  width: 30px !important;
-  height: 30px !important;
-  color: #3BB77E !important;
-  border-radius: 50px;
-  background: #3BB77E !important;
-} */
-.slick-prev:before, .slick-next:before {
-  font-family: monospace !important;
-  font-size: 20px !important;
-  opacity: 1 !important;
-  top: 5px;
-  position: relative;
-}
-
-/* .slick-slide div img {
-  width: 80% !important;
-  height: 420px !important;
-} */
-.slick-dots {
-  position: relative !important;
-  top: 25px !important;
-}
-.slick-dots li {
-  width: 100px !important;
-  height: 100px !important;
-}
+  
+  
