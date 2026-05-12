@@ -5,10 +5,10 @@ import ServerURL from "../server/serverUrl";
 import { ImagePathRoutes } from '../routes/imagePathRoutes';
 import SuccessModal from "../components/sucessmodel";
 import ReactQuill from 'react-quill';
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
-import { fetchSelectBrand ,DeleteBrand} from "../services/addBrand";
-import { fetchSelectCategory,fetchSelectsubCategoryid,fetchMultiplePriceListNew,fetchProductIdAdmin,insertProduct } from "../services/addproducts";
+import { fetchSelectBrand } from "../services/addBrand";
+import { fetchSelectCategory,fetchSelectsubCategoryid,fetchProductIdAdmin,insertProduct } from "../services/addproducts";
 import 'react-quill/dist/quill.snow.css';
 
 const AddProductForm = () => {
@@ -22,7 +22,6 @@ const AddProductForm = () => {
     [{ align: [] }], // Text alignment
     ["clean"], // Clear formatting
   ];
-  const location = useLocation(); 
   const { id } = useParams();
   const [productCode, setProductCode] = useState('');
   const [productName, setProductName] = useState('');
@@ -32,20 +31,14 @@ const AddProductForm = () => {
   const [selectedBrand, setSelectedBrand] = useState('');
   const [category, setCategory] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedCategory1, setSelectedCategory1] = useState("");
   const [dsubcategory, setSubCategoryd] = useState([]);
   const [multicategory, setMulticategory] = useState([]);
-  const [selectedsubCategory, setSelectedSubCategory] = useState("");
-  const [subCategory, setSubCategory] = useState("");
   const [mrp, setMrp] = useState();
   const [saleRate, setSaleRate] = useState();
   const[returnsavailabilityDate,setReturnsavailabilityDate] =useState();
   const[AproximiateDate,setAproximiate] =useState();
   const [multiplePrice, setMultiplePrice] = useState(false);
-  const[multiplepricemrp,setMultipricemrp]=useState("")
-  const[multiplepriceweightType,setMultipriceweightType]=useState("")
-  const[multiplepricesalerate,setMultipricesalerate]=useState("")
-  const [weightType, setWeightType] = useState('');
+
   const [productDescription, setProductDescription] = useState('');
   const [activeStatus, setActiveStatus] = useState(true);
   const [ourchoice, setOurchoice] = useState(false);
@@ -69,11 +62,7 @@ const AddProductForm = () => {
   const [BrandId, setBrandId] = useState(null)
  // State for success modal
   
-  const [ProductList,setProductList]=useState("")
-  const [SubItemsList,setSubItemsList]=useState([
-
-  ])
-  const [MultiplePriceListTemp,setMultiplePriceListTemp]=useState([])
+  const [SubItemsList,setSubItemsList]=useState([]);
 
 
   const [multiplePriceList, setMultiplePriceList] = useState([]); 
@@ -82,28 +71,7 @@ const AddProductForm = () => {
   const [saleRate1, setSaleRate1] = useState("")
   const [selectedUOM, setSelectedUOM] = useState("Kgs");
   var Comid = JSON.parse(localStorage.getItem("adminuserid"));
-  const resetForm = () => {
-    setProductCode('');
-    setProductName('');
-    setTamilName('');
-    setCategoryid('');
-    setSelectedCategory('');
-    setSelectedSubCategory('');
-    setMrp('');
-    setSaleRate('');
-    setMultiplePrice(false);
-    setWeightType('');
-    setProductDescription('');
-    setMainImage(null);
-    setAdditionalImage(null);
-    setAdditionalImage1(null);
-    setMoreImages([null, null]);
-  };
-  const handleFileChange = (index, event) => {
-    const newImages = [...moreImages];
-    newImages[index] = event.target.files[0];
-    setMoreImages(newImages);
-  };
+
 
 
 console.log(SubItemsList)
@@ -112,7 +80,6 @@ console.log(SubItemsList)
 
   useEffect(() => {
     const adminUserId = JSON.parse(localStorage.getItem("adminuserid"));
-    Comid = JSON.parse(localStorage.getItem("adminuserid"));
     if (!adminUserId) {
       alert("Session Closed. Please Login Again!");
       setTimeout(() => {
@@ -124,24 +91,7 @@ console.log(SubItemsList)
   }, [navigate]);
 
  
-  const validateForm = () => {
-    if (!productName.trim()) {
-      setErrorMessage("Product name is required");
-      setIsErrorModalOpen(true);
-      return false;
-    }
-    if (!categoryid) {
-      setErrorMessage("Please select a category");
-      setIsErrorModalOpen(true);
-      return false;
-    }
-    if (!mrp || mrp <= 0) {
-      setErrorMessage("Please enter a valid MRP");
-      setIsErrorModalOpen(true);
-      return false;
-    }
-    return true;
-  };
+
   
 
   useEffect(() => {
@@ -304,9 +254,6 @@ console.log(SubItemsList)
   //     }
   //   }
   // };
-  const closeErrorModal = () => {
-    setIsErrorModalOpen(false);
-  };
 
 
   const handleSave = async (e) => {
@@ -423,28 +370,7 @@ console.log(SubItemsList)
   // }, [multiplePriceList]);
 
   
-  const handleAddPrice = () => {
-    if (weightType1 && mrp1 && saleRate1) {
-      const newPrice = {
-        id: Date.now(),
-        Id: id,
-        WeightType:weightType1,
-        MRP:mrp1,
-        SaleRate:saleRate1
-      };
-      setMultiplePriceList([...multiplePriceList, newPrice]);
-      setWeightType1(""); 
-      setMrp1("");
-      setSaleRate1("");
-    }
-  };
-  useEffect(()=>{})
 
-  // Delete a price entry
-  const handleDeletePrice = (id) => {
-    const updatedList = multiplePriceList.filter((item) => item.id !== id);
-    setMultiplePriceList(updatedList);
-  };
 
 
 
@@ -636,7 +562,7 @@ console.log(SubItemsList)
 
                     <div>
 
-                    {Comid == 66 && (
+                    {Comid === 66 && (
                          <div>
                          <label className="block text-sm font-medium text-gray-700">Boxes And pieces</label>
                          <input
@@ -966,7 +892,7 @@ console.log(SubItemsList)
     <img
       key={mainImage || 'default-gif'}
       src={mainImage ? (ImagePathRoutes.OfferProductImagePath + mainImage) : 'https://i.gifer.com/origin/e0/e0ea055299e92297b2ec0ef1c80696bf_w200.gif'}
-      alt="Main Image Preview"
+      alt="Main Product"
       className="w-48 h-40 rounded-lg"
       style={{ objectFit: 'contain' }}
     />
@@ -1000,7 +926,7 @@ console.log(SubItemsList)
                     <img
                       id="Filebannerimg3"
                       src={AdditionalImage ? (ImagePathRoutes.OfferProductImagePath + AdditionalImage) : 'https://i.gifer.com/origin/e0/e0ea055299e92297b2ec0ef1c80696bf_w200.gif'}
-                      alt="Web Image"
+                      alt="Additional 1"
                       className="w-44 h-36 rounded-lg"
                     />
                   </div>
@@ -1026,7 +952,7 @@ console.log(SubItemsList)
                     <img
                       id="AdditionalImage1"
                       src={AdditionalImage1 ? (ImagePathRoutes.OfferProductImagePath + AdditionalImage1) : 'https://i.gifer.com/origin/e0/e0ea055299e92297b2ec0ef1c80696bf_w200.gif'}
-                      alt="Web Image"
+                      alt="Additional 2"
                       className="w-44 h-36 rounded-lg"
                     />
                   </div>

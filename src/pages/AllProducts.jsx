@@ -8,7 +8,7 @@ import SuccessModal from "../components/sucessmodel";
 import { MdDelete } from "react-icons/md";
 import { GrEdit } from "react-icons/gr";
 import "../index.css";
-import { fetchSelectCategory,fetchSelectsubCategoryid,fetchMultiplePriceListNew,fetchProductIdAdmin,insertProduct } from "../services/addproducts";
+import { fetchSelectCategory,fetchSelectsubCategoryid,insertProduct } from "../services/addproducts";
 import * as XLSX from 'xlsx';
 
 
@@ -26,7 +26,6 @@ const AllProducts = () => {
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [dsubcategory, setSubCategoryd] = useState([]);
   const [category, setCategory] = useState([]);
   const [categoryid, setCategoryid] = useState('');
@@ -119,10 +118,6 @@ const AllProducts = () => {
           };
         });
 
-        const jsonFormattedData = JSON.stringify(productsToSave, null, 2); // Pretty format with indentation
-
-    
-      
         const success = await insertProduct(productsToSave);
     
         if (success) {
@@ -276,10 +271,6 @@ const AllProducts = () => {
   
   
 
-  const handleBack = () => {
-    navigate(-1); // Go back to the previous page
-  };
-  
 
   // Filter products based on search
   // useEffect(() => {
@@ -339,8 +330,6 @@ const AllProducts = () => {
   };
 
   const handleDeleteClick = async (id) => {
-
-    setIsModalOpen(true);
     const confirmDelete = window.confirm("Are you sure you want to delete this product?");
     if (!confirmDelete) return;
 
